@@ -14,6 +14,14 @@ public abstract class Experiment {
 	protected String projectPath="/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/";
 	protected String folderResults="";
 	
+	public String getFolderResults() {
+		return folderResults;
+	}
+
+	public void setFolderResults(String folderResults) {
+		this.folderResults = folderResults;
+	}
+
 	public String getPROJECT_PATH() {
 		return projectPath;
 	}
