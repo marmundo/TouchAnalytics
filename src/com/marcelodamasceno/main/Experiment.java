@@ -34,7 +34,7 @@ public abstract class Experiment {
 		WekaPackageManager.loadPackages(false, false);
 	}
 	
-	protected abstract void classifyAllUsers(Classifier classifier,boolean eerBool, boolean correctStatistics);
+	public abstract void classifyAllUsers(Classifier classifier,boolean eerBool, boolean correctStatistics);
 	
 	public double classify(Instances train, Instances test,Classifier classifier,boolean correctStatistics,boolean eerBool){
 		Evaluation eval;

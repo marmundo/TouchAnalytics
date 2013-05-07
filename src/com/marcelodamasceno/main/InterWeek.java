@@ -10,20 +10,20 @@ import weka.core.Instances;
 
 public class InterWeek extends Experiment {
 	
-	public InterWeek(String folderResults){
-		setFolderResults(folderResults+"/");
+	public InterWeek(){
+		setFolderResults("InterWeek/");
 	}
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		InterWeek main = new InterWeek("InterWeek");
+		InterWeek main = new InterWeek();
 		Classifier ibk=new IBk(5);
 		main.classifyAllUsers(ibk,false, false);
 	}
 
-	protected void classifyAllUsers(Classifier classifier,boolean eerBool, boolean correctStatistics) {
+	public void classifyAllUsers(Classifier classifier,boolean eerBool, boolean correctStatistics) {
 		//Instances (dataSet)
 		Instances scrollingTraining=null;
 		Instances horizontalTraining=null;

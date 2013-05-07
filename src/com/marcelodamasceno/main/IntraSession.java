@@ -11,8 +11,8 @@ import com.marcelodamasceno.util.ArffConector;
 
 public class IntraSession extends Experiment {
 	
-	public IntraSession(String folderResults){
-		setFolderResults(folderResults+"/");
+	public IntraSession(){
+		setFolderResults("IntraSession/");
 	}
 	
 	/**
@@ -20,7 +20,7 @@ public class IntraSession extends Experiment {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {				
-		IntraSession main = new IntraSession("IntraSession");
+		IntraSession main = new IntraSession();
 		Classifier ibk=new IBk(5);
 		main.classifyAllUsers(ibk,false,false);
 		
@@ -28,7 +28,7 @@ public class IntraSession extends Experiment {
 
 
 
-	protected void classifyAllUsers(Classifier classifier,boolean eerBool, boolean correctStatistics){
+	public void classifyAllUsers(Classifier classifier,boolean eerBool, boolean correctStatistics){
 		Instances scrolling=null;
 		Instances horizontal=null;
 

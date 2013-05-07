@@ -9,8 +9,8 @@ import com.marcelodamasceno.util.ArffConector;
 
 public class InterSession extends Experiment {	
 	
-	public InterSession(String folderResults){
-		setFolderResults(folderResults+"/");
+	public InterSession(){
+		setFolderResults("InterSession/");
 	}
 
 	/**
@@ -18,12 +18,12 @@ public class InterSession extends Experiment {
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {		
-		InterSession main = new InterSession("InterSession");
+		InterSession main = new InterSession();
 		Classifier ibk=new IBk(5);
 		main.classifyAllUsers(ibk,false, false);
 	}
 
-	protected void classifyAllUsers(Classifier classifier,boolean eerBool, boolean correctStatistics){
+	public void classifyAllUsers(Classifier classifier,boolean eerBool, boolean correctStatistics){
 		//Classifier classifier=new IBk(5);
 		ArffConector conector=new ArffConector();
 
