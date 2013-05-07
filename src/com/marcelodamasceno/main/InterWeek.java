@@ -9,12 +9,16 @@ import weka.core.Instances;
 
 
 public class InterWeek extends Experiment {
+	
+	public InterWeek(String folderResults){
+		setFolderResults(folderResults+"/");
+	}
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		InterWeek main = new InterWeek();
+		InterWeek main = new InterWeek("InterWeek");
 		Classifier ibk=new IBk(5);
 		main.classifyAllUsers(ibk,false, false);
 	}
@@ -40,7 +44,7 @@ public class InterWeek extends Experiment {
 
 		for(int user=1;user<=41;user++){
 			try{				
-				scrollingTraining=conector.openDataSet("/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/InterWeek/InterWeek-User_"+user+"_Day_1_Scrolling_Training.arff");
+				scrollingTraining=conector.openDataSet(projectPath+folderResults+"InterWeek-User_"+user+"_Day_1_Scrolling_Training.arff");
 				scrollingTesting=conector.openDataSet("/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/InterWeek/InterWeek-User_"+user+"_NextWeek_Scrolling_Testing.arff");
 				if(eerBool){
 					eer=classifyEER(scrollingTraining, scrollingTesting, classifier);
@@ -58,8 +62,8 @@ public class InterWeek extends Experiment {
 				}
 
 
-				horizontalTraining=conector.openDataSet("/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/InterWeek/InterWeek-User_"+user+"_Day_1_Horizontal_Training.arff");
-				horizontalTesting=conector.openDataSet("/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/InterWeek/InterWeek-User_"+user+"_NextWeek_Horizontal_Testing.arff");
+				horizontalTraining=conector.openDataSet(projectPath+folderResults+"InterWeek-User_"+user+"_Day_1_Horizontal_Training.arff");
+				horizontalTesting=conector.openDataSet(projectPath+folderResults+"InterWeek-User_"+user+"_NextWeek_Horizontal_Testing.arff");
 				if(eerBool){
 					eer=classifyEER(horizontalTraining, horizontalTesting, classifier);
 					horizontalResults.add(eer);
@@ -76,7 +80,7 @@ public class InterWeek extends Experiment {
 				}				
 			}catch(FileNotFoundException e1){
 				try {
-					scrollingTraining=conector.openDataSet("/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/InterWeek/InterWeek-User_"+user+"_Day_1_Scrolling_Training.arff");
+					scrollingTraining=conector.openDataSet(projectPath+folderResults+"InterWeek-User_"+user+"_Day_1_Scrolling_Training.arff");
 					if(eerBool){
 						eer=classifyEER(scrollingTraining, null, classifier);
 						scrollingResults.add(eer);
@@ -93,7 +97,7 @@ public class InterWeek extends Experiment {
 					}
 
 
-					horizontalTraining=conector.openDataSet("/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/InterWeek/InterWeek-User_"+user+"_Day_1_Horizontal_Training.arff");
+					horizontalTraining=conector.openDataSet(projectPath+folderResults+"InterWeek-User_"+user+"_Day_1_Horizontal_Training.arff");
 					if(eerBool){
 						eer=classifyEER(horizontalTraining, null, classifier);
 						horizontalResults.add(eer);
@@ -120,47 +124,4 @@ public class InterWeek extends Experiment {
 		printResults(scrollingResults, horizontalResults, eerBool, correctStatistics);
 
 	}
-
-
-
-	/*private double classify(Instances train, Instances test,Classifier classifier,boolean correctStatistics,boolean eerBool){
-		Evaluation eval;
-		EER eer=null;
-		if (test==null) {			
-			try {
-				eval = new Evaluation(train);
-				eval.crossValidateModel(classifier, train, 10, new Random(1));
-				if(eerBool){
-					eer = (EER) eval.getPluginMetric("EER");
-					return eer.getStatistic("");
-				}if(correctStatistics){
-					return eval.pctCorrect();
-				}else{
-					return eval.pctIncorrect();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				return -1;
-			}				
-		}else {					
-			try {
-				classifier.buildClassifier(train);
-				eval=new Evaluation(train);
-				eval.evaluateModel(classifier,test);
-				if(eerBool){
-					eer = (EER) eval.getPluginMetric("EER");
-					return eer.getStatistic("");
-				}if(correctStatistics){
-					return eval.pctCorrect();
-				}else{
-					return eval.pctIncorrect();
-				}				
-			} catch (Exception e) {			
-				e.printStackTrace();
-				return -1;
-			}
-
-		}	
-	}*/
-
 }

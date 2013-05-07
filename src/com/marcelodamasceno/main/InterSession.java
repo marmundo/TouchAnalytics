@@ -9,13 +9,16 @@ import com.marcelodamasceno.util.ArffConector;
 
 public class InterSession extends Experiment {	
 	
+	public InterSession(String folderResults){
+		setFolderResults(folderResults+"/");
+	}
 
 	/**
 	 * @param args
 	 * @throws Exception 
 	 */
 	public static void main(String[] args) throws Exception {		
-		InterSession main = new InterSession();
+		InterSession main = new InterSession("InterSession");
 		Classifier ibk=new IBk(5);
 		main.classifyAllUsers(ibk,false, false);
 	}
@@ -37,7 +40,7 @@ public class InterSession extends Experiment {
 		
 		for(int user=1;user<=41;user++){			
 			try {
-				scrolling = conector.openDataSet("/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/InterSession/InterSession-User_"+user+"_Day_1_Scrolling.arff");
+				scrolling = conector.openDataSet(projectPath+folderResults+"InterSession-User_"+user+"_Day_1_Scrolling.arff");
 				if(eerBool){
 					eer=classifyEER(scrolling, null, classifier);
 					scrollingResults.add(eer);
@@ -53,7 +56,7 @@ public class InterSession extends Experiment {
 					System.out.println("InterSession-Scrolling-User "+user+" - Incorrect: "+incorrectPercentage+"%");
 				}				
 				
-				horizontal=conector.openDataSet("/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/InterSession/InterSession-User_"+user+"_Day_1_Horizontal.arff");
+				horizontal=conector.openDataSet(projectPath+folderResults+"InterSession-User_"+user+"_Day_1_Horizontal.arff");
 				if(eerBool){
 					eer=classifyEER(horizontal,null, classifier);
 					horizontalResults.add(eer);
