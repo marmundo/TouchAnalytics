@@ -11,6 +11,17 @@ import weka.core.WekaPackageManager;
 
 public abstract class Experiment {
 	
+	protected String projectPath="/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/";
+	protected String folderResults="";
+	
+	public String getPROJECT_PATH() {
+		return projectPath;
+	}
+
+	public void setPROJECT_PATH(String pROJECT_PATH) {
+		projectPath = pROJECT_PATH;
+	}
+
 	public Experiment(){
 		WekaPackageManager.loadPackages(false, false);
 	}
