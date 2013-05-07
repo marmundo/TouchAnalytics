@@ -5,28 +5,23 @@ import java.util.ArrayList;
 import weka.classifiers.Classifier;
 import weka.classifiers.lazy.IBk;
 import weka.core.Instances;
-import weka.core.WekaPackageManager;
 import com.marcelodamasceno.util.ArffConector;
 
-public class InterSession extends Experiment {
+public class InterSession extends Experiment {	
+	
 
 	/**
 	 * @param args
 	 * @throws Exception 
 	 */
-	public static void main(String[] args) throws Exception {
-		WekaPackageManager.loadPackages(false, false);
-		//ArffConector conector=new ArffConector();		
-		//Instances train=conector.openDataSet("/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/InterSession/InterSession-User_2_Day_1_Scrolling.arff");
-		//Instances test=conector.openDataSet("/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/InterSession/InterSession-User_2_Day_2_Scrolling.arff");
+	public static void main(String[] args) throws Exception {		
 		InterSession main = new InterSession();
-		main.classifyAllUsers(false, false);
-		//IBk ibk=new IBk(5);
-		//System.out.println("Perc. Correct: "+main.classify(train,test,ibk)+"%");
+		Classifier ibk=new IBk(5);
+		main.classifyAllUsers(ibk,false, false);
 	}
 
-	protected void classifyAllUsers(boolean eerBool, boolean correctStatistics){
-		Classifier classifier=new IBk(5);
+	protected void classifyAllUsers(Classifier classifier,boolean eerBool, boolean correctStatistics){
+		//Classifier classifier=new IBk(5);
 		ArffConector conector=new ArffConector();
 
 		Instances scrolling=null;

@@ -24,21 +24,21 @@ public class InterWeek extends Experiment {
 		//Instances train=conector.openDataSet("/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/InterSession/InterSession-User_2_Day_1_Scrolling.arff");
 		//Instances test=conector.openDataSet("/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/InterSession/InterSession-User_2_Day_2_Scrolling.arff");
 		InterWeek main = new InterWeek();
-		main.classifyAllUsers(false, false);
+		Classifier ibk=new IBk(5);
+		main.classifyAllUsers(ibk,false, false);
 		//IBk ibk=new IBk(5);
 		//System.out.println("Perc. Correct: "+main.classify(train,test,ibk)+"%");
 
 	}
 
-	protected void classifyAllUsers(boolean eerBool, boolean correctStatistics) {
+	protected void classifyAllUsers(Classifier classifier,boolean eerBool, boolean correctStatistics) {
 		//Instances (dataSet)
 		Instances scrollingTraining=null;
 		Instances horizontalTraining=null;
 		Instances scrollingTesting=null;
 		Instances horizontalTesting=null;
 		
-		//Classifier
-		Classifier classifier=new IBk(5);
+		
 		
 		//Conector
 		ArffConector conector=new ArffConector();
