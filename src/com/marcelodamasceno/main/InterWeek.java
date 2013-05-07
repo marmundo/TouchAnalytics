@@ -2,16 +2,11 @@ package com.marcelodamasceno.main;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Random;
-
 import com.marcelodamasceno.util.ArffConector;
-
 import weka.classifiers.Classifier;
-import weka.classifiers.Evaluation;
-import weka.classifiers.evaluation.EER;
 import weka.classifiers.lazy.IBk;
 import weka.core.Instances;
-import weka.core.WekaPackageManager;
+
 
 public class InterWeek extends Experiment {
 
@@ -19,16 +14,9 @@ public class InterWeek extends Experiment {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		WekaPackageManager.loadPackages(false, false);
-		//ArffConector conector=new ArffConector();		
-		//Instances train=conector.openDataSet("/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/InterSession/InterSession-User_2_Day_1_Scrolling.arff");
-		//Instances test=conector.openDataSet("/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/InterSession/InterSession-User_2_Day_2_Scrolling.arff");
 		InterWeek main = new InterWeek();
 		Classifier ibk=new IBk(5);
 		main.classifyAllUsers(ibk,false, false);
-		//IBk ibk=new IBk(5);
-		//System.out.println("Perc. Correct: "+main.classify(train,test,ibk)+"%");
-
 	}
 
 	protected void classifyAllUsers(Classifier classifier,boolean eerBool, boolean correctStatistics) {
@@ -37,21 +25,19 @@ public class InterWeek extends Experiment {
 		Instances horizontalTraining=null;
 		Instances scrollingTesting=null;
 		Instances horizontalTesting=null;
-		
-		
-		
+
 		//Conector
 		ArffConector conector=new ArffConector();
-		
+
 		//Array to save the results for scrooling and horizontal strokes
 		ArrayList<Double> scrollingResults=new ArrayList<Double>();
 		ArrayList<Double> horizontalResults=new ArrayList<Double>();
-		
+
 		//It will save the temporary result classifiers
 		double eer=0.0;
 		double correctPercentage=0.0;
 		double incorrectPercentage=0.0;
-		
+
 		for(int user=1;user<=41;user++){
 			try{				
 				scrollingTraining=conector.openDataSet("/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/InterWeek/InterWeek-User_"+user+"_Day_1_Scrolling_Training.arff");
@@ -134,8 +120,8 @@ public class InterWeek extends Experiment {
 		printResults(scrollingResults, horizontalResults, eerBool, correctStatistics);
 
 	}
-	
-	
+
+
 
 	/*private double classify(Instances train, Instances test,Classifier classifier,boolean correctStatistics,boolean eerBool){
 		Evaluation eval;
