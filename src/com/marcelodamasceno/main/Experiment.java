@@ -7,10 +7,15 @@ import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.evaluation.EER;
 import weka.core.Instances;
+import weka.core.WekaPackageManager;
 
 public abstract class Experiment {
 	
-	protected abstract void classifyAllUsers(boolean eerBool, boolean correctStatistics);
+	public Experiment(){
+		WekaPackageManager.loadPackages(false, false);
+	}
+	
+	protected abstract void classifyAllUsers(Classifier classifier,boolean eerBool, boolean correctStatistics);
 	
 	public double classify(Instances train, Instances test,Classifier classifier,boolean correctStatistics,boolean eerBool){
 		Evaluation eval;
