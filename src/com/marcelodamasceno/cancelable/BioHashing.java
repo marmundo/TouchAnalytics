@@ -4,7 +4,9 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import com.marcelodamasceno.util.ArffConector;
-import com.marcelodamasceno.utils.Transformations;
+import com.marcelodamasceno.utils.GramSchmidt;
+import com.marcelodamasceno.utils.Matriz;
+
 
 import weka.core.Attribute;
 import weka.core.DenseInstance;
@@ -39,11 +41,38 @@ public class BioHashing {
 			}
 			randowDataSet.add(inst);
 		}
-		Transformations t=new Transformations();
-		System.out.println(randowDataSet.get(0).value(0));
-		System.out.println(t.instancestoArray(randowDataSet)[0][0]);
-		return randowDataSet;
+		/*Aplicando o processo de Gram-Schimdth*/
+		GramSchmidt gram= new GramSchmidt(randowDataSet);
+		Instances orthonormalInstances=gram.execute();
+		//randowDataSet=null;
+		
+		/*Produto interno entre o dataset biométrico e o vetor orthornormal*/
+		Instances product= Matriz.innerProduct(data, orthonormalInstances);
+		product=discretization(product, 0.55);
+		System.out.println(product);
+		return product;
 	}
+	
+	/**
+	 * Discretizes the dataset to 1 when the value is higher than thereshold, else ortherwise
+	 * @param data Instances that will be discretized
+	 * @param thereshold Thereshold
+	 * @return
+	 */
+	private Instances discretization(Instances data,double thereshold){
+		for(int i=0;i<data.numInstances();i++){
+			for(int j=0;j<data.numAttributes();j++){
+				if(data.get(i).value(j)>thereshold){
+					data.get(i).setValue(j, 1.0);
+				}else{
+					data.get(i).setValue(j,0.0);
+				}
+			}
+		}
+		return data;
+	}
+	
+
 	/**
 	 * @param args
 	 * @throws FileNotFoundException 
@@ -57,7 +86,7 @@ public class BioHashing {
 		
 		dataset = conector.openDataSet(projectPath+folderResults+"IntraSession-User_41_Day_1_Scrolling.arff");
 		BioHashing bio = new BioHashing(dataset);
-		bio.execute(dataset.numInstances());
+		bio.execute(dataset.numAttributes());
 
 	}
 
