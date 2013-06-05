@@ -4,8 +4,8 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import com.marcelodamasceno.util.ArffConector;
-import com.marcelodamasceno.utils.GramSchmidt;
-import com.marcelodamasceno.utils.Matriz;
+import com.marcelodamasceno.util.GramSchmidt;
+import com.marcelodamasceno.util.Matriz;
 
 
 import weka.core.Attribute;
@@ -34,7 +34,7 @@ public class BioHashing {
 		}		 
 		Instances randowDataSet=new Instances("randow", attributeList, data.numInstances());
 		/*Gerando n vetores randomicos*/
-		for(int row=0;row<data.numInstances();row++){
+		for(int row=0;row<m;row++){
 			Instance inst=new DenseInstance(m);
 			for(int a=0;a<m;a++){
 				inst.setValue(attributeList.get(a), Math.random());
@@ -46,10 +46,16 @@ public class BioHashing {
 		Instances orthonormalInstances=gram.execute();
 		//randowDataSet=null;
 		
+		
+		
+		
 		/*Produto interno entre o dataset biométrico e o vetor orthornormal*/
 		Instances product= Matriz.innerProduct(data, orthonormalInstances);
 		product=discretization(product, 0.55);
-		System.out.println(product);
+		/*System.out.println("orto(m,n): ("+orthonormalInstances.numInstances()+" , "+orthonormalInstances.numAttributes()+")");
+		System.out.println("data(m,n): ("+data.numInstances()+" , "+data.numAttributes()+")");
+		System.out.println("product(m,n): ("+product.numInstances()+" , "+product.numAttributes()+")");
+		System.out.println(product);*/
 		return product;
 	}
 	
