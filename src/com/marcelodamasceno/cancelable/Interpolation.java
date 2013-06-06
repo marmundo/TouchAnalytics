@@ -10,8 +10,10 @@ import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 
 
 import com.marcelodamasceno.util.ArffConector;
+import com.marcelodamasceno.util.ConsoleUtils;
 import com.marcelodamasceno.util.InstancesUtils;
 import com.marcelodamasceno.util.Transformations;
+import com.marcelodamasceno.util.Utils;
 
 
 import weka.core.Instance;
@@ -25,7 +27,7 @@ import weka.core.Instances;
  */
 public class Interpolation {
 
-	//X array
+	//X array - Number of attributes
 	private double[]x;	
 	//Random X array
 	private double[] xRandom;
@@ -66,7 +68,7 @@ public class Interpolation {
 		y=new double[data.numAttributes()-1];
 		xRandom=new double[data.numAttributes()-1];
 		yTransformed=new double[data.numAttributes()-1];
-		interpolator = new SplineInterpolator();
+		interpolator = new SplineInterpolator();		
 	}
 	
 	/**
@@ -75,8 +77,7 @@ public class Interpolation {
 	 */
 	private Instances interpolateInstances(){
 		Instances transformedDataSet=new Instances(dataSet);
-		transformedDataSet.clear();
-		createRandomArray();
+		transformedDataSet.clear();		
 		for (Instance instance : dataSet) {
 			classe=instance.stringValue(instance.classIndex());
 			feedArrays(instance);
@@ -147,7 +148,7 @@ public class Interpolation {
 
 	
 	public Instances createCancelableDataSetOneFunctionForAllDataSet(){
-		createRandomArray();
+	    	Utils.createRandomArray(0,dataSet.numAttributes(),dataSet.numAttributes());
 		Transformations t = new Transformations();
 		Instances cancelableDataSet=t.doubleToInstances(yTransformed,dataSet.numAttributes());
 		return cancelableDataSet;
@@ -162,26 +163,10 @@ public class Interpolation {
 			yTransformed[i]=poli.value(xRandom[i]);
 		}
 		Transformations t= new Transformations();		
-		return t.doubleArrayToInstanceWithClass(yTransformed,classe);
+		return t.doubleArrayToInstanceWithClass(yTransformed,classe,dataSet);
 	}
 
-	/**
-	 * Generates a RandowArray with min=0 and max=num of attributes of the current instance
-	 * @return
-	 */
-	private double[] createRandomArray(){
-		Random rand= new Random();
-		int min=0, max=x.length-1;
-
-		// nextInt is normally exclusive of the top value,
-		// so add 1 to make it inclusive
-		int randomNum = rand.nextInt(max - min + 1) + min;
-		for(int i=0;i<x.length;i++){
-			xRandom[i]=randomNum;			
-			randomNum = rand.nextInt(max - min + 1) + min;
-		}
-		return xRandom;
-	}
+	
 
 	public void printArray(double[]a){
 		System.out.print("{");
@@ -217,6 +202,9 @@ public class Interpolation {
 		Enumeration<String> en=dataset.classAttribute().enumerateValues();
 		InstancesUtils iUtils=new InstancesUtils();
 		
+		//Creating the key d
+		Utils.createRandomArray(0,dataset.numAttributes(),dataset.numAttributes());
+		
 		while (en.hasMoreElements()) {
 			String classe = (String) en.nextElement();
 			Instances subDataSet=iUtils.subInstances(dataset, classe);
@@ -224,9 +212,11 @@ public class Interpolation {
 			Instances instances=inter2.interpolateInstances();
 			cancelableDataSet.addAll(instances);
 			
-		}		
-		System.out.println(dataset.instance(0).toString());
-		System.out.println(cancelableDataSet.instance(0).toString());		
+		}	
+		System.out.println("****Original********");
+		System.out.println(dataset);
+		System.out.println("****Cancelável********");
+		System.out.println(cancelableDataSet);		
 	}
 
 }
