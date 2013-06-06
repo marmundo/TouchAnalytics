@@ -20,7 +20,7 @@ public class Transformations {
 	 * @param dataset
 	 * @return
 	 */
-	public double[][] instancestoArray(Instances dataset){
+	public static double[][] instancestoArray(Instances dataset){
 		int nrow=dataset.numInstances();
 		int ncol=dataset.numAttributes();
 		double[][] double_dataset= new double[nrow][ncol];
@@ -30,7 +30,7 @@ public class Transformations {
 		return double_dataset;
 	}	
 
-	private ArrayList<Attribute> createAttributeList(int numAttributes){
+	private static ArrayList<Attribute> createAttributeList(int numAttributes){
 		ArrayList<Attribute> attributeList=new ArrayList<Attribute>(numAttributes);
 		for(int i=0;i<numAttributes-1;i++){
 			Attribute attr = new Attribute("a"+String.valueOf(i));
@@ -41,7 +41,7 @@ public class Transformations {
 		return attributeList;
 	}
 
-	public Instance doubleToInstance(double[]data){
+	public static Instance doubleToInstance(double[]data){
 		Instance instance=new DenseInstance(data.length);		
 		for(int i=0;i<data.length;i++){							
 			instance.setValue(i, data[i]);				
@@ -49,20 +49,21 @@ public class Transformations {
 		return instance;
 	}
 	
-	public Instance doubleArrayToInstanceWithClass(double[]data,String classe){
-		DenseInstance instance=new DenseInstance(data.length);		
+	public static Instance doubleArrayToInstanceWithClass(double[]data,String classe,Instances dataset){
+		DenseInstance instance=new DenseInstance(data.length+1);		
+		instance.setDataset(dataset);
 		for(int i=0;i<data.length;i++){							
 			instance.setValue(i, data[i]);				
 		}
 		//Isso vai sair. Feito isso por causa do bug***
-		if(classe.equals("positive"))
-			instance.setValue(instance.numAttributes()-1,1);
-		else
-			instance.setValue(instance.numAttributes()-1,0);
+		//if(classe.equals("positive"))
+			instance.setClassValue(classe);
+		/*else
+			instance.setValue(instance.numAttributes()-1,0);*/
 		return instance;
 	}
 
-	public Instances doubleToInstances(double[]data,int numAttributes){
+	public static Instances doubleToInstances(double[]data,int numAttributes){
 		ArrayList<Attribute> attributeList=createAttributeList(numAttributes);
 		Instances dataset=new Instances("Transformed DataSet", attributeList, data.length);
 		Instance instance=new DenseInstance(numAttributes);
@@ -82,7 +83,7 @@ public class Transformations {
 	 * @param matrix
 	 * @return
 	 */
-	public Instances MatrixtoInstances(Matrix matrix){		
+	public static Instances MatrixtoInstances(Matrix matrix){		
 		int m=matrix.getColumnDimension();
 		ArrayList<Attribute> attributeList=createAttributeList(m);
 		Instances inst=new Instances("dataset", attributeList, m);
