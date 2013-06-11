@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import weka.core.Instance;
 import weka.core.Instances;
 
 import com.marcelodamasceno.util.ArffConector;
@@ -47,11 +48,155 @@ import com.marcelodamasceno.util.Utils;
  */
 public class BioConvolving {
 
-    public BioConvolving() {
-	super();
-	// TODO Auto-generated constructor stub
+    Instances dataset;
+
+    public BioConvolving(Instances dataset) {
+	this.dataset = dataset;
     }
 
+    /**
+     * Convolving all the dataset using the segments proportions b
+     * 
+     * @param r
+     *            dataset
+     * @param b
+     *            proportions in segments
+     * @return Transformed DataSet
+     */
+    private Instances convolvingDataSet(double[][] r, int[] b) {
+
+	// N_j
+	int[] N = new int[b.length - 1];
+	// r(i)j
+	ArrayList<Double> q = new ArrayList<Double>();
+	// Convolution
+	ArrayList<Double> convolution = new ArrayList<Double>();
+	// Transformed dataset
+	Instances transformedDataSet = new Instances(dataset);
+	transformedDataSet.clear();
+
+	for (int row = 0; row < r.length; row++) {
+	    convolution.clear();
+	    q.clear();
+	    for (int j = 0; j < b.length - 1; j++) {
+		N[j] = b[j + 1] - b[j];
+		if (j == 0) {
+		    for (int i = 0; i < N[j]; i++) {
+			convolution.add(r[row][i]);
+		    }
+		} else {
+		    for (int i = N[j - 1]; i < N[j - 1] + N[j]; i++) {
+			q.add(r[row][i]);
+		    }
+		    convolution = convolving(convolution, q);
+		}
+	    }
+
+	    Instance i = Transformations.doubleArrayToInstanceWithClass(
+		    Transformations.doubleToDouble(convolution), dataset);
+	    int classIndex = r[0].length - 1;
+	    i.setValue(dataset.numAttributes() - 1, r[row][classIndex]);
+	    transformedDataSet.add(i);
+	}
+	return transformedDataSet;
+
+    }
+
+    /**
+     * Converto d to Bj Format: round((d[j] / 100) * n)
+     * 
+     * @param d
+     *            array with the segments proportions
+     * @return
+     */
+    private int[] converttoBj(double[] d) {
+	int n = dataset.numAttributes();
+	int[] b = new int[d.length];
+	for (int j = 0; j < d.length; j++) {
+	    b[j] = (int) Math.round((d[j] / 100) * n);
+	}
+	return b;
+    }
+
+    /**
+     * Generates de key to the w segments
+     * 
+     * @param w
+     *            number of array segments
+     * @return
+     */
+    private double[] generateKey(int w) {
+	int min = 1;
+	int max = 99;
+	double[] d = new double[w + 1];
+	d[0] = 0;
+	d[w] = 100;
+	for (int j = 1; j <= w - 1; j++) {
+	    int random = Utils.getRandowNumber(min, max);
+	    d[j] = random;
+	}
+	// Sorting d
+	Arrays.sort(d);
+	return d;
+    }
+
+    /**
+     * Linear convolving
+     * 
+     * @param f
+     *            First data points
+     * @param g
+     *            Second data points
+     * @return convolved data points
+     */
+    public ArrayList<Double> convolving(ArrayList<Double> f, ArrayList<Double> g) {
+	ArrayList<Double> h = new ArrayList<Double>();
+	double temp = 0.0;
+	int kMax = f.size() + g.size() - 1;
+	for (int k = 0; k < kMax; k++) {
+	    temp = 0;
+	    for (int j = 0; j <= k; j++) {
+		// This was done because f e g may have different size. If one
+		// of statements are true, f.get(j)*g.get(k-j) is 0
+		if (j >= f.size() || k - j >= g.size()) {
+		    temp = temp + 0;
+		} else
+		    temp = temp + f.get(j) * g.get(k - j);
+	    }
+	    h.add(temp);
+	}
+
+	return h;
+    }
+
+    /**
+     * Linear convolving
+     * 
+     * @param rij
+     *            ArrayList with the two data points
+     * @param numFirstArray
+     *            Lenght of the first data points (f)
+     * @param numSecondArray
+     *            Lenght of the second data points (f)
+     * @return the convolved data points
+     */
+    public ArrayList<Double> convolving(ArrayList<Double> rij,
+	    int numFirstArray, int numSecondArray) {
+	ArrayList<Double> f = new ArrayList<Double>();
+	ArrayList<Double> g = new ArrayList<Double>();
+
+	// copy rij to f
+	for (int i = 0; i < numFirstArray; i++) {
+	    f.add(rij.get(i));
+	}
+	// copy rij to g
+	for (int i = numFirstArray; i < rij.size(); i++) {
+	    g.add(rij.get(i));
+	}
+
+	return convolving(f, g);
+    }
+    
     /**
      * @param args
      * @throws FileNotFoundException
@@ -66,14 +211,12 @@ public class BioConvolving {
 	dataset = conector.openDataSet(projectPath + folderResults
 		+ "IntraSession-User_41_Day_1_Scrolling.arff");
 
+	BioConvolving bioconv = new BioConvolving(dataset);
+
 	// Iniciando a matriz de arrays originais
 	double[][] r = new double[dataset.numInstances()][dataset
 		.numAttributes()];
 	r = Transformations.instancestoArray(dataset);
-
-	// Iniciando a matrix de arrays transformados
-	double[][] f = new double[dataset.numInstances()][dataset
-		.numAttributes()];
 
 	// Passo 1: Defina o números de segmentos(W) que dividirá os dados
 	// biométricos originais;
@@ -82,92 +225,19 @@ public class BioConvolving {
 
 	// Passo 2: 2. Selecione aleatoriamente (W-1) números inteiros
 	// aleatórios, denominados d_j
-	int min = 1;
-	int max = 99;
-	int[] d = new int[w];
-	d[0] = 0;
-	d[w] = 100;
-	for (int j = 1; j <= w - 1; j++) {
-	    int random = Utils.getRandowNumber(min, max);
-	    d[j] = random;
-	}
-	// Ordenando d
-	Arrays.sort(d);
+	double[] d = bioconv.generateKey(w);
 
 	// Passo 3:Converta os valores d_j, de acordo com b_j=round((d_j/100)*N)
-	int n = dataset.numAttributes();
-	int[] b = new int[w];
-	for (int j = 0; j < d.length; j++) {
-	    b[j] = Math.round((d[j] / 100) * n);
-	}
+	int[] b = bioconv.converttoBj(d);
 
 	// Passo 4: Divida a sequência original r(i)[n] em W segmentos r(i)j, de
 	// comprimento N_j=b_j-b_j-1, cada um definido como:
 	// r(i)j,N_j[n]=r(i)[n+b_j-1]
 
-	// N_j
-	int[] N = new int[b.length - 1];
-	// r(i)j
-	ArrayList<Double> rij = new ArrayList<Double>();
-	// Convolução
-	ArrayList<Double> convolucao=new ArrayList<Double>();
+	Instances transformedDataSet=bioconv.convolvingDataSet(r, b);
+	transformedDataSet.setClassIndex(transformedDataSet.numAttributes()-1);
 	
-	for (int row = 0; row < r.length; row++) {
-	    for (int j = 0; j < b.length; j++) {
-		N[j] = b[j + 1] - b[j];
-		if (j == 0) {
-		    for (int i = 0; i < N[j]; i++) {
-			rij.add(r[row][i]);
-		    }
-		} else {
-		    for (int i = N[j - 1]; i <= N[j]; i++) {
-			rij.add(r[row][i]);
-		    }
-		    convolucao = convolucao(rij, N[j - 1], N[j]);
-		}
-
-	    }
-	}
-
-    }
-
-    public static ArrayList<Double> convolucao(ArrayList<Double> rij, int numFirstArray,
-	    int numSecondArray) {
-	ArrayList<Double> f = new ArrayList<Double>();
-	ArrayList<Double> g = new ArrayList<Double>();
-	ArrayList<Double> h = new ArrayList<Double>();
-	double temp = 0.0;
-	int max;
-
-	// copy rij to f
-	for (int i = 0; i < numFirstArray; i++) {
-	    f.add(rij.get(i));
-	}
-	// copy rij to g
-	for (int i = numFirstArray; i < rij.size(); i++) {
-	    g.add(rij.get(i));
-	}
-
-	/*
-	 * if(numSecondArray>numFirstArray){ int
-	 * diff=numSecondArray-numFirstArray; for(int i=0;i<diff;i++){
-	 * f.add(0.0); } } else{ int diff=numFirstArray-numSecondArray; for(int
-	 * i=0;i<diff;i++){ g.add(0.0); } }
-	 */
-	int kMax = 2 * f.size() - 1;
-	for (int k = 0; k < kMax; k++) {
-	    temp=0;
-	    for (int j = 0; j <= k; j++) {
-		// This was done because f e g may have different size. If one
-		// of statements are true, f.get(j)*g.get(k-j) is 0
-		if (j >= f.size() || k - j >= g.size()) {
-		    temp = temp + 0;
-		} else
-		    temp = temp + f.get(j) * g.get(k - j);
-	    }
-	    h.add(temp);
-	}
-
-	return h;
+		
+	conector.save(transformedDataSet, "Transformed.arff");
     }
 }
