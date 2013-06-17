@@ -13,7 +13,7 @@ import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
 
-public class BioHashing {
+public class BioHashing extends Cancelable{
 
 	private Instances data;
 	public BioHashing(Instances data){
@@ -83,14 +83,19 @@ public class BioHashing {
 	 * @param args
 	 * @throws FileNotFoundException 
 	 */
-	public static void main(String[] args) throws FileNotFoundException {
+	public static void main(String[] args){
 		
 		ArffConector conector=new ArffConector();
 		Instances dataset=null;
 		String projectPath="/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/";		
 		String folderResults="IntraSession/";
 		
-		dataset = conector.openDataSet(projectPath+folderResults+"IntraSession-User_41_Day_1_Scrolling.arff");
+		try {
+		    dataset = conector.openDataSet(projectPath+folderResults+"IntraSession-User_41_Day_1_Scrolling.arff");
+		} catch (FileNotFoundException e) {
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		}
 		BioHashing bio = new BioHashing(dataset);
 		bio.execute(dataset.numAttributes());
 

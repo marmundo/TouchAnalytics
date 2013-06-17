@@ -21,7 +21,7 @@ import weka.core.Instances;
  * @author marcelo
  * 
  */
-public class Interpolation {
+public class Interpolation extends Cancelable {
 
     /**
      * X array - Number of attributes
@@ -202,14 +202,19 @@ public class Interpolation {
 	System.out.print("}");
     }
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args){
 	ArffConector conector = new ArffConector();
 	Instances dataset = null;
 	String projectPath = "/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/";
 	String folderResults = "IntraSession/";
 
-	dataset = conector.openDataSet(projectPath + folderResults
-		+ "IntraSession-User_41_Day_1_Scrolling.arff");
+	try {
+	    dataset = conector.openDataSet(projectPath + folderResults
+	    	+ "IntraSession-User_41_Day_1_Scrolling.arff");
+	} catch (FileNotFoundException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
 	/*
 	 * Create the revocable database where it was used a interpolation for
 	 * each instance
