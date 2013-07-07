@@ -1,14 +1,12 @@
 package com.marcelodamasceno.cancelable;
 
 import java.io.FileNotFoundException;
-import java.util.Enumeration;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.interpolation.SplineInterpolator;
 import org.apache.commons.math3.analysis.interpolation.UnivariateInterpolator;
 
 import com.marcelodamasceno.util.ArffConector;
-import com.marcelodamasceno.util.InstancesUtils;
 import com.marcelodamasceno.util.Transformations;
 import com.marcelodamasceno.util.Utils;
 
@@ -27,12 +25,11 @@ public class Interpolation extends Cancelable {
      * X array - Number of attributes
      */
     private double[] x;
-    
+
     /**
      * Random X array
      */
     private double[] xRandom;
-
 
     /**
      * Y array
@@ -44,27 +41,25 @@ public class Interpolation extends Cancelable {
      */
     private double[] yTransformed;
 
-    
     /**
      * Interpolator
      */
     UnivariateInterpolator interpolator;
+   
 
-    
     /**
-     * Polynomial 
+     * Polynomial
      */
     UnivariateFunction poli;
 
-    
     /**
-     *Original dataSet 
+     * Original dataSet
      */
     Instances dataSet;
 
-
     /**
      * Constructor
+     * 
      * @param data
      */
     public Interpolation(Instance data) {
@@ -72,12 +67,13 @@ public class Interpolation extends Cancelable {
 	y = new double[data.numAttributes() - 1];
 	xRandom = new double[data.numAttributes() - 1];
 	yTransformed = new double[data.numAttributes() - 1];
-	feedArrays(data);
-	interpolator = new SplineInterpolator();
+	instanceToXY(data);
+	interpolator = new SplineInterpolator();	
+	
     }
 
     /**
-     * Crates a Polynomial Interpolation using the data present in the dataset
+     * Crates a Polynomial Interpolation using the given dataset
      * 
      * @param data
      *            Dataset
@@ -98,10 +94,12 @@ public class Interpolation extends Cancelable {
      */
     private Instances interpolateInstances() {
 	Instances transformedDataSet = new Instances(dataSet);
-	transformedDataSet.clear();
+	transformedDataSet.clear();	
 	for (Instance instance : dataSet) {
-	    feedArrays(instance);
-	    transformedDataSet.add(interpolate());
+	    instanceToXY(instance);
+	    Instance transformedInstance=interpolate();
+	    transformedInstance.setClassValue(instance.classValue());
+	    transformedDataSet.add(transformedInstance);
 	}
 	return transformedDataSet;
     }
@@ -122,7 +120,7 @@ public class Interpolation extends Cancelable {
      * @param data
      *            DataSet will be converted
      */
-    private void feedArrays(Instance data) {
+    private void instanceToXY(Instance data) {
 	for (int i = 0; i < data.numAttributes() - 1; i++) {
 	    x[i] = i;
 	    if (data.attribute(i).isNominal()) {
@@ -188,21 +186,44 @@ public class Interpolation extends Cancelable {
      * @return
      */
     private Instance createTransformedInstance() {
-	for (int i = 0; i < xRandom.length; i++) {
+	for (int i = 0; i < xRandom.length; i++) {	    
 	    yTransformed[i] = poli.value(xRandom[i]);
 	}
 	return Transformations.doubleArrayToInstanceWithClass(yTransformed,
 		dataSet);
     }
 
-    public void printArray(double[] a) {
-	System.out.print("{");
-	for (int i = 0; i < a.length; i++)
-	    System.out.print(a[i] + " , ");
-	System.out.print("}");
-    }
+    public Instances generate() {
+	/*
+	 * Create the revocable database where it was used a interpolation for
+	 * each instance
+	 */
+	Instances cancelableDataSet = new Instances(dataSet);
+	cancelableDataSet.clear();
+	//@SuppressWarnings("unchecked")
+	//Enumeration<String> en = dataSet.classAttribute().enumerateValues();
+	//InstancesUtils iUtils = new InstancesUtils();
 
-    public static void main(String[] args){
+	// Creating the key d
+	xRandom=Utils.createRandomArray(0, dataSet.numAttributes()-1,
+		dataSet.numAttributes()-1);
+	
+	cancelableDataSet.addAll(interpolateInstances());
+	
+	/*while (en.hasMoreElements()) {
+	    String classe = (String) en.nextElement();	    
+	    Instances subDataSet = iUtils.subInstances(dataSet, classe);
+	    Interpolation inter2 = new Interpolation(subDataSet);
+	    Instances instances = inter2.interpolateInstances();
+	    cancelableDataSet.addAll(instances);
+	}*/
+	return cancelableDataSet;
+
+    }
+    
+    
+
+    public static void main(String[] args) {
 	ArffConector conector = new ArffConector();
 	Instances dataset = null;
 	String projectPath = "/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/";
@@ -210,37 +231,17 @@ public class Interpolation extends Cancelable {
 
 	try {
 	    dataset = conector.openDataSet(projectPath + folderResults
-	    	+ "IntraSession-User_41_Day_1_Scrolling.arff");
+		    + "IntraSession-User_41_Day_1_Scrolling.arff");
 	} catch (FileNotFoundException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
-	/*
-	 * Create the revocable database where it was used a interpolation for
-	 * each instance
-	 */
-	Instances cancelableDataSet = new Instances(dataset);
-	cancelableDataSet.clear();
-	@SuppressWarnings("unchecked")
-	Enumeration<String> en = dataset.classAttribute().enumerateValues();
-	InstancesUtils iUtils = new InstancesUtils();
 
-	// Creating the key d
-	Utils.createRandomArray(0, dataset.numAttributes(),
-		dataset.numAttributes());
-
-	while (en.hasMoreElements()) {
-	    String classe = (String) en.nextElement();
-	    Instances subDataSet = iUtils.subInstances(dataset, classe);
-	    Interpolation inter2 = new Interpolation(subDataSet);
-	    Instances instances = inter2.interpolateInstances();
-	    cancelableDataSet.addAll(instances);
-
-	}
+	Interpolation inter = new Interpolation(dataset);
 	System.out.println("****Original********");
-	System.out.println(dataset);
+	System.out.println(dataset.get(0).toString());
 	System.out.println("****Cancelável********");
-	System.out.println(cancelableDataSet);
+	System.out.println(inter.generate().get(0).toString());
     }
 
 }
