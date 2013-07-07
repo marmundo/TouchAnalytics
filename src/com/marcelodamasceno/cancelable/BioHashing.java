@@ -7,7 +7,6 @@ import com.marcelodamasceno.util.ArffConector;
 import com.marcelodamasceno.util.GramSchmidt;
 import com.marcelodamasceno.util.InstancesUtils;
 import com.marcelodamasceno.util.Matriz;
-import com.marcelodamasceno.util.Utils;
 
 import weka.core.Attribute;
 import weka.core.DenseInstance;
@@ -60,7 +59,8 @@ public class BioHashing extends Cancelable {
 	/* Produto interno entre o dataset biométrico e o vetor orthornormal */
 	Instances product = Matriz.innerProduct(copyDataset,
 		orthonormalInstances);
-	product = discretization(product, 0.55);
+	//product = discretization(product, 0.55);
+	product = discretization(product);
 	product.insertAttributeAt(classe, product.numAttributes());
 	InstancesUtils.copyAttributeValue(dataset, dataset.classAttribute()
 		.index(), product, product.numAttributes() - 1);
@@ -136,7 +136,7 @@ public class BioHashing extends Cancelable {
 	    e.printStackTrace();
 	}
 	BioHashing bio = new BioHashing(dataset);
-	bio.generate();
+	System.out.println(bio.generate());
 
     }
 
