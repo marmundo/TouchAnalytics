@@ -13,10 +13,6 @@ import weka.core.WekaPackageManager;
 
 public abstract class Experiment {
 
-    public static final String INTERSESSION = "InterSession";
-    public static final String INTERWEEK = "InterWeek";
-    public static final String INTRASESSION = "IntraSession";
-
     protected ArrayList<Double> eerScroolingResult = new ArrayList<Double>();
     protected ArrayList<Double> eerHorizontalResult = new ArrayList<Double>();
 
