@@ -6,6 +6,7 @@ import com.marcelodamasceno.util.ArffConector;
 import weka.classifiers.Classifier;
 import weka.classifiers.lazy.IBk;
 import weka.core.Instances;
+import static com.marcelodamasceno.util.Const.*;
 
 public class InterWeek extends Experiment {
 
@@ -45,10 +46,10 @@ public class InterWeek extends Experiment {
 
 	for (int user = 1; user <= 41; user++) {
 	    try {
-		scrollingTraining = conector.openDataSet(projectPath
+		scrollingTraining = conector.openDataSet(PROJECTPATH
 			+ folderResults + getFileName() + user
 			+ "_Day_1_Scrolling_Training.arff");
-		scrollingTesting = conector.openDataSet(projectPath
+		scrollingTesting = conector.openDataSet(PROJECTPATH
 			+ folderResults + getFileName() + user
 			+ "_NextWeek_Scrolling_Testing.arff");
 		if (eerBool) {
@@ -70,10 +71,10 @@ public class InterWeek extends Experiment {
 		    }
 		}
 
-		horizontalTraining = conector.openDataSet(projectPath
+		horizontalTraining = conector.openDataSet(PROJECTPATH
 			+ folderResults + getFileName() + user
 			+ "_Day_1_Horizontal_Training.arff");
-		horizontalTesting = conector.openDataSet(projectPath
+		horizontalTesting = conector.openDataSet(PROJECTPATH
 			+ folderResults + getFileName() + user
 			+ "_NextWeek_Horizontal_Testing.arff");
 		if (eerBool) {
@@ -96,7 +97,7 @@ public class InterWeek extends Experiment {
 		}
 	    } catch (FileNotFoundException e1) {
 		try {
-		    scrollingTraining = conector.openDataSet(projectPath
+		    scrollingTraining = conector.openDataSet(PROJECTPATH
 			    + folderResults + getFileName() + user
 			    + "_Day_1_Scrolling_Training.arff");
 		    if (eerBool) {
@@ -117,7 +118,7 @@ public class InterWeek extends Experiment {
 			}
 		    }
 
-		    horizontalTraining = conector.openDataSet(projectPath
+		    horizontalTraining = conector.openDataSet(PROJECTPATH
 			    + folderResults + getFileName() + user
 			    + "_Day_1_Horizontal_Training.arff");
 		    if (eerBool) {
