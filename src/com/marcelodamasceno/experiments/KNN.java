@@ -3,6 +3,11 @@ package com.marcelodamasceno.experiments;
 import weka.classifiers.Classifier;
 import weka.classifiers.lazy.IBk;
 
+/**
+ * Class that implements KNN
+ * @author marcelo
+ *
+ */
 public class KNN extends com.marcelodamasceno.experiments.Classifier {
 
     public KNN(Classifier classifier) {
