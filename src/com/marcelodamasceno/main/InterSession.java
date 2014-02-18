@@ -6,6 +6,7 @@ import weka.classifiers.Classifier;
 import weka.classifiers.lazy.IBk;
 import weka.core.Instances;
 import com.marcelodamasceno.util.ArffConector;
+import static com.marcelodamasceno.util.Const.*;
 
 public class InterSession extends Experiment {
 
@@ -42,7 +43,7 @@ public class InterSession extends Experiment {
 
 	for (int user = 1; user <= 41; user++) {
 	    try {
-		scrolling = conector.openDataSet(projectPath + folderResults
+		scrolling = conector.openDataSet(PROJECTPATH + folderResults
 			+ getFileName() + user + "_Day_1_Scrolling.arff");
 		if (eerBool) {
 		    eer = classifyEER(scrolling, null, classifier);
@@ -66,7 +67,7 @@ public class InterSession extends Experiment {
 		    }
 		}
 
-		horizontal = conector.openDataSet(projectPath + folderResults
+		horizontal = conector.openDataSet(PROJECTPATH + folderResults
 			+ getFileName() + user + "_Day_1_Horizontal.arff");
 		if (eerBool) {
 		    eer = classifyEER(horizontal, null, classifier);
