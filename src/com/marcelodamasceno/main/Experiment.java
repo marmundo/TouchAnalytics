@@ -22,14 +22,14 @@ public abstract class Experiment {
     protected ArrayList<Double> incorrectScroolingResult = new ArrayList<Double>();
     protected ArrayList<Double> incorrectHorizontalResult = new ArrayList<Double>();
 
-    protected String projectPath = "/home/marcelo/Área de Trabalho/projeto/dataset/Base de Toque/";
+    protected String projectPath ="/home/marcelo/Área de Trabalho/projeto/dataset/Base de Toque/";
 
     public String getProjectPath() {
-	return projectPath;
+        return projectPath;
     }
 
     public void setProjectPath(String projectPath) {
-	this.projectPath = projectPath;
+        this.projectPath = projectPath;
     }
 
     protected String folderResults = "";
