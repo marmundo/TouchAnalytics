@@ -6,7 +6,6 @@ import weka.classifiers.Classifier;
 import weka.classifiers.lazy.IBk;
 import weka.core.Instances;
 import com.marcelodamasceno.util.ArffConector;
-import static com.marcelodamasceno.util.Const.*;
 
 public class InterSession extends Experiment {
 
@@ -21,12 +20,15 @@ public class InterSession extends Experiment {
      */
     public static void main(String[] args) throws Exception {
 	InterSession main = new InterSession();
+	System.out.println("OK");
 	Classifier ibk = new IBk(5);
 	main.classifyAllUsers(ibk, false, false);
     }
 
     public void classifyAllUsers(Classifier classifier, boolean eerBool,
 	    boolean correctStatistics) {
+	
+	System.out.println("Starting InterSession...");
 	// Classifier classifier=new IBk(5);
 	ArffConector conector = new ArffConector();
 
@@ -43,7 +45,8 @@ public class InterSession extends Experiment {
 
 	for (int user = 1; user <= 41; user++) {
 	    try {
-		scrolling = conector.openDataSet(PROJECTPATH + folderResults
+		System.out.println("Executing for user "+user);
+		scrolling = conector.openDataSet(getProjectPath() + getFolderResults()
 			+ getFileName() + user + "_Day_1_Scrolling.arff");
 		if (eerBool) {
 		    eer = classifyEER(scrolling, null, classifier);
@@ -67,7 +70,7 @@ public class InterSession extends Experiment {
 		    }
 		}
 
-		horizontal = conector.openDataSet(PROJECTPATH + folderResults
+		horizontal = conector.openDataSet(getProjectPath() + getFolderResults()
 			+ getFileName() + user + "_Day_1_Horizontal.arff");
 		if (eerBool) {
 		    eer = classifyEER(horizontal, null, classifier);
