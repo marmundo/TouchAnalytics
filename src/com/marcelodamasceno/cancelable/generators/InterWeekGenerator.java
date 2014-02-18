@@ -17,7 +17,7 @@ public class InterWeekGenerator extends Generator {
 	String projectPath = "/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/";
 	String folderResults = "InterWeek-SemNominal/";
 
-	String cancelableFunction = Generator.DOUBLESUM;
+	String cancelableFunction = Generator.INTERPOLATOR;
 
 	// Generating the cancelable dataset for each user
 	for (int user = 1; user <= 41; user++) {
@@ -25,7 +25,7 @@ public class InterWeekGenerator extends Generator {
 	    try {
 		String fileName = "InterWeek-User_" + user
 			+ "_Day_1_Horizontal_Training.arff";
-		Instances dataset = generator.conector.openDataSet(projectPath
+		Instances dataset = generator.getConector().openDataSet(projectPath
 			+ folderResults + fileName);
 
 		generator.generateInterWeek(dataset, fileName,
@@ -33,14 +33,14 @@ public class InterWeekGenerator extends Generator {
 
 		fileName = "InterWeek-User_" + user
 			+ "_Day_1_Scrolling_Training.arff";
-		dataset = generator.conector.openDataSet(projectPath
+		dataset = generator.getConector().openDataSet(projectPath
 			+ folderResults + fileName);
 		generator.generateInterWeek(dataset, fileName,
 			cancelableFunction);
 
 		fileName = "InterWeek-User_" + user
 			+ "_NextWeek_Horizontal_Testing.arff";
-		dataset = generator.conector.openDataSet(projectPath
+		dataset = generator.getConector().openDataSet(projectPath
 			+ folderResults + fileName);
 		generator.generateInterWeek(dataset, fileName,
 			cancelableFunction);

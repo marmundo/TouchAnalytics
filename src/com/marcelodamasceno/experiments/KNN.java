@@ -3,29 +3,26 @@ package com.marcelodamasceno.experiments;
 import weka.classifiers.Classifier;
 import weka.classifiers.lazy.IBk;
 
-import com.marcelodamasceno.main.InterSession;
-import com.marcelodamasceno.main.InterWeek;
-import com.marcelodamasceno.main.IntraSession;
+public class KNN extends com.marcelodamasceno.experiments.Classifier {
 
-public class KNN {
+    public KNN(Classifier classifier) {
+	super(classifier);
+    }
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		KNN knn=new KNN();
-		knn.executeExperiments();
-	}
-	
-	private void executeExperiments(){
-		InterSession interSession=new InterSession();
-		InterWeek interWeek = new InterWeek();
-		IntraSession intraSession=new IntraSession();
-		
-		Classifier ibk=new IBk(5);
-		interWeek.classifyAllUsers(ibk,false, false);
-		interSession.classifyAllUsers(ibk, false, false);
-		intraSession.classifyAllUsers(ibk, false, false);
-	}
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+	Classifier classifier = new IBk(5);
+	KNN knn = new KNN(classifier);
+	knn.executeInterpolationCancelaveis("Incorrect");
+	// knn.executeExperiments("EER");
+	// knn.executeBioHashingCancelaveis("EER");
+	// knn.executeBioHashingCancelaveis("Incorrect");
+	// knn.executeBioConvolvingCancelaveis("EER");
+	// knn.executeBioConvolvingCancelaveis("Incorrect");
+	// knn.executeDoubleSumCancelaveis("EER");
+	// knn.executeDoubleSumCancelaveis("Incorrect");
+    }
 
 }

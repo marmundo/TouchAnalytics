@@ -7,77 +7,95 @@ import weka.classifiers.lazy.IBk;
 import weka.core.Instances;
 import com.marcelodamasceno.util.ArffConector;
 
-public class InterSession extends Experiment {	
-	
-	public InterSession(){
-		setFolderResults("InterSession/");
-	}
+public class InterSession extends Experiment {
 
-	/**
-	 * @param args
-	 * @throws Exception 
-	 */
-	public static void main(String[] args) throws Exception {		
-		InterSession main = new InterSession();
-		Classifier ibk=new IBk(5);
-		main.classifyAllUsers(ibk,false, false);
-	}
+    public InterSession() {
+	setFolderResults("InterSession/");
+	setFileName("InterSession-User_");
+    }
 
-	public void classifyAllUsers(Classifier classifier,boolean eerBool, boolean correctStatistics){
-		//Classifier classifier=new IBk(5);
-		ArffConector conector=new ArffConector();
+    /**
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String[] args) throws Exception {
+	InterSession main = new InterSession();
+	Classifier ibk = new IBk(5);
+	main.classifyAllUsers(ibk, false, false);
+    }
 
-		Instances scrolling=null;
-		Instances horizontal=null;
+    public void classifyAllUsers(Classifier classifier, boolean eerBool,
+	    boolean correctStatistics) {
+	// Classifier classifier=new IBk(5);
+	ArffConector conector = new ArffConector();
 
-		ArrayList<Double> scrollingResults=new ArrayList<Double>();
-		ArrayList<Double> horizontalResults=new ArrayList<Double>();
+	Instances scrolling = null;
+	Instances horizontal = null;
 
-		//It will save the temporary result classifiers
-		double eer=0.0;
-		double correctPercentage=0.0;
-		double incorrectPercentage=0.0;
-		
-		for(int user=1;user<=41;user++){			
-			try {
-				scrolling = conector.openDataSet(projectPath+folderResults+"InterSession-User_"+user+"_Day_1_Scrolling.arff");
-				if(eerBool){
-					eer=classifyEER(scrolling, null, classifier);
-					scrollingResults.add(eer);
-					System.out.println("InterSession-Scrolling-User "+user+" - EER: "+eer);
-				}
-				if(correctStatistics){
-					correctPercentage=classify(scrolling, null, classifier, true,false);
-					scrollingResults.add(correctPercentage);
-					System.out.println("InterSession-Scrolling-User "+user+" - Correct: "+correctPercentage+"%");
-				}else{
-					incorrectPercentage=classify(scrolling, null, classifier, false,false);
-					scrollingResults.add(incorrectPercentage);
-					System.out.println("InterSession-Scrolling-User "+user+" - Incorrect: "+incorrectPercentage+"%");
-				}				
-				
-				horizontal=conector.openDataSet(projectPath+folderResults+"InterSession-User_"+user+"_Day_1_Horizontal.arff");
-				if(eerBool){
-					eer=classifyEER(horizontal,null, classifier);
-					horizontalResults.add(eer);
-					System.out.println("InterSession-Horizontal-User "+user+" - EER: "+eer);
-				}
-				if(correctStatistics){
-					correctPercentage=classify(horizontal,null, classifier, true,false);
-					horizontalResults.add(correctPercentage);
-					System.out.println("InterSession-Horizontal-User "+user+" - Correct: "+correctPercentage+"%");
-				}else{
-					incorrectPercentage=classify(horizontal,null, classifier, false,false);
-					horizontalResults.add(incorrectPercentage);
-					System.out.println("InterSession-Horizontal-User "+user+" - Incorrect: "+incorrectPercentage+"%");
-				}				
-			}catch (FileNotFoundException e1) {
-				e1.printStackTrace();
-			}catch (Exception e) {
-				e.printStackTrace();
-			}
+	ArrayList<Double> scrollingResults = new ArrayList<Double>();
+	ArrayList<Double> horizontalResults = new ArrayList<Double>();
+
+	// It will save the temporary result classifiers
+	double eer = 0.0;
+	double correctPercentage = 0.0;
+	double incorrectPercentage = 0.0;
+
+	for (int user = 1; user <= 41; user++) {
+	    try {
+		scrolling = conector.openDataSet(projectPath + folderResults
+			+ getFileName() + user + "_Day_1_Scrolling.arff");
+		if (eerBool) {
+		    eer = classifyEER(scrolling, null, classifier);
+		    scrollingResults.add(eer);
+		    // System.out.println("InterSession-Scrolling-User " + user
+		    // + " - EER: " + eer);
+
+		} else {
+		    if (correctStatistics) {
+			correctPercentage = classify(scrolling, null,
+				classifier, true, false);
+			scrollingResults.add(correctPercentage);
+			// System.out.println("InterSession-Scrolling-User "+user+" - Correct: "+correctPercentage+"%");
+
+		    } else {
+			incorrectPercentage = classify(scrolling, null,
+				classifier, false, false);
+			scrollingResults.add(incorrectPercentage);
+			// System.out.println("InterSession-Scrolling-User "+user+" - Incorrect: "+incorrectPercentage+"%");
+
+		    }
 		}
-		printResults(scrollingResults, horizontalResults, eerBool, correctStatistics);
-	}
 
+		horizontal = conector.openDataSet(projectPath + folderResults
+			+ getFileName() + user + "_Day_1_Horizontal.arff");
+		if (eerBool) {
+		    eer = classifyEER(horizontal, null, classifier);
+		    horizontalResults.add(eer);
+		    // System.out.println("InterSession-Horizontal-User " + user
+		    // + " - EER: " + eer);
+
+		} else {
+		    if (correctStatistics) {
+			correctPercentage = classify(horizontal, null,
+				classifier, true, false);
+			horizontalResults.add(correctPercentage);
+			// System.out.println("InterSession-Horizontal-User "+user+" - Correct: "+correctPercentage+"%");
+
+		    } else {
+			incorrectPercentage = classify(horizontal, null,
+				classifier, false, false);
+			horizontalResults.add(incorrectPercentage);
+			// System.out.println("InterSession-Horizontal-User "+user+" - Incorrect: "+incorrectPercentage+"%");
+
+		    }
+		}
+	    } catch (FileNotFoundException e1) {
+		e1.printStackTrace();
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
+	}
+	printResults(scrollingResults, horizontalResults, eerBool,
+		correctStatistics);
+    }
 }

@@ -196,7 +196,7 @@ public class BioConvolving extends Cancelable {
 
 	return convolving(f, g);
     }
-    
+
     /**
      * @param args
      * @throws FileNotFoundException
@@ -210,14 +210,19 @@ public class BioConvolving extends Cancelable {
 
 	try {
 	    dataset = conector.openDataSet(projectPath + folderResults
-	    	+ "IntraSession-User_41_Day_1_Scrolling.arff");
+		    + "IntraSession-User_41_Day_1_Scrolling.arff");
 	} catch (FileNotFoundException e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
 
 	BioConvolving bioconv = new BioConvolving(dataset);
+	bioconv.generate();
 
+    }
+
+    @Override
+    public Instances generate() {
 	// Iniciando a matriz de arrays originais
 	double[][] r = new double[dataset.numInstances()][dataset
 		.numAttributes()];
@@ -230,19 +235,20 @@ public class BioConvolving extends Cancelable {
 
 	// Passo 2: 2. Selecione aleatoriamente (W-1) números inteiros
 	// aleatórios, denominados d_j
-	double[] d = bioconv.generateKey(w);
+	double[] d = generateKey(w);
 
 	// Passo 3:Converta os valores d_j, de acordo com b_j=round((d_j/100)*N)
-	int[] b = bioconv.converttoBj(d);
+	int[] b = converttoBj(d);
 
 	// Passo 4: Divida a sequência original r(i)[n] em W segmentos r(i)j, de
 	// comprimento N_j=b_j-b_j-1, cada um definido como:
 	// r(i)j,N_j[n]=r(i)[n+b_j-1]
 
-	Instances transformedDataSet=bioconv.convolvingDataSet(r, b);
-	transformedDataSet.setClassIndex(transformedDataSet.numAttributes()-1);
-	
-		
-	conector.save(transformedDataSet, "Transformed.arff");
+	Instances transformedDataSet = convolvingDataSet(r, b);
+	transformedDataSet
+		.setClassIndex(transformedDataSet.numAttributes() - 1);
+
+	return transformedDataSet;
+
     }
 }

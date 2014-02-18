@@ -45,7 +45,6 @@ public class Interpolation extends Cancelable {
      * Interpolator
      */
     UnivariateInterpolator interpolator;
-   
 
     /**
      * Polynomial
@@ -68,8 +67,8 @@ public class Interpolation extends Cancelable {
 	xRandom = new double[data.numAttributes() - 1];
 	yTransformed = new double[data.numAttributes() - 1];
 	instanceToXY(data);
-	interpolator = new SplineInterpolator();	
-	
+	interpolator = new SplineInterpolator();
+
     }
 
     /**
@@ -94,10 +93,10 @@ public class Interpolation extends Cancelable {
      */
     private Instances interpolateInstances() {
 	Instances transformedDataSet = new Instances(dataSet);
-	transformedDataSet.clear();	
+	transformedDataSet.clear();
 	for (Instance instance : dataSet) {
 	    instanceToXY(instance);
-	    Instance transformedInstance=interpolate();
+	    Instance transformedInstance = interpolate();
 	    transformedInstance.setClassValue(instance.classValue());
 	    transformedDataSet.add(transformedInstance);
 	}
@@ -186,7 +185,7 @@ public class Interpolation extends Cancelable {
      * @return
      */
     private Instance createTransformedInstance() {
-	for (int i = 0; i < xRandom.length; i++) {	    
+	for (int i = 0; i < xRandom.length; i++) {
 	    yTransformed[i] = poli.value(xRandom[i]);
 	}
 	return Transformations.doubleArrayToInstanceWithClass(yTransformed,
@@ -200,28 +199,26 @@ public class Interpolation extends Cancelable {
 	 */
 	Instances cancelableDataSet = new Instances(dataSet);
 	cancelableDataSet.clear();
-	//@SuppressWarnings("unchecked")
-	//Enumeration<String> en = dataSet.classAttribute().enumerateValues();
-	//InstancesUtils iUtils = new InstancesUtils();
+	// @SuppressWarnings("unchecked")
+	// Enumeration<String> en = dataSet.classAttribute().enumerateValues();
+	// InstancesUtils iUtils = new InstancesUtils();
 
 	// Creating the key d
-	xRandom=Utils.createRandomArray(0, dataSet.numAttributes()-1,
-		dataSet.numAttributes()-1);
-	
+	xRandom = Utils.createRandomArray(0, dataSet.numAttributes() - 1,
+		dataSet.numAttributes() - 1);
+
 	cancelableDataSet.addAll(interpolateInstances());
-	
-	/*while (en.hasMoreElements()) {
-	    String classe = (String) en.nextElement();	    
-	    Instances subDataSet = iUtils.subInstances(dataSet, classe);
-	    Interpolation inter2 = new Interpolation(subDataSet);
-	    Instances instances = inter2.interpolateInstances();
-	    cancelableDataSet.addAll(instances);
-	}*/
+
+	/*
+	 * while (en.hasMoreElements()) { String classe = (String)
+	 * en.nextElement(); Instances subDataSet = iUtils.subInstances(dataSet,
+	 * classe); Interpolation inter2 = new Interpolation(subDataSet);
+	 * Instances instances = inter2.interpolateInstances();
+	 * cancelableDataSet.addAll(instances); }
+	 */
 	return cancelableDataSet;
 
     }
-    
-    
 
     public static void main(String[] args) {
 	ArffConector conector = new ArffConector();

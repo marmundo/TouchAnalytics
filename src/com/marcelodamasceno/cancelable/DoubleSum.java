@@ -29,7 +29,9 @@ public class DoubleSum extends Cancelable {
     }
 
     /**
-     * Generates a RandowArray with min=0 and max=num of attributes of the current instance
+     * Generates a RandowArray with min=0 and max=num of attributes of the
+     * current instance
+     * 
      * @param min
      * @param max
      * @param length
@@ -41,6 +43,7 @@ public class DoubleSum extends Cancelable {
 
     /**
      * Change the place of the attribute value depending on the given key
+     * 
      * @param instance
      * @param key
      * @return
@@ -59,10 +62,10 @@ public class DoubleSum extends Cancelable {
 	Enumeration<Instance> en = originalDataSet.enumerateInstances();
 	Instances transformedDataSet = new Instances(originalDataSet);
 	Instance instance = new DenseInstance(originalDataSet.numAttributes());
-	//(originalDataSet.instance(0));
+	// (originalDataSet.instance(0));
 	instance.setDataset(originalDataSet);
 	transformedDataSet.clear();
-	int index = 0;	
+	int index = 0;
 	while (en.hasMoreElements()) {
 	    Instance originalInstance = en.nextElement();
 	    for (int i = 0; i < originalInstance.numAttributes() - 1; i++) {
@@ -103,8 +106,9 @@ public class DoubleSum extends Cancelable {
 
     @Override
     public Instances generate() {
-	double[] key = generateRandomArray(0, originalDataSet.numAttributes()-1,
-		originalDataSet.numAttributes()-1);
+	double[] key = generateRandomArray(0,
+		originalDataSet.numAttributes() - 1,
+		originalDataSet.numAttributes() - 1);
 	@SuppressWarnings("unchecked")
 	Enumeration<Instance> en = originalDataSet.enumerateInstances();
 	Instances betaDataSet = new Instances(originalDataSet);
@@ -119,20 +123,19 @@ public class DoubleSum extends Cancelable {
 		originalDataSet.numAttributes());
 	double[] c2 = generateRandomArray(0, originalDataSet.numAttributes(),
 		originalDataSet.numAttributes());
-	
-	
 
-	//for (int i = 0; i < 1; i++) {
-	    Instances transformed=generateCancelableDataSet(betaDataSet, c1, c2);	    
-	    c1 =generateRandomArray(0, originalDataSet.numAttributes(),
-		    originalDataSet.numAttributes());
-	    c2 = generateRandomArray(0, originalDataSet.numAttributes(),
-		    originalDataSet.numAttributes());
-	//}	   
+	// for (int i = 0; i < 1; i++) {
+	Instances transformed = generateCancelableDataSet(betaDataSet, c1, c2);
+	c1 = generateRandomArray(0, originalDataSet.numAttributes(),
+		originalDataSet.numAttributes());
+	c2 = generateRandomArray(0, originalDataSet.numAttributes(),
+		originalDataSet.numAttributes());
+	// }
 	return transformed;
     }
-    
-    private Instances generateCancelableDataSet(Instances dataset,double[]c1, double[]c2){
-	return  doublesum(dataset, c1, c2);
+
+    private Instances generateCancelableDataSet(Instances dataset, double[] c1,
+	    double[] c2) {
+	return doublesum(dataset, c1, c2);
     }
 }

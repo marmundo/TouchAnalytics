@@ -35,6 +35,24 @@ public class Transformations {
 
     /**
      * Creates a attribute list using a fixed number of attributes
+     * 
+     * @param numAttributes
+     * @return
+     */
+    private static ArrayList<Attribute> createAttributeListWithoutClass(
+	    int numAttributes) {
+	ArrayList<Attribute> attributeList = new ArrayList<Attribute>(
+		numAttributes);
+	for (int i = 0; i < numAttributes; i++) {
+	    Attribute attr = new Attribute("a" + String.valueOf(i));
+	    attributeList.add(attr);
+	}
+	return attributeList;
+    }
+
+    /**
+     * Creates a attribute list using a fixed number of attributes
+     * 
      * @param numAttributes
      * @return
      */
@@ -52,6 +70,7 @@ public class Transformations {
 
     /**
      * Transform a double array in Instance object
+     * 
      * @param data
      * @return
      */
@@ -65,6 +84,7 @@ public class Transformations {
 
     /**
      * Transform a Double array in a double array
+     * 
      * @param data
      * @return
      */
@@ -78,8 +98,11 @@ public class Transformations {
 
     /**
      * Transform a bidimensional double array in a Instances object
-     * @param dataset Instances object used to set the reader of the return
-     * @param transformedDataSet Bidimensional double Array
+     * 
+     * @param dataset
+     *            Instances object used to set the reader of the return
+     * @param transformedDataSet
+     *            Bidimensional double Array
      * @return
      */
     public static Instances doubleToInstances(Instances dataset,
@@ -93,6 +116,7 @@ public class Transformations {
 
     /**
      * Transform a doubleArray in Instance Object with class
+     * 
      * @param data
      * @param classe
      * @param dataset
@@ -104,14 +128,17 @@ public class Transformations {
 	instance.setDataset(dataset);
 	for (int i = 0; i < data.length; i++) {
 	    instance.setValue(i, data[i]);
-	}	
+	}
 	return instance;
     }
 
     /**
      * Transform a double array in Instances object
-     * @param data double array
-     * @param numAttributes number of attributes of the Instances object
+     * 
+     * @param data
+     *            double array
+     * @param numAttributes
+     *            number of attributes of the Instances object
      * @return
      */
     public static Instances doubleToInstances(double[] data, int numAttributes) {
@@ -138,7 +165,7 @@ public class Transformations {
      */
     public static Instances MatrixtoInstances(Matrix matrix) {
 	int m = matrix.getColumnDimension();
-	ArrayList<Attribute> attributeList = createAttributeList(m);
+	ArrayList<Attribute> attributeList = createAttributeListWithoutClass(m);
 	Instances inst = new Instances("dataset", attributeList, m);
 	inst.setClassIndex(inst.numAttributes() - 1);
 	for (int i = 0; i < matrix.getRowDimension(); i++) {
@@ -151,9 +178,27 @@ public class Transformations {
 	return inst;
     }
 
+    public static Instances MatrixtoInstances(Matrix matrix, Instances dataset) {
+	int m = matrix.getColumnDimension();
+	// ArrayList<Attribute> attributeList = createAttributeList(m);
+	Instances inst = dataset;
+	inst.clear();
+	for (int i = 0; i < matrix.getRowDimension(); i++) {
+	    Instance instance = new DenseInstance(m);
+	    for (int a = 0; a <= m; a++) {
+		instance.setValue(a, matrix.get(i, a));
+	    }
+	    instance.setClassValue(dataset.get(i).classValue());
+	    inst.add(instance);
+	}
+	return inst;
+    }
+
     /**
      * Transform a Double ArrayList in a double array
-     * @param data Double ArrayList
+     * 
+     * @param data
+     *            Double ArrayList
      * @return
      */
     public static double[] doubleToDouble(ArrayList<Double> data) {

@@ -4,6 +4,6 @@ import weka.core.Instances;
 
 public abstract class Cancelable {
 
-   public abstract Instances generate();
+    public abstract Instances generate();
 
 }

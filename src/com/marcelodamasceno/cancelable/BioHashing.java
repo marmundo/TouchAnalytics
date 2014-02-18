@@ -59,7 +59,7 @@ public class BioHashing extends Cancelable {
 	/* Produto interno entre o dataset biométrico e o vetor orthornormal */
 	Instances product = Matriz.innerProduct(copyDataset,
 		orthonormalInstances);
-	//product = discretization(product, 0.55);
+	// product = discretization(product, 0.55);
 	product = discretization(product);
 	product.insertAttributeAt(classe, product.numAttributes());
 	InstancesUtils.copyAttributeValue(dataset, dataset.classAttribute()
@@ -93,6 +93,7 @@ public class BioHashing extends Cancelable {
 
     /**
      * Discretizes the dataset using 4 thereshold (0, 0.33, 0.66, 1)
+     * 
      * @param data
      * @return Discretized data
      */
