@@ -1,5 +1,8 @@
 package com.marcelodamasceno.experiments;
 
+import static com.marcelodamasceno.util.Const.INTERSESSION;
+import static com.marcelodamasceno.util.Const.INTERWEEK;
+
 import com.marcelodamasceno.main.InterSession;
 import com.marcelodamasceno.main.InterWeek;
 import com.marcelodamasceno.main.IntraSession;
@@ -82,11 +85,11 @@ public abstract class Classifier {
 	setPathBioConvolving();
 	switch (metric) {
 	case "Incorrect":
-	    if (dataset.toLowerCase() == "intersession") {
+	    if (dataset.toLowerCase().equals(INTERSESSION)) {
 		System.out.println("BioConvolving-Incorrect - InterSession");
 		interSession.classifyAllUsers(classifier, false, false);
 	    }
-	    if (dataset.toLowerCase() == "interweek") {
+	    if (dataset.toLowerCase().equals(INTERWEEK)) {
 		System.out.println("BioConvolving-Incorrect - InterWeek");
 		interWeek.classifyAllUsers(classifier, false, false);
 	    } else {
@@ -95,11 +98,11 @@ public abstract class Classifier {
 	    }
 	    break;
 	case "EER":
-	    if (dataset.toLowerCase() == "intersession") {
+	    if (dataset.toLowerCase().equals(INTERSESSION)) {
 		System.out.println("BioConvolving-EER - InterSession");
 		interSession.classifyAllUsers(classifier, true, false);
 	    }
-	    if (dataset.toLowerCase() == "interweek") {
+	    if (dataset.toLowerCase().equals(INTERWEEK)) {
 		System.out.println("BioConvolving-EER - InterWeek");
 		interWeek.classifyAllUsers(classifier, true, false);
 
@@ -156,11 +159,11 @@ public abstract class Classifier {
 	setPathBioHashing();
 	switch (metric) {
 	case "Incorrect":
-	    if (dataset.toLowerCase() == "intersession") {
+	    if (dataset.toLowerCase().equals(INTERSESSION)) {
 		System.out.println("BioHashing-Incorrect - InterSession");
 		interSession.classifyAllUsers(classifier, false, false);
 	    }
-	    if (dataset.toLowerCase() == "interweek") {
+	    if (dataset.toLowerCase().equals(INTERWEEK)) {
 		System.out.println("BioHashing-Incorrect - InterWeek");
 		interWeek.classifyAllUsers(classifier, false, false);
 	    } else {
@@ -169,11 +172,11 @@ public abstract class Classifier {
 	    }
 	    break;
 	case "EER":
-	    if (dataset.toLowerCase() == "intersession") {
+	    if (dataset.toLowerCase().equals(INTERSESSION)) {
 		System.out.println("BioHashing-EER - InterSession");
 		interSession.classifyAllUsers(classifier, true, false);
 	    }
-	    if (dataset.toLowerCase() == "interweek") {
+	    if (dataset.toLowerCase().equals(INTERWEEK)) {
 		System.out.println("BioHashing-EER - InterWeek");
 		interWeek.classifyAllUsers(classifier, true, false);
 
@@ -230,11 +233,11 @@ public abstract class Classifier {
 	setPathDoubleSum();
 	switch (metric) {
 	case "Incorrect":
-	    if (dataset.toLowerCase() == "intersession") {
+	    if (dataset.toLowerCase().equals(INTERSESSION)) {
 		System.out.println("DoubleSum-Incorrect - InterSession");
 		interSession.classifyAllUsers(classifier, false, false);
 	    }
-	    if (dataset.toLowerCase() == "interweek") {
+	    if (dataset.toLowerCase().equals(INTERWEEK)) {
 		System.out.println("DoubleSum-Incorrect - InterWeek");
 		interWeek.classifyAllUsers(classifier, false, false);
 	    } else {
@@ -243,11 +246,11 @@ public abstract class Classifier {
 	    }
 	    break;
 	case "EER":
-	    if (dataset.toLowerCase() == "intersession") {
+	    if (dataset.toLowerCase().equals(INTERSESSION)) {
 		System.out.println("DoubleSum-EER - InterSession");
 		interSession.classifyAllUsers(classifier, true, false);
 	    }
-	    if (dataset.toLowerCase() == "interweek") {
+	    if (dataset.toLowerCase().equals(INTERWEEK)) {
 		System.out.println("DoubleSum-EER - InterWeek");
 		interWeek.classifyAllUsers(classifier, true, false);
 
@@ -303,11 +306,11 @@ public abstract class Classifier {
 	setPathInterpolation();
 	switch (metric) {
 	case "Incorrect":
-	    if (dataset.toLowerCase() == "intersession") {
+	    if (dataset.toLowerCase().equals(INTERSESSION)) {
 		System.out.println("Interpolation-Incorrect - InterSession");
 		interSession.classifyAllUsers(classifier, false, false);
 	    }
-	    if (dataset.toLowerCase() == "interweek") {
+	    if (dataset.toLowerCase().equals(INTERWEEK)) {
 		System.out.println("Interpolation-Incorrect - InterWeek");
 		interWeek.classifyAllUsers(classifier, false, false);
 	    } else {
@@ -316,11 +319,11 @@ public abstract class Classifier {
 	    }
 	    break;
 	case "EER":
-	    if (dataset.toLowerCase() == "intersession") {
+	    if (dataset.toLowerCase().equals(INTERSESSION)) {
 		System.out.println("Interpolation-EER - InterSession");
 		interSession.classifyAllUsers(classifier, true, false);
 	    }
-	    if (dataset.toLowerCase() == "interweek") {
+	    if (dataset.toLowerCase().equals(INTERWEEK)) {
 		System.out.println("Interpolation-EER - InterWeek");
 		interWeek.classifyAllUsers(classifier, true, false);
 
@@ -365,11 +368,11 @@ public abstract class Classifier {
 	setPathOriginal();
 	switch (metric) {
 	case "Incorrect":
-	    if (dataset.toLowerCase() == "intersession") {
+	    if (dataset.toLowerCase().equals(INTERSESSION)) {
 		System.out.println("Original-Incorrect - InterSession");
 		interSession.classifyAllUsers(classifier, false, false);
 	    }
-	    if (dataset.toLowerCase() == "interweek") {
+	    if (dataset.toLowerCase().equals(INTERWEEK)) {
 		System.out.println("Original-Incorrect - InterWeek");
 		interWeek.classifyAllUsers(classifier, false, false);
 	    } else {
@@ -378,11 +381,11 @@ public abstract class Classifier {
 	    }
 	    break;
 	case "EER":
-	    if (dataset.toLowerCase() == "intersession") {
+	    if (dataset.toLowerCase().equals("INTERSESSION")) {
 		System.out.println("Original-EER - InterSession");
 		interSession.classifyAllUsers(classifier, true, false);
 	    }
-	    if (dataset.toLowerCase() == "interweek") {
+	    if (dataset.toLowerCase().equals(INTERWEEK)) {
 		System.out.println("Original-EER - InterWeek");
 		interWeek.classifyAllUsers(classifier, true, false);
 
@@ -470,7 +473,6 @@ public abstract class Classifier {
 	interWeek.setProjectPath(path);
 
 	intraSession.setProjectPath(path);
-	
 
 	interSession.setFileName("InterSession-User_");
 	interWeek.setFileName("InterWeek-User_");
