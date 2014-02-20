@@ -1,11 +1,11 @@
 package com.marcelodamasceno.experiments;
 
-import static com.marcelodamasceno.util.Const.INTERSESSION;
-import static com.marcelodamasceno.util.Const.INTERWEEK;
+import static com.marcelodamasceno.util.Const.*;
 
 import com.marcelodamasceno.main.InterSession;
 import com.marcelodamasceno.main.InterWeek;
 import com.marcelodamasceno.main.IntraSession;
+import com.marcelodamasceno.util.TextFile;
 
 /**
  * Class to train and evaluate the classifier using EER or Incorrect Percentage
@@ -30,11 +30,16 @@ public abstract class Classifier {
      */
     public Classifier(weka.classifiers.Classifier classifier) {
 	super();
+	
 	this.classifier = classifier;
+	
 	interSession = new InterSession();
+	
 	interWeek = new InterWeek();
+	
 	intraSession = new IntraSession();
-
+	
+	
 	interSession.setFolderResults("InterSession/");
 	interWeek.setFolderResults("InterWeek/");
 	intraSession.setFolderResults("IntraSession/");
@@ -50,7 +55,7 @@ public abstract class Classifier {
 	setPathBioConvolving();
 
 	switch (metric) {
-	case "Incorrect":
+	case INCORRECT:
 	    System.out.println("BioConvolving-Incorrect - InterSession");
 	    interSession.classifyAllUsers(classifier, false, false);
 	    System.out.println("BioConvolving-Incorrect - InterWeek");
@@ -58,7 +63,7 @@ public abstract class Classifier {
 	    System.out.println("BioConvolving-Incorrect - IntraSession");
 	    intraSession.classifyAllUsers(classifier, false, false);
 	    break;
-	case "EER":
+	case EER:
 	    System.out.println("BioConvolving-EER - InterSession");
 	    interSession.classifyAllUsers(classifier, true, false);
 	    System.out.println("BioConvolving-EER - InterWeek");
@@ -84,7 +89,7 @@ public abstract class Classifier {
 
 	setPathBioConvolving();
 	switch (metric) {
-	case "Incorrect":
+	case INCORRECT:
 	    if (dataset.toLowerCase().equals(INTERSESSION)) {
 		System.out.println("BioConvolving-Incorrect - InterSession");
 		interSession.classifyAllUsers(classifier, false, false);
@@ -97,7 +102,7 @@ public abstract class Classifier {
 		intraSession.classifyAllUsers(classifier, false, false);
 	    }
 	    break;
-	case "EER":
+	case EER:
 	    if (dataset.toLowerCase().equals(INTERSESSION)) {
 		System.out.println("BioConvolving-EER - InterSession");
 		interSession.classifyAllUsers(classifier, true, false);
@@ -125,7 +130,7 @@ public abstract class Classifier {
     public void executeBioHashingCancelaveis(String metric) {
 	setPathBioHashing();
 	switch (metric) {
-	case "Incorrect":
+	case INCORRECT:
 	    System.out.println("BioHashing-Incorrect - InterSession");
 	    interSession.classifyAllUsers(classifier, false, false);
 	    System.out.println("BioHashing-Incorrect - InterWeek");
@@ -133,7 +138,7 @@ public abstract class Classifier {
 	    System.out.println("BioHashing-Incorrect - IntraSession");
 	    intraSession.classifyAllUsers(classifier, false, false);
 	    break;
-	case "EER":
+	case EER:
 	    System.out.println("BioHashing-EER - InterSession");
 	    interSession.classifyAllUsers(classifier, true, false);
 	    System.out.println("BioHashing-EER - InterWeek");
@@ -158,7 +163,7 @@ public abstract class Classifier {
     public void executeBioHashingCancelaveis(String metric, String dataset) {
 	setPathBioHashing();
 	switch (metric) {
-	case "Incorrect":
+	case INCORRECT:
 	    if (dataset.toLowerCase().equals(INTERSESSION)) {
 		System.out.println("BioHashing-Incorrect - InterSession");
 		interSession.classifyAllUsers(classifier, false, false);
@@ -171,7 +176,7 @@ public abstract class Classifier {
 		intraSession.classifyAllUsers(classifier, false, false);
 	    }
 	    break;
-	case "EER":
+	case EER:
 	    if (dataset.toLowerCase().equals(INTERSESSION)) {
 		System.out.println("BioHashing-EER - InterSession");
 		interSession.classifyAllUsers(classifier, true, false);
@@ -199,7 +204,7 @@ public abstract class Classifier {
     void executeDoubleSumCancelaveis(String metric) {
 	setPathDoubleSum();
 	switch (metric) {
-	case "Incorrect":
+	case INCORRECT:
 	    System.out.println("DoubleSum-Incorrect - InterSession");
 	    interSession.classifyAllUsers(classifier, false, false);
 	    System.out.println("DoubleSum-Incorrect - InterWeek");
@@ -207,7 +212,7 @@ public abstract class Classifier {
 	    System.out.println("DoubleSum-Incorrect - IntraSession");
 	    intraSession.classifyAllUsers(classifier, false, false);
 	    break;
-	case "EER":
+	case EER:
 	    System.out.println("DoubleSum-EER - InterSession");
 	    interSession.classifyAllUsers(classifier, true, false);
 	    System.out.println("DoubleSum-EER - InterWeek");
@@ -232,7 +237,7 @@ public abstract class Classifier {
     void executeDoubleSumCancelaveis(String metric, String dataset) {
 	setPathDoubleSum();
 	switch (metric) {
-	case "Incorrect":
+	case INCORRECT:
 	    if (dataset.toLowerCase().equals(INTERSESSION)) {
 		System.out.println("DoubleSum-Incorrect - InterSession");
 		interSession.classifyAllUsers(classifier, false, false);
@@ -245,7 +250,7 @@ public abstract class Classifier {
 		intraSession.classifyAllUsers(classifier, false, false);
 	    }
 	    break;
-	case "EER":
+	case EER:
 	    if (dataset.toLowerCase().equals(INTERSESSION)) {
 		System.out.println("DoubleSum-EER - InterSession");
 		interSession.classifyAllUsers(classifier, true, false);
@@ -263,6 +268,16 @@ public abstract class Classifier {
 	    break;
 	}
     }
+    
+    /**
+     * Returns the name of the Classifier
+     * @return the name of the classifier
+     */
+    public String getName(){
+	String name=this.classifier.getClass().getName();	
+	String namesSplit[]=name.split("\\.");
+	return namesSplit[namesSplit.length-1];	
+    }
 
     /**
      * Execute the experiment in Interpolation Database
@@ -271,9 +286,13 @@ public abstract class Classifier {
      *            Could be EER or Incorrect Percentage
      */
     void executeInterpolationCancelaveis(String metric) {
+	
+	System.out.println(getName());
 	setPathInterpolation();
 	switch (metric) {
-	case "Incorrect":
+	case INCORRECT:
+	    System.out.println();
+	    TextFile textFile=new TextFile("Interpolation");
 	    System.out.println("Interpolation-Incorrect - InterSession");
 	    interSession.classifyAllUsers(classifier, false, false);
 	    System.out.println("Interpolation-Incorrect - InterWeek");
@@ -281,7 +300,7 @@ public abstract class Classifier {
 	    System.out.println("Interpolation-Incorrect - IntraSession");
 	    intraSession.classifyAllUsers(classifier, false, false);
 	    break;
-	case "EER":
+	case EER:
 	    System.out.println("Interpolation-EER - InterSession");
 	    interSession.classifyAllUsers(classifier, true, false);
 	    System.out.println("Interpolation-EER - InterWeek");
@@ -305,7 +324,7 @@ public abstract class Classifier {
     void executeInterpolationCancelaveis(String metric, String dataset) {
 	setPathInterpolation();
 	switch (metric) {
-	case "Incorrect":
+	case INCORRECT:
 	    if (dataset.toLowerCase().equals(INTERSESSION)) {
 		System.out.println("Interpolation-Incorrect - InterSession");
 		interSession.classifyAllUsers(classifier, false, false);
@@ -318,7 +337,7 @@ public abstract class Classifier {
 		intraSession.classifyAllUsers(classifier, false, false);
 	    }
 	    break;
-	case "EER":
+	case EER:
 	    if (dataset.toLowerCase().equals(INTERSESSION)) {
 		System.out.println("Interpolation-EER - InterSession");
 		interSession.classifyAllUsers(classifier, true, false);
@@ -367,7 +386,7 @@ public abstract class Classifier {
     void executeOriginal(String metric, String dataset) {
 	setPathOriginal();
 	switch (metric) {
-	case "Incorrect":
+	case INCORRECT:
 	    if (dataset.toLowerCase().equals(INTERSESSION)) {
 		System.out.println("Original-Incorrect - InterSession");
 		interSession.classifyAllUsers(classifier, false, false);
@@ -380,7 +399,7 @@ public abstract class Classifier {
 		intraSession.classifyAllUsers(classifier, false, false);
 	    }
 	    break;
-	case "EER":
+	case EER:
 	    if (dataset.toLowerCase().equals("INTERSESSION")) {
 		System.out.println("Original-EER - InterSession");
 		interSession.classifyAllUsers(classifier, true, false);
@@ -409,7 +428,7 @@ public abstract class Classifier {
 
 	setPathOriginal();
 	switch (metric) {
-	case "Incorrect":
+	case INCORRECT:
 	    System.out.println("Original-Incorrect - InterSession");
 	    interSession.classifyAllUsers(classifier, false, false);
 	    System.out.println("\nOriginal-Incorrect - InterWeek");
@@ -417,7 +436,7 @@ public abstract class Classifier {
 	    System.out.println("\nOriginal-Incorrect - IntraSession");
 	    intraSession.classifyAllUsers(classifier, false, false);
 	    break;
-	case "EER":
+	case EER:
 	    System.out.println("Original-EER - InterSession");
 	    interSession.classifyAllUsers(classifier, true, false);
 	    System.out.println("\nOriginal-EER - InterWeek");
@@ -484,12 +503,12 @@ public abstract class Classifier {
      */
     private void setPathInterpolation() {
 	interSession
-		.setProjectPath(datasetPath + "/Cancelaveis/Interpolation/");
+		.setProjectPath(datasetPath + "Cancelaveis/Interpolation/");
 
-	interWeek.setProjectPath(datasetPath + "/Cancelaveis/Interpolation/");
+	interWeek.setProjectPath(datasetPath + "Cancelaveis/Interpolation/");
 
 	intraSession
-		.setProjectPath(datasetPath + "/Cancelaveis/Interpolation/");
+		.setProjectPath(datasetPath + "Cancelaveis/Interpolation/");
 
 	interSession.setFileName("Interpolation-InterSession-User_");
 	interWeek.setFileName("Interpolation-InterWeek-User_");
