@@ -1,6 +1,5 @@
 package com.marcelodamasceno.cancelable.generators;
 
-import static com.marcelodamasceno.util.Const.INCORRECT;
 import weka.core.Instances;
 
 import com.marcelodamasceno.cancelable.BioConvolving;
