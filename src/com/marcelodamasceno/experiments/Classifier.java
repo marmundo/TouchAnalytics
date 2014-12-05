@@ -5,7 +5,6 @@ import static com.marcelodamasceno.util.Const.*;
 import com.marcelodamasceno.main.InterSession;
 import com.marcelodamasceno.main.InterWeek;
 import com.marcelodamasceno.main.IntraSession;
-import com.marcelodamasceno.util.TextFile;
 
 /**
  * Class to train and evaluate the classifier using EER or Incorrect Percentage
@@ -328,7 +327,6 @@ public abstract class Classifier {
 		switch (metricInt) {
 		case 0:
 			System.out.println();
-			TextFile textFile=new TextFile("Interpolation");
 			System.out.println("Interpolation-Incorrect - InterSession");
 			interSession.classifyAllUsers(classifier, false, false);
 			System.out.println("Interpolation-Incorrect - InterWeek");
