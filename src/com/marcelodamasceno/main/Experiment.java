@@ -53,7 +53,7 @@ public abstract class Experiment {
     }
 
     public Experiment() {
-	WekaPackageManager.loadPackages(false, false);
+	WekaPackageManager.loadPackages(false);
     }
 
     public abstract void classifyAllUsers(Classifier classifier,
