@@ -93,13 +93,18 @@ public class CallClassifierNEntradas {
 				}
 
 				// generate pseudo-dataset with instance ids, to get the same reordering..
-				FastVector attInfo = new FastVector(2);
-
-				attInfo.addElement(new Attribute("Idx_20011004"));
-				attInfo.addElement(trainData.classAttribute());
+				//FastVector attInfo = new FastVector(2);
+				ArrayList<Attribute> attInfo=new ArrayList<Attribute>();
+				
+				//attInfo.addElement(new Attribute("Idx_20011004"));
+				attInfo.add(new Attribute("Idx_20011004"));
+				
+//				attInfo.addElement(trainData.classAttribute());
+				attInfo.add(trainData.classAttribute());
 
 				Instances indices = new Instances("Indices",attInfo,trainData.numInstances());
-				indices.setClass((Attribute)attInfo.elementAt(1));
+				//indices.setClass((Attribute)attInfo.elementAt(1));
+				indices.setClass((Attribute)attInfo.get(1));
 
 				for (int k = 0; k < trainData.numInstances(); k++) {
 					Instance inst = new DenseInstance(2);
@@ -312,7 +317,7 @@ public class CallClassifierNEntradas {
 			int cIdx=-1;
 			int seed=1;
 			float acertoporfold[]={0,0,0,0,0,0,0,0,0,0};
-			float somaAcertos = 0;
+		//	float somaAcertos = 0;
 			float mediaporfold[]={0,0,0,0,0,0,0,0,0,0};
 
 
@@ -367,13 +372,19 @@ public class CallClassifierNEntradas {
 				}
 
 				// generate pseudo-dataset with instance ids, to get the same reordering..
-				FastVector attInfo = new FastVector(2);
+				//FastVector attInfo = new FastVector(2);
+				
+				ArrayList<Attribute> attInfo=new ArrayList<Attribute>();
 
-				attInfo.addElement(new Attribute("Idx_20011004"));
-				attInfo.addElement(trainData.classAttribute());
+				//attInfo.addElement(new Attribute("Idx_20011004"));
+				attInfo.add(new Attribute("Idx_20011004"));
+				
+				//attInfo.addElement(trainData.classAttribute());
+				attInfo.add(trainData.classAttribute());
 
 				Instances indices = new Instances("Indices",attInfo,trainData.numInstances());
-				indices.setClass((Attribute)attInfo.elementAt(1));
+				//indices.setClass((Attribute)attInfo.elementAt(1));
+				indices.setClass((Attribute)attInfo.get(1));
 
 				for (int k = 0; k < trainData.numInstances(); k++) {
 					Instance inst = new DenseInstance(2);
@@ -482,7 +493,7 @@ public class CallClassifierNEntradas {
 		}
 		double [][] resultado = avaliarPeso( (argumento + " -x " + folds).split(" "), base );
 
-		int j;
+		//int j;
 		for(i=0;i<resultado.length;i++){
 			if( resultado[i][ resultado[i].length -1 ] == 1 )
 				acertosClasse[ (int)resultado[i][ resultado[i].length -2 ] ] += 1;
@@ -626,7 +637,7 @@ public class CallClassifierNEntradas {
 			resultado[i] = avaliar( (classificadores[i] + " -t " + entradas[i] + " -x " + folds).split(" "), i );
 
 		//separa os resultados em diversos arquivos q ser�o usados como teste para MLP E NB
-		int foldCorrente = 0;
+		//int foldCorrente = 0;
 		int linhaCorrente = 0;
 		int ultimaLinha = 0;
 		for (int qtFolds=0;qtFolds<folds;qtFolds++){
@@ -707,7 +718,7 @@ public class CallClassifierNEntradas {
 		String resultadoSomaEVoto = imprimirMediaEDp( quantidade, mediaEnsemble, dpEnsemble, mediaEnsembleVoto, dpEnsembleVoto );
 
 		double [][][] pesos = new double[ quantidade ][ folds ][ getNumClasses() ];
-		int j, k;
+		int j;//, k;
 		for(i=0;i<quantidade;i++)
 			for(j=0;j<folds;j++)
 				pesos[i][j] = calcularPesos ( arffParaPesos[i][j], 4, "teste.txt" ,classificadores[i] );
