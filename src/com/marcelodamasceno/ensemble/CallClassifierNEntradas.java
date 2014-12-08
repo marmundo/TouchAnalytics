@@ -23,23 +23,58 @@ java callClassifierNEntradas 10 saidaTeste.arff saidaTreinamento.arff media_dp.t
 
 public class CallClassifierNEntradas {
 
-	//m�todo que faz o mesmo que o callClassifier...
-	public static double [][] avaliar(String [] argv, int base) {
+	/**
+	 * Stores the accuracy of each classifier
+	 */
+	private static float medias[] = new float[12];
+
+	/**
+	 * Array of folds of datasets. nfold=10, 10 fold datasets are stored in this array
+	 */
+	private static Instances arffParaPesos [][];
+
+	/**
+	 * Number of classes
+	 */
+	private static int numClasses;
+
+	static float dps[]={0,0,0,0,0,0,0,0,0,0,0,0};
+
+	//metodo que faz o mesmo que o callClassifier...
+	/**
+	 * Method evaluates the classifier into dataset
+	 * @param argv classifier and its arguments Ex:weka.classifiers.trees.J48, -C, 0.25, , -t, Interpolation_IntraSession-User_1_Day_1_Horizontal.arff, -x, 10
+	 * @param nClassifier index of classifier
+	 * @return matrix with decision of each instance. [,n] distibution of classe n. [,n+1] indice of test instance. [,n+2] true value of class. [n+3] 1, case classifier correct, 0, otherwise
+	 * <p> 
+	 * [1,0,1,0,0,1] means dist of classifier 1 to class 1 and 2 is 1 and 0. same thing for classifier 2.
+	 * 0 is the index of test instance, 0 is the class index and 1 means that the ensemble got the right answer.
+	 * 
+	 */
+	public static double [][] avaliar(String [] argv, int nClassifier) {
+		//Store the decision of each instance
 		double [][] saidas = null;
 		int cont = 0;
 
 		try {
+			//Number of folds
 			int numFolds=0;
+			//Class Attribute index
 			int cIdx=-1;
+			//Seed option
 			int seed=1;
+			//stores how many time a classifier classified right per fold. Each index means a folder.
 			float acertoporfold[]={0,0,0,0,0,0,0,0,0,0};
 			float somaAcertos = 0;
+			//stores the accuracy per fold in that classifier
 			float mediaporfold[]={0,0,0,0,0,0,0,0,0,0};
 
 
 			if (argv.length==0||Utils.getFlag('h',argv)) {
 				throw new Exception("Usage: callClassifier [ClassifierName] -t [TrainFile] [-T [TestFile]] [-e delim] [-x numFolds] [-s randomSeed] [-c classIndex] ...\n       outputs probability distributions for test instances\n       If no test file is given, does a cross-validation on training data.\n       Format: InstanceID PredClass Confidence TrueClass [class probabilities]\n       (first four fields are similar to those in WEKA 3-3-5)\n       Field delimiter can be changed via -e (default: space)\n");
 			}
+
+			//Name of classifier
 			String classifierName=argv[0];
 			argv[0]="";
 
@@ -58,8 +93,8 @@ public class CallClassifierNEntradas {
 			} else {
 				numFolds=10; // default
 			}
-			// cria bases de cada fold
-			arffParaPesos[base] = new Instances [ numFolds ];
+			// stores in each line a array of datasets with nFolds components
+			arffParaPesos[nClassifier] = new Instances [ numFolds ];
 
 			String classIdx = Utils.getOption('c',argv);
 			String seedS = Utils.getOption('s',argv);
@@ -67,7 +102,7 @@ public class CallClassifierNEntradas {
 				seed=Integer.parseInt(seedS);
 			}
 
-			Classifier c = AbstractClassifier.forName(classifierName,argv);
+			Classifier classifier = AbstractClassifier.forName(classifierName,argv);
 
 			Instances trainData = new Instances(new FileReader(trainFile));
 			Instances testData = null;
@@ -83,7 +118,7 @@ public class CallClassifierNEntradas {
 				testData  = new Instances(new FileReader(testFile));
 
 			trainData.setClassIndex(cIdx);
-
+			//Store the decision of each instance.			
 			saidas = new double [ trainData.numInstances() ][ trainData.numClasses() + 3 ];
 			numClasses = trainData.numClasses();
 
@@ -92,19 +127,15 @@ public class CallClassifierNEntradas {
 					throw new Exception("Invalid number of cross-validation folds!");
 				}
 
-				// generate pseudo-dataset with instance ids, to get the same reordering..
-				//FastVector attInfo = new FastVector(2);
+				// generate pseudo-dataset with instance ids, to get the same reordering..		
 				ArrayList<Attribute> attInfo=new ArrayList<Attribute>();
-				
-				//attInfo.addElement(new Attribute("Idx_20011004"));
+
 				attInfo.add(new Attribute("Idx_20011004"));
-				
-//				attInfo.addElement(trainData.classAttribute());
 				attInfo.add(trainData.classAttribute());
 
+				//Indices dataset will store instance index and its respective class value
 				Instances indices = new Instances("Indices",attInfo,trainData.numInstances());
-				//indices.setClass((Attribute)attInfo.elementAt(1));
-				indices.setClass((Attribute)attInfo.get(1));
+				indices.setClass(attInfo.get(1));
 
 				for (int k = 0; k < trainData.numInstances(); k++) {
 					Instance inst = new DenseInstance(2);
@@ -114,14 +145,15 @@ public class CallClassifierNEntradas {
 					indices.add(inst);
 				}
 
-				Random random = new Random(seed);
-				random.setSeed(seed);
+				//Random random = new Random(seed);
+				//random.setSeed(seed);
 				//   indices.randomize(random);
 
-				random = new Random(seed);
-				random.setSeed(seed);
+				//random = new Random(seed);
+				//random.setSeed(seed);
 				//    trainData.randomize(random);
 
+				//stratify the training dataset in numFolds
 				if (trainData.classAttribute().isNominal()) {
 					trainData.stratify(numFolds);
 					indices.stratify(numFolds);
@@ -134,77 +166,63 @@ public class CallClassifierNEntradas {
 					mediaporfold[i]=0;
 					Instances train = trainData.trainCV(numFolds,i);
 
-					arffParaPesos[base][i] = new Instances( train );
+					arffParaPesos[nClassifier][i] = new Instances( train );
 
-					c.buildClassifier(train);
+					classifier.buildClassifier(train);
+
+					//TestData for this i fold
 					testData = trainData.testCV(numFolds,i);
-					Instances indicesTest = indices.testCV(numFolds,i);
+					Instances testIndices = indices.testCV(numFolds,i);
 					for (int j=0; j<testData.numInstances(); j++) {
-						Instance instance = testData.instance(j);
-						Instance withMissing = (Instance)instance.copy();
-						withMissing.setDataset(testData);
-						double predValue=((Classifier)c).classifyInstance(instance);
-						int idx=(int)indicesTest.instance(j).value(0);
-						double trueValue=indicesTest.instance(j).value(1);
+						Instance testInstance = testData.instance(j);
+						//Instance withMissing = (Instance)instance.copy();
+						//withMissing.setDataset(testData);
+						double predValue=((Classifier)classifier).classifyInstance(testInstance);
+						//index of testInstance
+						int idx=(int)testIndices.instance(j).value(0);
+						double trueValue=testIndices.instance(j).value(1);
 
 						if (testData.classAttribute().isNumeric()) {
 							if (Utils.isMissingValue(predValue)) {
 								System.out.print(idx + delim + "missing" + delim);
 							} else {
 								System.out.print(idx + delim + predValue + delim);
-							}
-							//System.out.print(" AQUI 1!!!!");
-							if (instance.classIsMissing()) {
+							}						
+							if (testInstance.classIsMissing()) {
 								System.out.print("missing");
 							} else {
-								System.out.print(instance.classValue());
-								//System.out.print(" AQUI 2!!!!");
-								if (instance.classValue()== predValue)
+								System.out.print(testInstance.classValue());								
+								if (testInstance.classValue()== predValue)
 									System.out.print(delim + " 1 " + delim);
 								else
 									System.out.print(delim + " 0 " + delim);
 							}
 							System.out.print("\n");
 						} else {
-							//	System.out.print(" AQUI 1.1!!!!");
-
-							//imprime o n�mero da instancia e o n�mero da classe predita	
-							/*if (Utils.isMissingValue(predValue)) {
-                System.out.print(idx + delim + "missing" + delim);
-              } else {
-                System.out.print(idx + delim
-	      	  + testData.classAttribute().value((int)predValue) + delim);
-              }*/
-
-							//imprime o valor da classe predita pelo algoritmo 
-							/*if (Utils.isMissingValue(predValue)) {
-                System.out.print("missing" + delim);
-              } else {
-                System.out.print(c.distributionForInstance(withMissing)[(int)predValue]+delim);
-              }*/
-
-
-							double[] dist=c.distributionForInstance(instance);
+							double[] dist=classifier.distributionForInstance(testInstance);
 							int k;
 							for (k=0; k<dist.length; k++){
-								/*if (dist[k]<0.0009)
-            	  System.out.print("0.0" + delim);
-                else*/
 								//trunca o valor e divide por 100 para ficar com apenas 2 casas decimais
 								Double distTruncado = Math.round(dist[k]*1000)/1000d;
 								System.out.print( distTruncado + delim);
+								//saidas[,k]=distribution class k
 								saidas[ cont ][ k ] = dist[k];
 								//System.out.print(dist[k] + delim);
 							}
 							System.out.print( idx + delim );
+							//saidas[,nClasses+1]=indice of test instance in test dataset
 							saidas[ cont ][ k++ ] = idx;
+
+							//This try is required because testDataValue can be a nominal value different of a number. Ex: positive,negative
 							try{
-							saidas[ cont ][ k+1 ] = Double.parseDouble( testData.classAttribute().value((int)trueValue) );
-							k++;
+								//saidas[,nClases+2]= true value of class
+								saidas[ cont ][ k+1 ] = Double.parseDouble( testData.classAttribute().value((int)trueValue) );
+								k++;
 							}catch (Exception e) {
 								saidas[ cont ][ k++ ] =trueValue;
 							}
 							if( testData.classAttribute().value((int)trueValue) == testData.classAttribute().value((int)predValue) )
+								//saidas[,nClasses+3]=this position receives 1 case classifier answers right, 0, otherwise
 								saidas[ cont ][ k++ ] = 1;
 							else
 								saidas[ cont ][ k++ ] = 0;
@@ -212,9 +230,9 @@ public class CallClassifierNEntradas {
 
 							/* Note: the order of class probabilities corresponds
                to the order of class values in the training file */
-							//System.out.print(" AQUI 2.2!!!!");
 
-							//imprime o n�mero da classe correta
+
+							//imprime o numero da classe correta
 							System.out.print(testData.classAttribute().value((int)trueValue) + delim);
 
 							//imprime 0 para erros e 1 para acertos
@@ -232,10 +250,14 @@ public class CallClassifierNEntradas {
 					mediaporfold[i] = acertos;
 					somaAcertos = somaAcertos + acertos;
 
-					//imprime a m�dia de acertos em cada fold
+					//imprime a madia de acertos em cada fold
 					//System.out.print("\n Neste fold, o acerto foi de: " + acertoporfold[i] + " totalizando " + acertos + delim); 
 				}
+
+				//stores the accuracy of classifier in all folds
 				float media_individual = somaAcertos/numFolds;
+
+				//Calculates the variance of the classifier in nFold cross validation
 				float soma_variancia = 0;
 
 				for (int j=0; j<mediaporfold.length; j++){
@@ -246,25 +268,24 @@ public class CallClassifierNEntradas {
 				float x = 1;
 				//System.out.println("soma_variancia: " + soma_variancia);
 				soma_variancia = (soma_variancia*(x/(numFolds-1)));
-				//System.out.println("soma_variancia*(x/(numFolds-1): " + soma_variancia);
+
+				//Standard desviation
 				double desvio_padrao = Math.sqrt((double) soma_variancia);
-				/*for (int i = 0; i <= mediaporfold.length; i++){
-        	System.out.print("\n m�dia no fold " + i + " : " + mediaporfold[i]);
-        }*/
-				setmedias(media_individual, base);
-				setdps((float)desvio_padrao,base);
+
+				setmedias(media_individual, nClassifier);
+				setdps((float)desvio_padrao,nClassifier);
 
 				System.out.print("\n media individual: " + (media_individual*100) + " desvio padrao: " + (float)(desvio_padrao*100) + delim + "\n");
 
 			} else {
 				testData.setClassIndex(cIdx);
-				c.buildClassifier(trainData);
+				classifier.buildClassifier(trainData);
 
 				for (int i=0; i<testData.numInstances(); i++) {
 					Instance instance = testData.instance(i);
 					Instance withMissing = (Instance)instance.copy();
 					withMissing.setDataset(testData);
-					double predValue=((Classifier)c).classifyInstance(instance);
+					double predValue=((Classifier)classifier).classifyInstance(instance);
 					int idx=i;
 					double trueValue=instance.classValue();
 
@@ -290,11 +311,11 @@ public class CallClassifierNEntradas {
 						if (Utils.isMissingValue(predValue)) {
 							System.out.print("missing" + delim);
 						} else {
-							System.out.print(c.
+							System.out.print(classifier.
 									distributionForInstance(withMissing)[(int)predValue]+delim);
 						}
 						System.out.print(testData.classAttribute().value((int)trueValue));
-						double[] dist=(c.distributionForInstance(instance));
+						double[] dist=(classifier.distributionForInstance(instance));
 						for (int k=0; k<dist.length; k++)
 							System.out.print(delim+dist[k]);
 						/* Note: the order of class probabilities corresponds
@@ -308,6 +329,7 @@ public class CallClassifierNEntradas {
 		}
 		return saidas;
 	}
+
 	public static double [][] avaliarPeso(String [] argv, Instances baseInstancias ) {
 		double [][] saidas = null;
 		int cont = 0;
@@ -317,7 +339,7 @@ public class CallClassifierNEntradas {
 			int cIdx=-1;
 			int seed=1;
 			float acertoporfold[]={0,0,0,0,0,0,0,0,0,0};
-		//	float somaAcertos = 0;
+			//	float somaAcertos = 0;
 			float mediaporfold[]={0,0,0,0,0,0,0,0,0,0};
 
 
@@ -373,12 +395,12 @@ public class CallClassifierNEntradas {
 
 				// generate pseudo-dataset with instance ids, to get the same reordering..
 				//FastVector attInfo = new FastVector(2);
-				
+
 				ArrayList<Attribute> attInfo=new ArrayList<Attribute>();
 
 				//attInfo.addElement(new Attribute("Idx_20011004"));
 				attInfo.add(new Attribute("Idx_20011004"));
-				
+
 				//attInfo.addElement(trainData.classAttribute());
 				attInfo.add(trainData.classAttribute());
 
@@ -452,6 +474,14 @@ public class CallClassifierNEntradas {
 		}
 		return saidas;
 	}
+
+	/**
+	 * Calculates the standard deviation of ensemble score
+	 * @param mediaEnsemble average of the ensemble in all folds
+	 * @param mediasEnsemble average of the ensemble in each fold
+	 * @param folds number of folds
+	 * @return
+	 */
 	private static double calcularDpEnsemble ( double mediaEnsemble, double [] mediasEnsemble, int folds ){
 		float soma_variancia = 0;
 
@@ -465,17 +495,25 @@ public class CallClassifierNEntradas {
 		return desvio_padrao;
 	}
 
+	/**
+	 * Calculates the average of decision for each data fold
+	 * @param soma values from sum rule
+	 * @param folds number of folds
+	 * @return a array with the average decision score of each fold
+	 */
 	private static double [] calcularMediasEnsemble ( double [][] soma, int folds ){
 		double mediaPorFoldEnsemble [] = new double [ folds ];
 		int k;
-		int instanciaAtual = 0;
+		int instanceIndex = 0;
 		int elementosPorFold;
 		for(int i=0;i<folds;i++){
 			elementosPorFold = obterElementosPorFold ( i, soma.length, folds );
 			mediaPorFoldEnsemble[i] = 0;
+			
 			for(k=0;k<elementosPorFold;k++){
-				mediaPorFoldEnsemble[i] += soma[instanciaAtual][ soma[0].length -1 ];
-				instanciaAtual++;
+				//add to mediaPorFoldEnsemble the result of decision of ensemble. 1=Right; 0=Wrong
+				mediaPorFoldEnsemble[i] += soma[instanceIndex][ soma[0].length -1 ];
+				instanceIndex++;
 			}
 			mediaPorFoldEnsemble[i] /= elementosPorFold;
 		}
@@ -534,16 +572,22 @@ public class CallClassifierNEntradas {
 		return numClasses;
 	}
 
-	private static void imprimirArquivoSaida ( String arquivo, double [][][] resultados, int quantidadeArquivos ){
+	/**
+	 * Method to crete a arff file which contains the result of the cross validation test
+	 * @param fileName File Name
+	 * @param results Results of the classification (Distribution of each class given by each classifier)
+	 * @param numberOfClassifiers Number of classifiers used
+	 */
+	private static void imprimirArquivoSaida ( String fileName, double [][][] results, int numberOfClassifiers ){
 		try {
 			int i;
 			Formatter forma = null;
-			PrintWriter out = new PrintWriter( arquivo );
+			PrintWriter out = new PrintWriter( fileName );
 
 			int k = 0;
-			out.print( "@relation " + arquivo + "\n" );
-			for(i=0;i<quantidadeArquivos;i++)
-				for(k=0;k<resultados[0][0].length-3;k++)
+			out.print( "@relation " + fileName + "\n" );
+			for(i=0;i<numberOfClassifiers;i++)
+				for(k=0;k<results[0][0].length-3;k++)
 					out.print( "@attribute att_" + i + "_" + k + " real\n" );
 
 			// substitui essa linha pelo c�digo abaixo.
@@ -561,13 +605,13 @@ public class CallClassifierNEntradas {
 
 			out.print( "@data\n" );
 
-			for(i=0;i<resultados[0].length;i++){//linha
+			for(i=0;i<results[0].length;i++){//linha
 				forma = new Formatter();
-				for(int j=0;j<quantidadeArquivos;j++){ //indice 
-					for(k=0;k<resultados[0][0].length -3;k++) //coluna da matriz
-						forma.format( "%4.3f ", resultados[j][i][k] );
+				for(int j=0;j<numberOfClassifiers;j++){ //indice 
+					for(k=0;k<results[0][0].length -3;k++) //coluna da matriz
+						forma.format( "%4.3f ", results[j][i][k] );
 				}
-				forma.format( "%d", (int) resultados[0][i][k+1] );
+				forma.format( "%d", (int) results[0][i][k+1] );
 				out.print( forma.toString().replaceAll( ",", "." ).replaceAll( " ", "," ) + "\n" );
 
 			}
@@ -591,13 +635,35 @@ public class CallClassifierNEntradas {
 
 	}
 
+	//TODO Implement this method
+	private double calculateFAR(double[][]resultado){
+		//Store the decision of each instance.
+		//[,n] distibution of classe n. [,n+1] indice of test instance. [,n+2] true value of class. [n+3] 1, case classifier correct, 0, otherwise
+		//[1,0,1,0,0,1] means dist of classifier 1 to class 1 and 2 is 1 and 0. same thing for classifier 2.
+		// 0 is the index of test instance, 0 is the class index and 1 means that the ensemble got the right answer. 
+		//saidas = new double [ trainData.numInstances() ][ trainData.numClasses() + 3 ];
+		return 0;
+	}
+	
+	private double calculateFRR(double[][]resultado){
+		return 0;
+	}
+	
+	private double calculateEER(double[][] resultado){
+		return (calculateFAR(resultado)+calculateFRR(resultado))/2;
+	}
+	
 	public static void main (String[] args){
 		// -c <int> class arq 
 		// -o output
 
-		
+		//Examle: "10 3ADtest.arff 3ADvali.arff 3ADmedia.txt 2 weka.classifiers.trees.J48 -C 0.25  
+		//-t Interpolation_IntraSession-User_1_Day_1_Horizontal.arff weka.classifiers.trees.J48 -U -M 5 -t 
+		//DoubleSum_IntraSession-User_1_Day_1_Horizontal.arff"
+
 		int folds;
-		int quantidade;
+		//Number of classifiers passed in args
+		int nClassifiers;
 
 		String classificadores [];
 		String entradas [];
@@ -608,15 +674,23 @@ public class CallClassifierNEntradas {
 
 
 		int i = 0;
+		//folds=10
 		folds = Integer.parseInt( args[i++] );
+		//saida=3ADtest.arff
 		saida = args[i++];
+		//saidaTreinamento=3ADvali.arff
 		saidaTreinamento = args[i++];
+		//mediaDp=3ADmedia.txt
 		mediaDp = args[i++];
-		quantidade = Integer.parseInt( args[i++] );
+		//quantidade=2
+		nClassifiers = Integer.parseInt( args[i++] );
+
 		int classificadorAtual = 0;
-		classificadores = new String[ quantidade ];
-		entradas = new String[ quantidade ];
+		classificadores = new String[ nClassifiers ];
+		entradas = new String[ nClassifiers ];
 		classificadores[0] = "";
+
+		//fill the classificadores e entradas arrays with classifiers and input dataset
 		for(;i<args.length;i++){
 			if( args[i].equals( "-t" ) ){
 				i++;
@@ -627,23 +701,25 @@ public class CallClassifierNEntradas {
 			} else
 				classificadores[ classificadorAtual ] += args[i] + " ";
 		}
+		//resultado receives for each classifier, the results of distribution, instanceIndex, classIndex and if the classifier predicted right the instance
+		double resultado [][][] = new double [nClassifiers][][];
 
-		double resultado [][][] = new double [quantidade][][];
+		//Array where each line stores the 10 fold datasets for each classifier
+		arffParaPesos = new Instances[ nClassifiers ][];
 
-
-		arffParaPesos = new Instances[ quantidade ][];
-
-		for(i=0;i<quantidade;i++)
+		//Stores in each row of resultado the evaluation of each classifier in its dataset using x folds
+		for(i=0;i<nClassifiers;i++)
 			resultado[i] = avaliar( (classificadores[i] + " -t " + entradas[i] + " -x " + folds).split(" "), i );
 
-		//separa os resultados em diversos arquivos q ser�o usados como teste para MLP E NB
+		//separa os resultados em diversos arquivos q serao usados como teste para MLP E NB
 		//int foldCorrente = 0;
 		int linhaCorrente = 0;
 		int ultimaLinha = 0;
 		for (int qtFolds=0;qtFolds<folds;qtFolds++){
 			int elementosFold = obterElementosPorFold(qtFolds, resultado[0].length, folds);
-			double arffTeste [][][] = new double [quantidade][elementosFold][resultado[0][0].length];		
-			for (int indice=0;indice<quantidade;indice++){
+			//arffTeste receives the same information of resultado object. The results of each instance in each classifier.
+			double arffTeste [][][] = new double [nClassifiers][elementosFold][resultado[0][0].length];		
+			for (int indice=0;indice<nClassifiers;indice++){
 				for (int linha=0;linha<elementosFold;linha++){
 					for (int coluna=0;coluna<resultado[0][0].length;coluna++){
 						double t =resultado[indice][linhaCorrente][coluna];
@@ -655,9 +731,10 @@ public class CallClassifierNEntradas {
 			}
 			ultimaLinha += elementosFold;
 			String nomeArquivo = saida.substring(0,saida.indexOf('.')) + "_" + qtFolds + ".arff";
-			imprimirArquivoSaida(nomeArquivo, arffTeste, quantidade);
+			imprimirArquivoSaida(nomeArquivo, arffTeste, nClassifiers);
 			linhaCorrente = ultimaLinha;
-			for(int ind=0;ind<quantidade;ind++){
+			//Cleaning arffTeste. Seting all the values of this object to 0;
+			for(int ind=0;ind<nClassifiers;ind++){
 				for (int lin=0;lin<=arffTeste[0].length-1;lin++){
 					for (int col=0;col<=arffTeste[0][0].length-1;col++){
 						arffTeste[ind][lin][col] = 0;
@@ -672,7 +749,10 @@ public class CallClassifierNEntradas {
 
 
 		// aplicacao da soma
-		double soma [][] = somar( resultado, quantidade );
+		//soma[,cn]=sum of decisoon distribution of classifier cn
+		//soma[,n-1]=class value
+		//soma[,n]=1, if classifier is right; 0, otherwise.
+		double soma [][] = somar( resultado, nClassifiers );
 
 		//apenas imprime na tela a soma
 		System.out.print("SOMA: ");
@@ -695,7 +775,7 @@ public class CallClassifierNEntradas {
 
 
 		// aplicacao do voto
-		double voto [][] = somar( obterResultadoVoto( resultado ), quantidade );
+		double voto [][] = somar( obterResultadoVoto( resultado ), nClassifiers );
 		double mediasEnsembleVoto [] = calcularMediasEnsemble( voto, folds );
 		double mediaEnsembleVoto = 0;
 		for(i=0;i<folds;i++){
@@ -715,11 +795,11 @@ public class CallClassifierNEntradas {
 		}
 		System.out.println("m�dia ensemble voto: " + mediaEnsembleVoto + " dp ensemble voto: " + dpEnsembleVoto);
 
-		String resultadoSomaEVoto = imprimirMediaEDp( quantidade, mediaEnsemble, dpEnsemble, mediaEnsembleVoto, dpEnsembleVoto );
+		String resultadoSomaEVoto = imprimirMediaEDp( nClassifiers, mediaEnsemble, dpEnsemble, mediaEnsembleVoto, dpEnsembleVoto );
 
-		double [][][] pesos = new double[ quantidade ][ folds ][ getNumClasses() ];
+		double [][][] pesos = new double[ nClassifiers ][ folds ][ getNumClasses() ];
 		int j;//, k;
-		for(i=0;i<quantidade;i++)
+		for(i=0;i<nClassifiers;i++)
 			for(j=0;j<folds;j++)
 				pesos[i][j] = calcularPesos ( arffParaPesos[i][j], 4, "teste.txt" ,classificadores[i] );
 
@@ -748,7 +828,7 @@ public class CallClassifierNEntradas {
 		}
 
 
-		double peso [][] = somar( obterResultadoPeso( resultado, pesos, folds ), quantidade );
+		double peso [][] = somar( obterResultadoPeso( resultado, pesos, folds ), nClassifiers );
 		double mediasEnsemblePeso [] = calcularMediasEnsemble( peso, folds );
 		double mediaEnsemblePeso = 0;
 		for(i=0;i<folds;i++){
@@ -779,19 +859,27 @@ public class CallClassifierNEntradas {
 			e.printStackTrace();
 		}
 
-		Instances foldArquivo [] = new Instances[ quantidade ];
+		Instances foldArquivo [] = new Instances[ nClassifiers ];
 		for(i=0;i<arffParaPesos[0].length;i++){
-			for(j=0;j<quantidade;j++)
+			for(j=0;j<nClassifiers;j++)
 				foldArquivo[j] = arffParaPesos[j][i];
 			//gerarMLP_NB( i, foldArquivo, folds, entradas, classificadores );
 			gerarMLP_NB( i, foldArquivo, folds, saidaTreinamento, classificadores );
 		}
 	}
 
+	/**
+	 * Calculates the quantity of instances in a fold
+	 * @param fold index of fold
+	 * @param quantidadeElementos number of instances present in the dataset
+	 * @param quantidadeFolds number of folds
+	 * @return the number of instances in a fold
+	 */
 	public static int obterElementosPorFold ( int fold, int quantidadeElementos, int quantidadeFolds ){
 		int instanciaPorFold = quantidadeElementos / quantidadeFolds;
-		int acrescentar = quantidadeElementos % quantidadeFolds;
 		int foldInteiro = (int) Math.floor(instanciaPorFold);
+		int acrescentar = quantidadeElementos % quantidadeFolds;
+
 		int elementosPorFold = foldInteiro + 1;
 		if( fold >= acrescentar ){
 			elementosPorFold = foldInteiro--;
@@ -868,17 +956,29 @@ public class CallClassifierNEntradas {
 	public static void setdps(float dp, int pos){
 		dps[pos] = dp;
 	}
-
 	public static void setmedias(float media, int pos){
 		medias[pos] = media;
 	}
 
-	private static double [][] somar( double resultado[][][], int quantidade ){
+	/**
+	 * Use the sum rule
+	 * @param resultado distribution values resultado[0].length=quantity of instances
+	 * resultado[0][0].length -1=number of statistics
+	 * @param numberOfClassifiers Number of classifiers
+	 * @return sum of distribution class for each class 
+	 * 
+	 * soma[n]=sum of score of classifier in class n
+	 * soma[n-2]=class index
+	 * soma[n]=1, if the ensemble made the right decision,0, otherwise
+	 */	
+	private static double [][] somar( double resultado[][][], int numberOfClassifiers ){		
+
 		double [][] soma = new double [resultado[0].length][resultado[0][0].length -1];
 		float max = -1;
 		float empate = -1;
 		int posMax = -1;
 		int valorClasse = -1;
+		//Column of classe
 		int colClasse = -1;
 		double result = 0;
 		float somaLinha = 0;
@@ -889,7 +989,7 @@ public class CallClassifierNEntradas {
 			colClasse = resultado[0][0].length -2;
 			valorClasse = (int) resultado[0][i][colClasse];
 			for(k=0;k<resultado[0][0].length -3;k++){ //coluna da matriz
-				for(int j=0;j<quantidade;j++){ //indice 
+				for(int j=0;j<numberOfClassifiers;j++){ //indice 
 					result = resultado[j][i][k];
 					somaLinha += result;
 				}
@@ -919,11 +1019,4 @@ public class CallClassifierNEntradas {
 		}
 		return soma;
 	}
-
-	private static float medias[] = new float[12];
-
-	private static Instances arffParaPesos [][];
-	private static int numClasses;
-
-	static float dps[]={0,0,0,0,0,0,0,0,0,0,0,0};
 }
