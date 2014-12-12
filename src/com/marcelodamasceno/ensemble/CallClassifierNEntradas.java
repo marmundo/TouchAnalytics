@@ -509,7 +509,7 @@ public class CallClassifierNEntradas {
 		for(int i=0;i<folds;i++){
 			elementosPorFold = obterElementosPorFold ( i, soma.length, folds );
 			mediaPorFoldEnsemble[i] = 0;
-			
+
 			for(k=0;k<elementosPorFold;k++){
 				//add to mediaPorFoldEnsemble the result of decision of ensemble. 1=Right; 0=Wrong
 				mediaPorFoldEnsemble[i] += soma[instanceIndex][ soma[0].length -1 ];
@@ -556,6 +556,8 @@ public class CallClassifierNEntradas {
 			resultado[i] = avaliarPeso( (classificador[i] + " -x " + folds).split(" "), fold[i] );
 		}
 
+		String folder=saida.substring(0,saida.indexOf('.'));
+		nomeSaida = folder+"/"+nomeSaida;
 		imprimirArquivoSaida( nomeSaida, resultado, fold.length );
 
 	}
@@ -572,6 +574,13 @@ public class CallClassifierNEntradas {
 		return numClasses;
 	}
 
+	private static void writeFile(String fileName,String header,Object content) throws IOException{		
+		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fileName, true)));
+		out.print(header+"\n");
+		out.print(content+"\n");
+		out.flush();
+		out.close();
+	}
 	/**
 	 * Method to crete a arff file which contains the result of the cross validation test
 	 * @param fileName File Name
@@ -582,7 +591,15 @@ public class CallClassifierNEntradas {
 		try {
 			int i;
 			Formatter forma = null;
-			PrintWriter out = new PrintWriter( fileName );
+			String folder=fileName.substring(0,fileName.indexOf('/'));
+			File f = new File(folder);
+			PrintWriter out;
+			if(f.exists())
+				 out = new PrintWriter( fileName );
+			else{				
+				f.mkdir();
+				out = new PrintWriter( fileName );
+			}		
 
 			int k = 0;
 			out.print( "@relation " + fileName + "\n" );
@@ -635,25 +652,72 @@ public class CallClassifierNEntradas {
 
 	}
 
-	//TODO Implement this method
-	private double calculateFAR(double[][]resultado){
-		//Store the decision of each instance.
-		//[,n] distibution of classe n. [,n+1] indice of test instance. [,n+2] true value of class. [n+3] 1, case classifier correct, 0, otherwise
-		//[1,0,1,0,0,1] means dist of classifier 1 to class 1 and 2 is 1 and 0. same thing for classifier 2.
-		// 0 is the index of test instance, 0 is the class index and 1 means that the ensemble got the right answer. 
-		//saidas = new double [ trainData.numInstances() ][ trainData.numClasses() + 3 ];
-		return 0;
+	/**
+	 * Method calculates False Aceptance Rate (FAR)
+	 * @param resultado array with the decision of ensemble [c0,...,cn,true class,ensemble decision]
+	 * @return False Aceptance Rate (FAR)
+	 * @throws Exception
+	 */
+	private static double calculateFAR(double[][]resultado) throws Exception{
+		double far=-1;
+		double numberImpostors=0;
+		double numberofFalseAceptance=0;
+		int pos=resultado[0].length-2;
+		for(int instance=0;instance<resultado.length-1;instance++){			
+			if(resultado[instance][pos]==0){
+				numberImpostors++;
+				if(resultado[instance][pos+1]==0)
+					numberofFalseAceptance++;
+			}
+		}
+		if(numberImpostors>0)
+			far=numberofFalseAceptance/numberImpostors;
+		else
+			throw new Exception("Doesn't exist Impostors");
+		return far;
 	}
-	
-	private double calculateFRR(double[][]resultado){
-		return 0;
+
+	/**
+	 * Method calculates False Rejection Rate (FRR)
+	 * @param resultado array with the decision of ensemble [c0,...,cn,true class,ensemble decision]
+	 * @return False Rejection Rate (FRR)
+	 * @throws Exception
+	 */
+	private static double calculateFRR(double[][]resultado) throws Exception{
+		double frr=-1;
+		double numberClients=0;
+		double numberofFalseRejection=0;
+		int pos=resultado[0].length-2;
+		for(int instance=0;instance<resultado.length-1;instance++){			
+			if(resultado[instance][pos]==1){
+				numberClients++;
+				if(resultado[instance][pos+1]==0)
+					numberofFalseRejection++;
+			}
+		}
+		if(numberClients>0)
+			frr=numberofFalseRejection/numberClients;
+		else
+			throw new Exception("Doesn't exist clients");
+		return frr;		
 	}
-	
-	private double calculateEER(double[][] resultado){
-		return (calculateFAR(resultado)+calculateFRR(resultado))/2;
+
+	/**
+	 * Method calculates Equal Error Rate (EER)
+	 * @param resultado array with the decision of ensemble [c0,...,cn,true class,ensemble decision]
+	 * @return Equal Error Rate (EER)
+	 * @throws Exception
+	 */
+	private static double calculateEER(double[][] resultado) throws Exception{
+		double far;
+		double frr;
+
+		far = calculateFAR(resultado);
+		frr= calculateFRR(resultado);		
+		return (far+frr)/2;
 	}
-	
-	public static void main (String[] args){
+
+	public static void main (String[] args) {
 		// -c <int> class arq 
 		// -o output
 
@@ -730,7 +794,9 @@ public class CallClassifierNEntradas {
 				linhaCorrente = ultimaLinha;
 			}
 			ultimaLinha += elementosFold;
-			String nomeArquivo = saida.substring(0,saida.indexOf('.')) + "_" + qtFolds + ".arff";
+			
+			String folder=saida.substring(0,saida.indexOf('.'));
+			String nomeArquivo = folder+"/"+saida.substring(0,saida.indexOf('.')) + "_" + qtFolds + ".arff";
 			imprimirArquivoSaida(nomeArquivo, arffTeste, nClassifiers);
 			linhaCorrente = ultimaLinha;
 			//Cleaning arffTeste. Seting all the values of this object to 0;
@@ -783,6 +849,22 @@ public class CallClassifierNEntradas {
 		}
 		mediaEnsembleVoto /= folds;
 		double dpEnsembleVoto = calcularDpEnsemble( mediaEnsembleVoto, mediasEnsembleVoto, folds );
+
+		try {
+			double eer=calculateEER(voto);			
+			System.out.println("EER: "+eer);
+			String header="";
+			String fileName="";
+			for (String classifierName : classificadores) {
+				fileName+=classifierName+"|-|-|";
+			}
+			fileName+=saida.subSequence(0, nClassifiers*4);
+			header+=saida.subSequence(0, saida.length()-9);
+			writeFile("EER|-|-|"+fileName, header, eer);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 
 		//apenas imprime na tela a soma do voto
 		System.out.print("VOTO: ");
@@ -934,20 +1016,27 @@ public class CallClassifierNEntradas {
 	}
 
 	//apenas transforma os aquivos em 0 e 1
+	/**
+	 * Method returns a array with 1 in na class index which ensemble decided that is the class using majority vote
+	 * @param resultados Array index with distribuiton value for each class + test index+true class+ predicted class
+	 * @return a array with 1 in na class index which ensemble decided that is the class using majority vote
+	 */
 	private static double [][][] obterResultadoVoto ( double [][][] resultados ){
-		int i, j, k, maior;
+		int classi, instance, stat, maior;
+		//votos array receives 1 in the class which the ensemble decided by majority vote
 		double votos [][][] = new double [ resultados.length ][ resultados[0].length ][ resultados[0][0].length ]; 
-		for(i=0;i<resultados.length;i++){
-			for(j=0;j<resultados[i].length;j++){
+		for(classi=0;classi<resultados.length;classi++){
+			for(instance=0;instance<resultados[classi].length;instance++){
 				maior = 0;
-				for(k=1;k<resultados[i][j].length -3;k++){
-					if( resultados[i][j][maior] < resultados[i][j][k] ) // valor mais a esquerda em caso empate
-						maior = k;
-					votos[i][j][k] = 0;
+				for(stat=1;stat<resultados[classi][instance].length -3;stat++){
+					if( resultados[classi][instance][maior] < resultados[classi][instance][stat] ) // valor mais a esquerda em caso empate
+						maior = stat;
+					votos[classi][instance][stat] = 0;
 				}
-				votos[i][j][maior] = 1;
-				for(k=resultados[i][j].length -3;k<resultados[i][j].length;k++)
-					votos[i][j][k] = resultados[i][j][k];
+				votos[classi][instance][maior] = 1;
+				//Copying the remaining part (n-3,n-2,n-1) of resultados array
+				for(stat=resultados[classi][instance].length -3;stat<resultados[classi][instance].length;stat++)
+					votos[classi][instance][stat] = resultados[classi][instance][stat];
 			}
 		}
 		return votos;
