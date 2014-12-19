@@ -8,17 +8,26 @@ import com.marcelodamasceno.util.Const;
 
 public class VotingDifferentDataSets {
 	
+	
+	private int nFolds;
+
+	/**
+	 * @param nFolds Quantity of folds in cross validation
+	 */
+	public VotingDifferentDataSets(int nFolds){
+		this.nFolds=nFolds;
+	}
+	
 	public final int nUsers=41;
 
-	private String takeOptions(String[]datasets,String[]classifiers,int user,String orientation){
-		int nFolds=10;
+	private String takeOptions(String[]datasets,String[]classifiers,int user,String orientation){		
 		String nameOfFile="";		
 		for (String string : datasets) {
 			nameOfFile+=string.substring(0, 4);
 		}
 		nameOfFile+="-User-"+user+"-"+orientation;
 		
-		String options="10 "+nameOfFile+"test.arff "+ nameOfFile+"vali.arff "+nameOfFile+"media.txt "+classifiers.length+" ";
+		String options=nFolds+" "+nameOfFile+"test.arff "+ nameOfFile+"vali.arff "+nameOfFile+"media.txt "+classifiers.length+" ";
 
 		String path="BasedeToque/Cancelaveis/";
 		int count=0;
@@ -49,7 +58,7 @@ public class VotingDifferentDataSets {
 	}
 	
 
-	public void combinação2por2(String orientation) throws Exception{
+	public void combination2per2(String orientation) throws Exception{
 		
 		String[]classifiers = new String[2];
 		classifiers[0]=Const.KNN;
@@ -114,7 +123,7 @@ public class VotingDifferentDataSets {
 	}
 	
 	
-public void combinação3por3(String orientation) throws Exception{
+public void combination3per3(String orientation) throws Exception{
 		
 		String[]classifiers = new String[3];
 		classifiers[0]=Const.KNN;
@@ -166,7 +175,7 @@ public void combinação3por3(String orientation) throws Exception{
 		
 	}
 
-public void combinação4por4(String orientation) throws Exception{
+public void combination4per4(String orientation) throws Exception{
 	
 	String[]classifiers = new String[4];
 	classifiers[0]=Const.KNN;
@@ -189,21 +198,28 @@ public void combinação4por4(String orientation) throws Exception{
 	
 }
 
+public void combination(String[] classifiers, String[] datasets, String orientation) throws Exception{
+	if(orientation.equals(Const.HORIZONTAL))	
+		HorizontalExperiment(datasets, classifiers);
+	else
+		ScroolingExperiment(datasets, classifiers);
+}
+
 	public void callExperiment(String[]options){
 		CallClassifierNEntradas.main(options);
 	}
 	
 	public static void main(String args[]) throws Exception{
-		VotingDifferentDataSets teste=new VotingDifferentDataSets();
+		VotingDifferentDataSets teste=new VotingDifferentDataSets(10);
 		String orientation="";
 		orientation=Const.HORIZONTAL;
-		teste.combinação2por2(orientation);
-		teste.combinação3por3(orientation);
-		teste.combinação4por4(orientation);
+		teste.combination2per2(orientation);
+		teste.combination3per3(orientation);
+		teste.combination4per4(orientation);
 		orientation=Const.SCROOLING;
-		teste.combinação2por2(orientation);
-		teste.combinação3por3(orientation);
-		teste.combinação4por4(orientation);
+		teste.combination2per2(orientation);
+		teste.combination3per3(orientation);
+		teste.combination4per4(orientation);
 	}
 
 

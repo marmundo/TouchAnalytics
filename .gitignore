@@ -1,0 +1,24 @@
+/BasedeToque
+/Experimentos
+/Horizontal |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|BioCBioH.txt
+/Horizontal |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|DoubBioC.txt
+/Horizontal |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|DoubBioH.txt
+/Horizontal |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|InteBioC.txt
+/Horizontal |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|InteBioH.txt
+/Horizontal |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|InteDoub.txt
+/Horizontal |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|weka.classifiers.trees.J48 |-|-|DoubBioCBioH.txt
+/Horizontal |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|weka.classifiers.trees.J48 |-|-|InteBioCBioH.txt
+/Horizontal |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|weka.classifiers.trees.J48 |-|-|InteDoubBioC.txt
+/Horizontal |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|weka.classifiers.trees.J48 |-|-|InteDoubBioH.txt
+/Horizontal |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|weka.classifiers.trees.J48 |-|-|weka.classifiers.functions.MultilayerPerceptron |-|-|InteDoubBioCBioH.txt
+/Scrolling |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|BioCBioH.txt
+/Scrolling |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|DoubBioC.txt
+/Scrolling |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|DoubBioH.txt
+/Scrolling |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|InteBioC.txt
+/Scrolling |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|InteBioH.txt
+/Scrolling |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|InteDoub.txt
+/Scrolling |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|weka.classifiers.trees.J48 |-|-|DoubBioCBioH.txt
+/Scrolling |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|weka.classifiers.trees.J48 |-|-|InteBioCBioH.txt
+/Scrolling |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|weka.classifiers.trees.J48 |-|-|InteDoubBioC.txt
+/Scrolling |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|weka.classifiers.trees.J48 |-|-|InteDoubBioH.txt
+/Scrolling |-| EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|weka.classifiers.trees.J48 |-|-|weka.classifiers.functions.MultilayerPerceptron |-|-|InteDoubBioCBioH.txt

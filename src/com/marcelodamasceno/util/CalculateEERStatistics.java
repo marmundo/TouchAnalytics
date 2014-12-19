@@ -1,6 +1,6 @@
 package com.marcelodamasceno.util;
 
-import java.awt.Container;
+
 import java.io.BufferedReader;
 import java.io.File;
 
@@ -19,12 +19,12 @@ public class CalculateEERStatistics {
 
 	private final String parentPath="Experimentos/";
 	private String combinationArray[];
-	private String experiments[][]=new String[3][6];
+	private String experiments[][]=new String[4][6];
 	private String path="";
 	private String orientation="";
 	private int combination=4;
 	private int indexExperiment=0;
-	
+
 	public CalculateEERStatistics(String orientation, int combination){
 		this.orientation=orientation;
 		this.combination=combination;		
@@ -51,37 +51,58 @@ public class CalculateEERStatistics {
 		fillCombinacao(combination);		
 		fillExperiments();		
 	}
-	
+
 	public CalculateEERStatistics(int combination){		
+		this.combination=combination;
 		fillCombinacao(combination);		
 		fillExperiments();		
 	}
 
+
+
 	private void fillCombinacao(int combination){
-		combinationArray=new String[combination-1];
-		for(int comb=0;comb+2<=combination;comb++){
-			int temp=comb+2;
-			combinationArray[comb]="Combinacao"+temp+"x"+temp;
-		}			
+		if(combination==1){
+			combinationArray=new String[1];
+			combinationArray[0]="IJCNN";
+		}else{
+			combinationArray=new String[combination-1];
+			for(int comb=0;comb+2<=combination;comb++){
+				int temp=comb+2;
+				combinationArray[comb]="Combinacao"+temp+"x"+temp;
+			}		
+		}
 	}
 
 	private void fillExperiments(){
 		//row controls combination
-		//column controls experiment		
-		experiments[0][0]="BioCBioH";
-		experiments[0][1]="DoubBioC";
-		experiments[0][2]="DoubBioH";
-		experiments[0][3]="InteBioC";
-		experiments[0][4]="InteBioH";
-		experiments[0][5]="InteDoub";
+		//column controls experiment
+
+		if(combination==1){
+			experiments[0][0]="Inte";
+			experiments[0][1]="BioH";
+			experiments[0][2]="BioC";
+			experiments[0][3]="Doub";
+		}
+
+		if(combination>=4){
+			experiments[2][0]="InteDoubBioCBioH";	
+		}
+		if(combination>=3){
+			experiments[1][0]="DoubBioCBioH";
+			experiments[1][1]="InteBioCBioH";
+			experiments[1][2]="InteDoubBioC";
+			experiments[1][3]="InteDoubBioH";
+		}
+		if(combination>=2){					
+			experiments[0][0]="BioCBioH";
+			experiments[0][1]="DoubBioC";
+			experiments[0][2]="DoubBioH";
+			experiments[0][3]="InteBioC";
+			experiments[0][4]="InteBioH";
+			experiments[0][5]="InteDoub";
+		}
 
 
-		experiments[1][0]="DoubBioCBioH";
-		experiments[1][1]="InteBioCBioH";
-		experiments[1][2]="InteDoubBioC";
-		experiments[1][3]="InteDoubBioH";
-
-		experiments[2][0]="InteDoubBioCBioH";		
 	}
 
 
@@ -91,7 +112,7 @@ public class CalculateEERStatistics {
 			orientation=Const.HORIZONTAL;
 			eerFiles=createPath(orientation);
 			Utils.WriteToFile(execute(eerFiles));
-			
+
 			orientation=Const.SCROOLING;
 			eerFiles=createPath(orientation);
 			Utils.WriteToFile(execute(eerFiles));
@@ -115,13 +136,21 @@ public class CalculateEERStatistics {
 				if(experiments[i][j]==null)
 					break;
 				path=parentPath+comb+"/"+orientation+"/"+experiments[i][j]+"/";
-				if(i==0){
-					path+="EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|"+experiments[i][j];
+				if(combination==1){
+					String experiment="";
+					for(int e=0;e<6;e++){
+						experiment+=experiments[i][j];
+					}
+					path+="EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|weka.classifiers.functions.SMO |-|-|weka.classifiers.bayes.NaiveBayes |-|-|weka.classifiers.bayes.NaiveBayes |-|-|"+experiment;
 				}else{
-					if(i==1){
-						path+="EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|weka.classifiers.trees.J48 |-|-|"+experiments[i][j];
+					if(i==0){
+						path+="EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|"+experiments[i][j];
 					}else{
-						path+="EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|weka.classifiers.trees.J48 |-|-|weka.classifiers.functions.MultilayerPerceptron |-|-|"+experiments[i][j];
+						if(i==1){
+							path+="EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|weka.classifiers.trees.J48 |-|-|"+experiments[i][j];
+						}else{
+							path+="EER|-|-|weka.classifiers.lazy.IBk |-|-|weka.classifiers.functions.SMO |-|-|weka.classifiers.trees.J48 |-|-|weka.classifiers.functions.MultilayerPerceptron |-|-|"+experiments[i][j];
+						}
 					}
 				}
 				File eerFile= new File(path);
@@ -170,13 +199,14 @@ public class CalculateEERStatistics {
 		StandardDeviation desviation=new StandardDeviation();
 		double std=desviation.evaluate(eerValues);
 
-	//	double[] statistics=new double[]{doubleMean,std};
+		//	double[] statistics=new double[]{doubleMean,std};
 
 		return new EERStatistics(orientation+" |-| "+eerFile.getName(),doubleMean, std);
 	}
 
 	public static void main(String args[]){
 		CalculateEERStatistics s=new CalculateEERStatistics(4);
+		//CalculateEERStatistics s=new CalculateEERStatistics(1);
 		try {
 			s.createExperiments();
 		} catch (IOException e) {
