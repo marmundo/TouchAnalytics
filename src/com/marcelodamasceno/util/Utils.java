@@ -16,6 +16,11 @@ import java.util.Random;
  */
 public class Utils {
 
+	/**
+	 * Transform a Double[] array in a double[] array
+	 * @param arrayDouble
+	 * @return
+	 */
 	public static double[] transform(Double[] arrayDouble){
 		double[] values= new double[arrayDouble.length];
 		for (int i = 0; i < arrayDouble.length; i++) {
@@ -24,6 +29,10 @@ public class Utils {
 		return values;
 	}
 
+	/**
+	 * Writes in a file
+	 * @param eerStatistics
+	 */
 	public static void WriteToFile(ArrayList<EERStatistics> eerStatistics){
 		for (EERStatistics eerStatistic : eerStatistics) {
 			String content="Mean= "+eerStatistic.getMean()+"\n";
@@ -32,16 +41,48 @@ public class Utils {
 		}			
 	}
 
+	/**
+	 * Write to a file a double array
+	 * @param fileName
+	 * @param content
+	 */
+	public static void writeToFile(String fileName, double[] content){
+		try {
+			File file=createAndCheckFile(fileName);
+			BufferedWriter bw = new BufferedWriter(new FileWriter(file.getAbsoluteFile(),true));			
+			for (int i = 0; i < content.length; i++) {
+				bw.append(String.valueOf(content[i])+",");				
+			}					
+			bw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	/**
+	 * Create a file and check if it's exists. If false, creates a new one, case false, append the new content in the end of file
+	 * @param fileName
+	 * @return
+	 * @throws IOException
+	 */
+	public static File createAndCheckFile(String fileName) throws IOException{		
+			File file=new File(fileName+".txt");
+			// if file doesnt exists, then create it
+			if (!file.exists())
+				file.createNewFile();
+			return file;		
+	}
+
+	/**
+	 * Write the content to a file with a fileName
+	 * @param fileName Name of file
+	 * @param content Content
+	 */
 	public static void writeToFile(String fileName,String content){
 		try {
-
-			File file = new File(fileName+".txt");
-
-			// if file doesnt exists, then create it
-			if (!file.exists()) {
-				file.createNewFile();
-			}
-
+			File file=createAndCheckFile(fileName);
 			BufferedWriter bw = new BufferedWriter(new FileWriter(file.getAbsoluteFile(),true));
 			bw.append(content);		
 			bw.close();
@@ -51,6 +92,12 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * Return a random number between min and max
+	 * @param min
+	 * @param max
+	 * @return
+	 */
 	public static int getRandowNumber(int min, int max) {
 		Random rand = new Random();
 

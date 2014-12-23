@@ -110,20 +110,24 @@ public class CalculateEERStatistics {
 		ArrayList<File> eerFiles;
 		if(orientation.equals("")){
 			orientation=Const.HORIZONTAL;
-			eerFiles=createPath(orientation);
-			Utils.WriteToFile(execute(eerFiles));
+			eerFiles=createPath(orientation);			
+			//Utils.WriteToFile(createEERStatisticsArray(eerFiles));
+			saveEERExperimentsToFile(eerFiles);
 
 			orientation=Const.SCROOLING;
 			eerFiles=createPath(orientation);
-			Utils.WriteToFile(execute(eerFiles));
+			//Utils.WriteToFile(createEERStatisticsArray(eerFiles));
+			saveEERExperimentsToFile(eerFiles);
 		}else{
 			if(orientation.equals(Const.HORIZONTAL)){
 				eerFiles=createPath(orientation);
-				Utils.WriteToFile(execute(eerFiles));
+				//Utils.WriteToFile(createEERStatisticsArray(eerFiles));
+				saveEERExperimentsToFile(eerFiles);
 
 			}else{
 				eerFiles=createPath(orientation);
-				Utils.WriteToFile(execute(eerFiles));
+				//Utils.WriteToFile(createEERStatisticsArray(eerFiles));
+				saveEERExperimentsToFile(eerFiles);
 			}
 		}
 	}
@@ -160,9 +164,20 @@ public class CalculateEERStatistics {
 		}
 		return eerFiles;
 	}
+	
+	private void saveEERExperimentsToFile(ArrayList<File> eerFiles){
+		for (File eerFile : eerFiles) {
+			try {
+				Utils.writeToFile(orientation+" |-|toR|-| "+eerFile.getName(), readEERValues(eerFile));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
+		}	
+	}
 
 
-	private ArrayList<EERStatistics> execute(ArrayList<File> eerFiles) throws IOException{		
+	private ArrayList<EERStatistics> createEERStatisticsArray(ArrayList<File> eerFiles) throws IOException{		
 		ArrayList<EERStatistics> eerStatistics=new ArrayList<EERStatistics>();		
 		for (File eerFile : eerFiles) {
 			eerStatistics.add(calculateStatistics(eerFile));			
@@ -188,8 +203,13 @@ public class CalculateEERStatistics {
 		return Utils.transform(eerValues.toArray(new Double[eerValues.size()]));		
 	}
 
-	//average
-	//standart deviation
+	
+	/**
+	 * Method creates a EERStatistics object based on eerFile
+	 * @param eerFile
+	 * @return
+	 * @throws IOException
+	 */
 	private EERStatistics calculateStatistics(File eerFile) throws IOException{
 		double[] eerValues=readEERValues(eerFile);
 
@@ -203,6 +223,7 @@ public class CalculateEERStatistics {
 
 		return new EERStatistics(orientation+" |-| "+eerFile.getName(),doubleMean, std);
 	}
+	
 
 	public static void main(String args[]){
 		CalculateEERStatistics s=new CalculateEERStatistics(4);
