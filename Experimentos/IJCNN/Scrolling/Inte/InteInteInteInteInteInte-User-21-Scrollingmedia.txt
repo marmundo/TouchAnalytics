@@ -1,0 +1,1 @@
+media_individual: 89.54728 desvio_padr�o_individual: 2.6982038 media_ensemble_soma: 94.56107660455488 dp_ensemble_soma: 2.917811143562414 media_ensemble_voto: 94.56107660455488 dp_ensemble_voto: 2.917811143562414 media_ensemble_peso: 94.56107660455488 dp_ensemble_peso: 2.917811143562414
