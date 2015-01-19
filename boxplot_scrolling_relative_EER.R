@@ -50,6 +50,7 @@ boxPlotWithoutWiskers<-boxplot(scrolling$EER ~ scrolling$Experiment,at=rank(tapp
 boxPlotWithoutWiskers$stats[5,]<-boxPlotWithoutWiskers$stats[4,]
 
 bxp(boxPlotWithoutWiskers,at=rank(tapply(scrolling$EER, scrolling$Experiment, median)),main="Relative Change EER(%) by Experiment - Scrolling",ylab="relative change of EER(%)",las=3,outline=FALSE)
+abline(h =0, col = "red", lty = 2) 
 
 
 

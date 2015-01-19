@@ -44,5 +44,5 @@ ex<-c(ex0,ex1,ex2,ex3,ex4,ex5,ex6,ex7,ex8,ex9,ex10,ex11)
 horizontal<-data.frame(EER=horizontal,Experiment=ex)
 par(mar=c(6,4.1,4.1,2.1),mgp=c(3,1,0))
 boxplot(horizontal$EER ~ horizontal$Experiment,at=rank(tapply(horizontal$EER, horizontal$Experiment, median)),main="Relative Change EER(%) by Experiment - Horizontal",ylab="relative change of EER(%)",las=3,outline=FALSE)
-
+abline(h =0, col = "red", lty = 2) 
 
