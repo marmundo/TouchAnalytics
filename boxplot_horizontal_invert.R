@@ -11,21 +11,7 @@ hInteDoubBioC<-c(0.008904583852651988,0.1458670872463976,0.08539500271056133,0.0
 hInteDoubBioH<-c(0.03160227115357984,0.496551724137931,0.28266226405795675,0.0979020979020979,0.21537431778395633,0.058123159646652156,0.10885191094901603,0.18413842285027962,0.09183241641980534,0.2802398404808043,0.17583559168925023,0.09403639696255564,0.1993802756704776,0.14690628460373778,0.13179647879332768,0.20879990550437041,0.14337474120082816,0.06674951554469627,0.04757132500319843,0.07480470961168345,0.21243480557206046,0.040639481000926785,0.16737258974711897,0.03830625895843287,0.062469601167315175,0.1724137931034483,0.19298435164676858,0.23517271946591317,0.20894686299615878,0.04063260340632603,0.17595873690841798,0.15022301516503123,0.1742627854713314,0.17708669029970997,0.3739866475917978,0.22311391033455236,0.059880239520958084,0.3680473053245491,0.026558690351793802,0.19208211143695014,0.02586206896551724)
 hInteDoubBioCBioH<-c(0.006024096385542169,0.1458670872463976,0.08815484697649204,0.013986013986013986,0.11708371949335805,0.026159689327017455,0.05316465314185852,0.07193259017377923,0.01830300465509945,0.10392619428764008,0.08979223125564588,0.0672623723487824,0.07169569398440004,0.09608822399493797,0.056279077887276,0.11640680368532955,0.049045318610536,0.015544696267587834,0.020853767751290032,0.03414279784142798,0.07580709051297287,0.013716404077849862,0.07537319035523468,0.022336359292881032,0.02925887645914397,0.0,0.037365170259125204,0.05661514169367572,0.13142872385830132,0.03317112733171128,0.02563193952279707,0.052765388046387154,0.06775009110787172,0.042270920614459126,0.10710737561595932,0.06369362047947988,0.0658682634730539,0.046238794686251215,0.013571677364780812,0.09636689475399152,0.0)
 
-hBioCBioH<-(hBioCBioH-hOriginal)/hOriginal*100
-hDoubBioC<-(hDoubBioC-hOriginal)/hOriginal*100
-hDoubBioH<-(hDoubBioH-hOriginal)/hOriginal*100
-hInteBioC<-(hInteBioC-hOriginal)/hOriginal*100
-hInteBioH<-(hInteBioH-hOriginal)/hOriginal*100
-hInteDoub<-(hInteDoub-hOriginal)/hOriginal*100
-hDoubBioCBioH<-(hDoubBioCBioH-hOriginal)/hOriginal*100
-hInteBioCBioH<-(hInteBioCBioH-hOriginal)/hOriginal*100
-hInteDoubBioH<-(hInteDoubBioH-hOriginal)/hOriginal*100
-hInteDoubBioC<-(hInteDoubBioC-hOriginal)/hOriginal*100
-hInteDoubBioCBioH<-(hInteDoubBioCBioH-hOriginal)/hOriginal*100
-hOriginal<-(hOriginal-hOriginal)/hOriginal*100
-
 horizontal<-matrix(c(hOriginal,hBioCBioH,hDoubBioC,hDoubBioH,hInteBioC,hInteBioH,hInteDoub,hDoubBioCBioH,hInteBioCBioH,hInteDoubBioH,hInteDoubBioC,hInteDoubBioCBioH),nrow=492)
-
 
 ex0=rep('Original',41)
 ex1=rep('BioCBioH',41)
@@ -34,15 +20,22 @@ ex3=rep('DoubBioH',41)
 ex4=rep('InteBioC',41)
 ex5=rep('InteBioH',41)
 ex6=rep('InteDoub',41)
-ex7=rep('DoubBioC\nBioH',41)
-ex8=rep('InteBioC\nBioH',41)
-ex9=rep('InteDoub\nBioH',41)
-ex10=rep('InteDoub\nBioC',41)
-ex11=rep('InteDoub\nBioCBioH',41)
+ex7=rep('DoubBioCBioH',41)
+ex8=rep('InteBioCBioH',41)
+ex9=rep('InteDoubBioH',41)
+ex10=rep('InteDoubBioC',41)
+ex11=rep('InteDoubBioCBioH',41)
 ex<-c(ex0,ex1,ex2,ex3,ex4,ex5,ex6,ex7,ex8,ex9,ex10,ex11)
 
 horizontal<-data.frame(EER=horizontal,Experiment=ex)
-par(mar=c(6,4.1,4.1,2.1),mgp=c(3,1,0))
-boxplot(horizontal$EER ~ horizontal$Experiment,at=rank(tapply(horizontal$EER, horizontal$Experiment, median)),main="Relative Change EER(%) by Scenario - Horizontal",ylab="relative change of EER(%)",las=3,outline=FALSE)
-abline(h =0, col = "red", lty = 2) 
 
+
+
+par(mar=c(5, 8, 4.1, 2.1))
+r<-tapply(horizontal$EER, horizontal$Experiment, median)
+y<-boxplot(horizontal$EER ~ horizontal$Experiment, data = horizontal,
+        col = "lightgray", yaxt = "n",  horizontal=TRUE,at=rank(-r),main="EER by Scenario - Horizontal",xlab="EER",outline=FALSE)
+axis(2, labels = FALSE)
+abline(v =y$stats[3,12], col = "red", lty = 2) 
+text(y =  rank(-r), x = -0.03,  adj = 1,
+     labels = y$names, xpd = TRUE)

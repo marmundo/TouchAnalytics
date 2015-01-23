@@ -34,15 +34,23 @@ ex3=rep('DoubBioH',41)
 ex4=rep('InteBioC',41)
 ex5=rep('InteBioH',41)
 ex6=rep('InteDoub',41)
-ex7=rep('DoubBioC\nBioH',41)
-ex8=rep('InteBioC\nBioH',41)
-ex9=rep('InteDoub\nBioH',41)
-ex10=rep('InteDoub\nBioC',41)
-ex11=rep('InteDoub\nBioCBioH',41)
+ex7=rep('DoubBioCBioH',41)
+ex8=rep('InteBioCBioH',41)
+ex9=rep('InteDoubBioH',41)
+ex10=rep('InteDoubBioC',41)
+ex11=rep('InteDoubBioCBioH',41)
 ex<-c(ex0,ex1,ex2,ex3,ex4,ex5,ex6,ex7,ex8,ex9,ex10,ex11)
 
 horizontal<-data.frame(EER=horizontal,Experiment=ex)
-par(mar=c(6,4.1,4.1,2.1),mgp=c(3,1,0))
-boxplot(horizontal$EER ~ horizontal$Experiment,at=rank(tapply(horizontal$EER, horizontal$Experiment, median)),main="Relative Change EER(%) by Scenario - Horizontal",ylab="relative change of EER(%)",las=3,outline=FALSE)
-abline(h =0, col = "red", lty = 2) 
+par(mar=c(6,8,4.1,2.1),mgp=c(3,1,0))
+
+
+r<-tapply(horizontal$EER, horizontal$Experiment, median)
+x<-boxplot(horizontal$EER ~ horizontal$Experiment,col = "lightgray",yaxt = "n",   horizontal=TRUE,at=rank(-r),main="Relative Change EER(%) by Scenario - Horizontal",xlab="relative change of EER(%)",las=3,outline=FALSE)
+
+
+abline(v =0, col = "red", lty = 2)
+axis(2, labels = FALSE)
+text(y =  rank(-r), x = par("usr")[1]-12,  adj = 1,
+     labels = x$names, xpd = TRUE) 
 
