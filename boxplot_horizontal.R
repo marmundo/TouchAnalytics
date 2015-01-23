@@ -31,4 +31,4 @@ ex<-c(ex0,ex1,ex2,ex3,ex4,ex5,ex6,ex7,ex8,ex9,ex10,ex11)
 horizontal<-data.frame(EER=horizontal,Experiment=ex)
 par(mar=c(6,4.1,4.1,2.1),mgp=c(3,1,0))
 
-boxplot(horizontal$Experiment ~ horizontal$EER,at=rank(tapply(horizontal$EER, horizontal$Experiment, median)),main="EER by Experiment - Horizontal",ylab="EER",las=3,outline=FALSE)
+boxplot(horizontal$Experiment ~ horizontal$EER,at=rank(tapply(horizontal$EER, horizontal$Experiment, median)),main="EER by Scenario - Horizontal",ylab="EER",las=3,outline=FALSE)
