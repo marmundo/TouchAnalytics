@@ -46,10 +46,10 @@ public class InterWeek extends Experiment {
 
 	for (int user = 1; user <= 41; user++) {
 	    try {
-		scrollingTraining = conector.openDataSet(PROJECTPATH
+		scrollingTraining = conector.openDataSet(DATASETPATH
 			+ folderResults + getFileName() + user
 			+ "_Day_1_Scrolling_Training.arff");
-		scrollingTesting = conector.openDataSet(PROJECTPATH
+		scrollingTesting = conector.openDataSet(DATASETPATH
 			+ folderResults + getFileName() + user
 			+ "_NextWeek_Scrolling_Testing.arff");
 		if (eerBool) {
@@ -71,10 +71,10 @@ public class InterWeek extends Experiment {
 		    }
 		}
 
-		horizontalTraining = conector.openDataSet(PROJECTPATH
+		horizontalTraining = conector.openDataSet(DATASETPATH
 			+ folderResults + getFileName() + user
 			+ "_Day_1_Horizontal_Training.arff");
-		horizontalTesting = conector.openDataSet(PROJECTPATH
+		horizontalTesting = conector.openDataSet(DATASETPATH
 			+ folderResults + getFileName() + user
 			+ "_NextWeek_Horizontal_Testing.arff");
 		if (eerBool) {
@@ -97,7 +97,7 @@ public class InterWeek extends Experiment {
 		}
 	    } catch (FileNotFoundException e1) {
 		try {
-		    scrollingTraining = conector.openDataSet(PROJECTPATH
+		    scrollingTraining = conector.openDataSet(DATASETPATH
 			    + folderResults + getFileName() + user
 			    + "_Day_1_Scrolling_Training.arff");
 		    if (eerBool) {
@@ -118,7 +118,7 @@ public class InterWeek extends Experiment {
 			}
 		    }
 
-		    horizontalTraining = conector.openDataSet(PROJECTPATH
+		    horizontalTraining = conector.openDataSet(DATASETPATH
 			    + folderResults + getFileName() + user
 			    + "_Day_1_Horizontal_Training.arff");
 		    if (eerBool) {

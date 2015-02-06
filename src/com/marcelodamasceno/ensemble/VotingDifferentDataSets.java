@@ -33,12 +33,12 @@ public class VotingDifferentDataSets {
 
 	String options=nFolds+" "+nameOfFile+"test.arff "+ nameOfFile+"vali.arff "+nameOfFile+"media.txt "+classifiers.length+" ";
 
-	String path=Const.PROJECTPATH+"Cancelaveis/";
+	String path=Const.DATASETPATH+"Cancelaveis/";
 	int count=0;
 	for (String dataset : datasets) {
 	    path+=dataset+"/IntraSession/IntraSession-User_"+user+"_Day_1_"+orientation+".arff ";
 	    options+=classifiers[count]+" -t "+path;
-	    path=Const.PROJECTPATH+"Cancelaveis/";
+	    path=Const.DATASETPATH+"Cancelaveis/";
 	    count++;
 	}		
 	return options;

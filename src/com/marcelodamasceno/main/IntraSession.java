@@ -48,7 +48,7 @@ public class IntraSession extends Experiment {
 	for (int user = 1; user <= 41; user++) {
 	    try {
 		scrolling = conector
-			.openDataSet(PROJECTPATH + folderResults
+			.openDataSet(DATASETPATH + folderResults
 				+ "IntraSession-User_" + user
 				+ "_Day_1_Scrolling.arff");
 		if (eerBool) {
@@ -69,7 +69,7 @@ public class IntraSession extends Experiment {
 		    }
 		}
 
-		horizontal = conector.openDataSet(PROJECTPATH + folderResults
+		horizontal = conector.openDataSet(DATASETPATH + folderResults
 			+ "IntraSession-User_" + user
 			+ "_Day_1_Horizontal.arff");
 

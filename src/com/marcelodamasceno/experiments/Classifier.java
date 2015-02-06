@@ -442,7 +442,7 @@ public abstract class Classifier {
 			}
 			break;
 		case 1:
-			if (dataset.toLowerCase().equals("INTERSESSION")) {
+			if (dataset.toLowerCase().equals(INTERSESSION)) {
 				System.out.println("Original-EER - InterSession");
 				interSession.classifyAllUsers(classifier, true, false);
 			}
