@@ -9,6 +9,7 @@ public class FileGui {
 
     public static File[] chooseFile(String path){
 	JFileChooser fileChooser=new JFileChooser(path);
+	fileChooser.setMultiSelectionEnabled(true);
 	try {
 	    int nState=fileChooser.showOpenDialog(null);
 	    if(nState==JFileChooser.APPROVE_OPTION){
