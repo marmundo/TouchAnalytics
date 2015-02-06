@@ -8,8 +8,10 @@ import com.marcelodamasceno.util.Const;
 public class CalculateERRStatisticsGui {
 
     public void calculateERRbyGUI(String path){
-	File file=FileGui.chooseFile(path);
-	CalculateEERStatistics eerStatistics=new CalculateEERStatistics(file);	
+	File[] fileArray=FileGui.chooseFile(path);
+	for (File file : fileArray) {
+	    CalculateEERStatistics eerStatistics=new CalculateEERStatistics(file);
+	}		
     }
     
         
