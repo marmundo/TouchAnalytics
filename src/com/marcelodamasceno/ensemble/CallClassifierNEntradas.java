@@ -8,6 +8,7 @@ import com.marcelodamasceno.util.Const;
 import weka.core.*;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.Classifier;
+import weka.classifiers.lazy.IBk;
 
 /*
 Esse c�digo faz a combina��o dos arff e gera arff de treinamento e de teste que ser�o rodados com MLP e NB
@@ -105,6 +106,9 @@ public class CallClassifierNEntradas {
 	    }
 
 	    Classifier classifier = AbstractClassifier.forName(classifierName,argv);
+	    
+	     IBk ibk=(IBk) classifier;
+	     ibk.getKNN();
 
 	    Instances trainData = new Instances(new FileReader(new File(trainFile)));
 	    Instances testData = null;
