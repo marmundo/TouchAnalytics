@@ -7,12 +7,12 @@ import javax.swing.JOptionPane;
 
 public class FileGui {
 
-    public static File chooseFile(String path){
+    public static File[] chooseFile(String path){
 	JFileChooser fileChooser=new JFileChooser(path);
 	try {
 	    int nState=fileChooser.showOpenDialog(null);
 	    if(nState==JFileChooser.APPROVE_OPTION){
-		return fileChooser.getSelectedFile();		
+		return fileChooser.getSelectedFiles();		
 	    }
 	} catch (Exception e) {
 	    JOptionPane.showMessageDialog(null, e.getMessage(),"Error", JOptionPane.ERROR_MESSAGE);
