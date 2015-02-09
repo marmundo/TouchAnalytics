@@ -18,9 +18,10 @@ public class Combination3x3 extends Combination {
      * @throws Exception
      */
     public void combination(String orientation, String[] classifiers) throws Exception{
-	String[]cancelableDataSets=new String[2];
+	String[]cancelableDataSets=new String[3];
 	int nClassifiers=classifiers.length;
 	String[] votingDataSets=null;
+	VotingDifferentDataSets voting=super.getVoting();
 
 	String cancelableName="";
 

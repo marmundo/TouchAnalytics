@@ -1,5 +1,6 @@
 package com.marcelodamasceno.combination;
 
+import com.marcelodamasceno.ensemble.VotingDifferentDataSets;
 import com.marcelodamasceno.util.Const;
 
 public class Combination4x4 extends Combination {

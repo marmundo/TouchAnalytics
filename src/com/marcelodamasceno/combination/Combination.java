@@ -13,6 +13,14 @@ public abstract class Combination {
     
     VotingDifferentDataSets voting;
     
+    public VotingDifferentDataSets getVoting() {
+        return voting;
+    }
+
+    public void setVoting(VotingDifferentDataSets voting) {
+        this.voting = voting;
+    }
+
     /**
      * Constructor
      */
@@ -28,6 +36,12 @@ public abstract class Combination {
 	voting=new VotingDifferentDataSets(nFolds);
     }
     
+    /**
+     * Combine the experiments
+     * @param orientation stroke orientation
+     * @param classifiers classifiers used in experiment
+     * @throws Exception
+     */
     public abstract void combination(String orientation, String[]classifiers) throws Exception;
     
     protected String getCombinationName(String[]cancelableDataSets){

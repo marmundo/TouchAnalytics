@@ -1,5 +1,6 @@
 package com.marcelodamasceno.combination;
 
+import com.marcelodamasceno.ensemble.VotingDifferentDataSets;
 import com.marcelodamasceno.util.Const;
 
 public class Combination2x2 extends Combination{
@@ -19,6 +20,7 @@ public class Combination2x2 extends Combination{
 	String[]cancelableDataSets=new String[2];
 	int nClassifiers=classifiers.length;
 	String[] votingDataSets=null;
+	VotingDifferentDataSets voting=super.getVoting();
 	
 	String cancelableName="";
 	
