@@ -20,28 +20,32 @@ public class BioHashing extends Cancelable {
     public BioHashing(Instances data) {
 	this.dataset = data;
     }
-
+    
+    public Instances generate(){
+	int m=dataset.numAttributes() - 1;
+	return generate(m);
+    }
     /**
      * Creates the cancelable biometric dataset using bioHashing
      * 
-     * @param m
-     *            number of attributes of the cancelable biometric
-     * @return
+     * @param m number of attributes of the cancelable biometric.
+     * m can be considered a key. 
+     * @return cancelable biometric
      */
-    public Instances generate() {
+    public Instances generate(int m) {    
 	/* Creating the m attributes */
-	int m = dataset.numAttributes() - 1;
-	ArrayList<Attribute> attributeList = new ArrayList<Attribute>(m);
-	for (int i = 1; i <= m; i++) {
+	int nAttributes = m;
+	ArrayList<Attribute> attributeList = new ArrayList<Attribute>(nAttributes);
+	for (int i = 1; i <= nAttributes; i++) {
 	    Attribute attr = new Attribute("m" + String.valueOf(i));
 	    attributeList.add(attr);
 	}
 	Instances randowDataSet = new Instances("randow", attributeList,
 		dataset.numInstances());
 	/* Gerando n vetores randomicos */
-	for (int row = 1; row <= m; row++) {
-	    Instance inst = new DenseInstance(m);
-	    for (int a = 0; a < m; a++) {
+	for (int row = 1; row <= nAttributes; row++) {
+	    Instance inst = new DenseInstance(nAttributes);
+	    for (int a = 0; a < nAttributes; a++) {
 		inst.setValue(attributeList.get(a), Math.random());
 	    }
 	    randowDataSet.add(inst);
@@ -49,7 +53,7 @@ public class BioHashing extends Cancelable {
 	/* Aplicando o processo de Gram-Schimdth */
 	GramSchmidt gram = new GramSchmidt(randowDataSet);
 	Instances orthonormalInstances = gram.execute();
-	// randowDataSet=null;
+	
 
 	Attribute classe = dataset.classAttribute();
 	Instances copyDataset = new Instances(dataset);
