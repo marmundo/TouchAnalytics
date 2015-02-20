@@ -1,9 +1,6 @@
 package com.marcelodamasceno.cancelable;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-
-import org.omg.CORBA.NVList;
 
 import com.marcelodamasceno.util.ArffConector;
 import com.marcelodamasceno.util.Const;
@@ -24,12 +21,24 @@ public class BioHashing extends Cancelable {
      */
     private Instances originalDataset;
 
+    private double threshold=0;
+
+    /**
+     * Constructor
+     * @param data Original Dataset 
+     */
+    public BioHashing(Instances data) {
+	this.originalDataset = data;	
+    }
+
     /**
      * Constructor
      * @param data Original Dataset
+     * @param threshold 
      */
-    public BioHashing(Instances data) {
+    public BioHashing(Instances data, double threshold) {
 	this.originalDataset = data;
+	this.threshold=threshold;
     }
 
     /* (non-Javadoc)
@@ -40,30 +49,84 @@ public class BioHashing extends Cancelable {
 	return generate(m);
     }
 
+    
+    
+    /**
+     * Generates a Instances object with {@code nVectors} random Instances based on {@code key}
+     * The same {@code key} generates the same Instances Object.
+     * @param nVectors Quantity of rows in Intances objects
+     * @param key Key used to generates the random rows. 
+     * @return
+     */
+    public Instances generateRandomVectors(int nVectors, long[] key){	
+	Instances randomDataSet=Utils.createInstances("random", nVectors, originalDataset.numInstances());	
+	double[] randomDoubleArray;
+	/* Gerando n vetores randomicos */
+	for (int row = 1; row <= nVectors; row++) {	  
+	    randomDoubleArray=Utils.generateRandomArray(nVectors, key[row]);
+	    Instance inst = new DenseInstance(nVectors);
+	    for (int a = 0; a < nVectors; a++) {
+		inst.setValue(randomDataSet.attribute(a), randomDoubleArray[a]);
+	    }
+	    randomDataSet.add(inst);
+	}
+	return randomDataSet;
+    }
+
     /**
      * Generate {@code nVectors} randomicos
-     * @param nVectors
+     * @param nVectors Number of random vectors
      * @return {@code nVectors} randomicos
      */
-    private Instances generateRandomVectors(int nVectors){
-
-	ArrayList<Attribute> attributeList = new ArrayList<Attribute>(nVectors);
-	for (int i = 1; i <= nVectors; i++) {
-	    Attribute attr = new Attribute("m" + String.valueOf(i));
-	    attributeList.add(attr);
-	}
-
-	Instances randowDataSet = new Instances("randow", attributeList,
-		originalDataset.numInstances());
+    public Instances generateRandomVectors(int nVectors){	
+	Instances randomDataSet=Utils.createInstances("random", nVectors, originalDataset.numInstances());
 	/* Gerando n vetores randomicos */
 	for (int row = 1; row <= nVectors; row++) {
 	    Instance inst = new DenseInstance(nVectors);
 	    for (int a = 0; a < nVectors; a++) {
-		inst.setValue(attributeList.get(a), Math.random());
+		inst.setValue(randomDataSet.attribute(a), Math.random());
 	    }
-	    randowDataSet.add(inst);
+	    randomDataSet.add(inst);
 	}
-	return randowDataSet;
+	return randomDataSet;
+    }
+
+    public Instance generate(Instance bioSample, Instances key){
+	Instances orthonormalInstances=applyGramShimidth(key);
+	Attribute classe = bioSample.classAttribute();
+	bioSample.deleteAttributeAt(bioSample.numAttributes() - 1);
+	Instance userProtectedSample=dotProduct(bioSample, orthonormalInstances);
+	userProtectedSample=discretization(userProtectedSample,threshold);
+	userProtectedSample.insertAttributeAt(userProtectedSample.numAttributes());
+	userProtectedSample.setValue(userProtectedSample.numAttributes()-1, classe.value(0));	
+	return userProtectedSample;
+
+    }
+
+    private Instance dotProduct(Instance bioSampleUser, Instances key){
+	return Matriz.innerProduct(bioSampleUser,key);
+    }
+
+    private Instances dotProduct(Instances bioSamplesUserSet, Instances key){
+	/* Produto interno entre o dataset biométrico e o vetor orthornormal */
+
+	return Matriz.innerProduct(bioSamplesUserSet,key);
+
+    }
+
+    public Instances generate(Instances userSamples,Instances keyArray){
+	Instances orthonormalInstances=applyGramShimidth(keyArray);
+	Attribute classe = originalDataset.classAttribute();	
+	userSamples.setClassIndex(userSamples.numAttributes() - 2);
+	userSamples.deleteAttributeAt(userSamples.numAttributes() - 1);
+	Instances userProtectedSamples=dotProduct(userSamples, orthonormalInstances);
+	userProtectedSamples = discretization(userProtectedSamples,threshold);
+	userProtectedSamples.insertAttributeAt(classe, userProtectedSamples.numAttributes());
+	InstancesUtils.copyAttributeValue(originalDataset, originalDataset.classAttribute()
+		.index(), userProtectedSamples, userProtectedSamples.numAttributes() - 1);
+	userProtectedSamples.setClassIndex(userProtectedSamples.numAttributes()-1);
+	return userProtectedSamples;
+
     }
 
     /**
@@ -78,18 +141,13 @@ public class BioHashing extends Cancelable {
 	copyDataset.setClassIndex(copyDataset.numAttributes() - 2);
 	copyDataset.deleteAttributeAt(copyDataset.numAttributes() - 1);
 
-
-	/* Produto interno entre o dataset biométrico e o vetor orthornormal */
-
-	Instances product = Matriz.innerProduct(copyDataset,
-		orthonormalInstances);
-	// product = discretization(product, 0.55);
-	product = discretization(product);
-	product.insertAttributeAt(classe, product.numAttributes());
+	Instances userProtectedSamples=dotProduct(copyDataset, orthonormalInstances);
+	userProtectedSamples = discretization(userProtectedSamples,threshold);
+	userProtectedSamples.insertAttributeAt(classe, userProtectedSamples.numAttributes());
 	InstancesUtils.copyAttributeValue(originalDataset, originalDataset.classAttribute()
-		.index(), product, product.numAttributes() - 1);
-
-	return product;
+		.index(), userProtectedSamples, userProtectedSamples.numAttributes() - 1);
+	userProtectedSamples.setClassIndex(userProtectedSamples.numAttributes()-1);
+	return userProtectedSamples;
 
     }
 
@@ -129,6 +187,28 @@ public class BioHashing extends Cancelable {
      *            Thereshold
      * @return Discretized dataset
      */
+    protected Instance discretization(Instance data, double thereshold) {
+
+	for (int j = 0; j < data.numAttributes(); j++) {
+	    if (data.value(j) > thereshold) {
+		data.setValue(j, 1.0);
+	    } else {
+		data.setValue(j, 0.0);
+	    }
+	}
+	return data;
+    }
+
+    /**
+     * Discretizes the dataset to 1 when the value is higher than <code>thereshold</code>,
+     * else ortherwise
+     * 
+     * @param data
+     *            Instances that will be discretized
+     * @param thereshold
+     *            Thereshold
+     * @return Discretized dataset
+     */
     protected Instances discretization(Instances data, double thereshold) {
 	for (int i = 0; i < data.numInstances(); i++) {
 	    for (int j = 0; j < data.numAttributes(); j++) {
@@ -136,6 +216,32 @@ public class BioHashing extends Cancelable {
 		    data.get(i).setValue(j, 1.0);
 		} else {
 		    data.get(i).setValue(j, 0.0);
+		}
+	    }
+	}
+	return data;
+    }
+
+    /**
+     * Discretizes the dataset using 4 thereshold (0, 0.33, 0.66, 1)
+     * 
+     * @param data
+     * @return Discretized data
+     */
+    private Instance discretization(Instance data) {
+	for (int j = 0; j < data.numAttributes(); j++) {
+	    double instanceValue = data.value(j);
+	    if (instanceValue < 0.25) {
+		data.setValue(j, 0);
+	    } else {
+		if (instanceValue >= 0.25 && instanceValue < 0.5) {
+		    data.setValue(j, 0.33);
+		} else {
+		    if (instanceValue >= 0.5 && instanceValue < 0.75) {
+			data.setValue(j, 0.66);
+		    } else {
+			data.setValue(j, 1);
+		    }
 		}
 	    }
 	}
@@ -168,106 +274,6 @@ public class BioHashing extends Cancelable {
 	    }
 	}
 	return data;
-    }
-
-    /**
-     * @param args
-     * @throws FileNotFoundException
-     */
-    public static void main(String[] args) {
-
-	ArffConector conector = new ArffConector();
-	Instances dataset = null;
-	int numAttributes=0;
-	Instances keyArray=null;
-	Instances tempDataSet=null;
-	BioHashing bio=null;
-	String projectPath = Const.DATASETPATH;
-	String folderResults = "IntraSession-SemNominal/";
-	String tempResults="";
-	String fileName="";
-	int user=1;
-	while(user<=41){
-	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
-	    try {
-		dataset = conector.openDataSet(projectPath + folderResults
-			+ fileName);
-	    } catch (FileNotFoundException e) {
-		e.printStackTrace();
-	    }
-
-
-
-	    /**Fixed key*/
-
-	    /**Standard key*/
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Standard/";
-	    tempDataSet=dataset;
-	    numAttributes=tempDataSet.numAttributes()-1;
-	    bio = new BioHashing(tempDataSet);
-	    keyArray=bio.generateRandomVectors(numAttributes);
-	    Utils.WriteToFile(bio.generate(keyArray),tempResults,"BioHashing_Fixed_Std_"+fileName);
-
-	    /**Small key*/
-
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Small/";
-	    tempDataSet=Utils.getAttributes(dataset, 0.25);	
-	    int size=tempDataSet.numAttributes()-1;
-	    bio=new BioHashing(tempDataSet);
-	    keyArray=bio.generateRandomVectors(size);
-	    Utils.WriteToFile(bio.generate(keyArray),tempResults,"BioHashing_Fixed_Sml_"+fileName);
-
-	    /**Medium key*/
-
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Medium/";
-	    tempDataSet=Utils.getAttributes(dataset, 0.5);	
-	    size=tempDataSet.numAttributes()-1;
-	    bio=new BioHashing(tempDataSet);
-	    keyArray=bio.generateRandomVectors(size);
-	    Utils.WriteToFile(bio.generate(keyArray),tempResults,"BioHashing_Fixed_Med_"+fileName);
-
-	    /**Big key*/
-
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Big/";
-	    tempDataSet=Utils.getAttributes(dataset, 0.75);	
-	    size=tempDataSet.numAttributes()-1;
-	    bio=new BioHashing(tempDataSet);
-	    keyArray=bio.generateRandomVectors(size);
-	    Utils.WriteToFile(bio.generate(keyArray),tempResults,"BioHashing_Fixed_Big_"+fileName);
-
-	    /**Different key*/
-
-	    /**Standard key*/
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Different/Standard/";	
-	    Utils.WriteToFile(bio.generate(),tempResults,"BioHashing_Different_Std_"+fileName);
-
-	    /**Small key*/
-
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Different/Small/";		
-	    tempDataSet=Utils.getAttributes(dataset, 0.25);	
-	    size=tempDataSet.numAttributes()-1;
-	    bio=new BioHashing(tempDataSet);
-	    Utils.WriteToFile(bio.generate(size),tempResults,"BioHashing_Different_Sml_"+fileName);
-
-	    /**Medium key*/
-
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Different/Medium/";
-	    tempDataSet=Utils.getAttributes(dataset, 0.75);	
-	    size=tempDataSet.numAttributes()-1;
-	    bio=new BioHashing(tempDataSet);		
-	    Utils.WriteToFile(bio.generate(size),tempResults,"BioHashing_Different_Med_"+fileName);
-
-	    /**Big key*/
-
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Different/Big/";
-	    tempDataSet=Utils.getAttributes(dataset, 0.75);	
-	    size=tempDataSet.numAttributes()-1;
-	    bio=new BioHashing(tempDataSet);	
-	    Utils.WriteToFile(bio.generate(size),tempResults,"BioHashing_Different_Big_"+fileName);
-
-	    user++;
-
-	}
     }
 
 }

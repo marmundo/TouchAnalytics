@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
 
-
 import weka.core.Attribute;
 import weka.core.Instances;
 
@@ -43,7 +42,7 @@ public class Utils {
 	ArffConector conector=new ArffConector();
 	conector.save(dataset, folder, fileName);
     }
-    
+
     /**
      * Writes in a file
      * @param eerStatistics
@@ -71,7 +70,71 @@ public class Utils {
 	}
 	return newDataSet;		
     }
-    
+
+    /**
+     * Method creates a new DataSet based on {@code dataset} but with only the attributes in {@code attributesIndex}
+     * @param dataset Dataset source
+     * @param attributeIndexes List of attribute indexes
+     * @return A new dataset with the attributes presented in {@code attributeIndexes}
+     */
+    public static Instances getAttributes(Instances dataset,ArrayList<Integer> attributeIndexes){
+	Instances newDataSet=new Instances(dataset);
+
+	/**Filling the Array with the name of attributes which index are in attributeIndexes array */
+	ArrayList<String> attributeNames=new ArrayList<String>();
+	for (Integer i : attributeIndexes) {
+	    String attrName=newDataSet.attribute(i-1).name();
+	    attributeNames.add(attrName);
+	}	 
+
+	int nAtributes=newDataSet.numAttributes();
+	/**Delete the attribute name which is not present in attributeNames array*/
+	for(int i=0;i<nAtributes-1;i++){	    
+	    String name=newDataSet.attribute(i).name();
+	    if(!attributeNames.contains(name) && !name.equals("class")){
+		newDataSet.deleteAttributeAt(i);
+		i=i-1;
+		nAtributes=newDataSet.numAttributes();
+	    }
+	}
+
+	return newDataSet;		
+    }
+
+    /**
+     * Create a Instances Objects with {@code name} and number of attributes {@code nAttributes} and {@code nInstances}
+     * @param name name of Instances Object
+     * @param nAttributes number of attributes
+     * @param capacity number max of instances
+     * @return a new Instances object
+     */
+    public static Instances createInstances(String name, int nAttributes,int capacity){
+	ArrayList<Attribute> attributeList = new ArrayList<Attribute>(nAttributes);
+	for (int i = 1; i <= nAttributes; i++) {
+	    Attribute attr = new Attribute("m" + String.valueOf(i));
+	    attributeList.add(attr);
+	}
+	Instances randomDataSet = new Instances(name, attributeList,capacity);
+	return randomDataSet;
+    }
+
+    /**
+     * Generate a random array with size {@code arraySize} and seed {@code seed}.
+     * This method generates the same array given the same seed.
+     * @param arraySize
+     * @param seed
+     * @return
+     */
+    public static double[] generateRandomArray(int arraySize,long seed){	
+	double[]output= new double[arraySize];
+	Random r=new Random();
+	r.setSeed(seed);
+	for (int i=0;i<arraySize;i++){	   		
+	    output[i]=r.nextInt();
+	}
+	return output;
+    }
+
     /**
      * Write to a file a double array
      * @param fileName
@@ -129,7 +192,7 @@ public class Utils {
      * @param max
      * @return a random number
      */
-    public static int getRandowNumber(int min, int max) {
+    public static int getRandomNumber(int min, int max) {
 	Random rand = new Random();
 
 	/**nextInt is normally exclusive of the top value, so add 1 to make it inclusive*/
@@ -147,18 +210,20 @@ public class Utils {
     public static double[] createRandomArray(int min, int max, int length) {	
 	max = max - 1;
 	double[] randomArray = new double[length];
-	
+
 	int randomNum = 0;
 	for (int i = 0; i < length; i++) {
-	    randomNum = getRandowNumber(min, max);
+	    randomNum = getRandomNumber(min, max);
 	    randomArray[i] = randomNum;	   
 	}
 	return randomArray;
     }
 
+    /**Example of Usage
+     * 
     public static void main(String args[]){
 	Utils util = new Utils();
 	util.writeToFile("teste", "teste");
 	util.writeToFile("teste", "testing");
-    }
+    }*/
 }

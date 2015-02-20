@@ -24,6 +24,15 @@ public class VotingDifferentDataSets {
 
     public final int nUsers=41;
 
+    /**
+     * Generate options arguments to CallClassifierNEntradas class
+     * @param combinationName Name of experiment
+     * @param datasets Used datasets
+     * @param classifiers Used classifiers
+     * @param user User label
+     * @param orientation Stroke orientation
+     * @return options arguments to CallClassifierNEntradas class
+     */
     private String takeOptions(String combinationName,String[]datasets,String[]classifiers,int user,String orientation){		
 	String nameOfFile=combinationName;		
 	//for (String string : datasets) {
@@ -44,7 +53,29 @@ public class VotingDifferentDataSets {
 	return options;
     }
 
+    /**
+     * Executes horizontal experiment
+     * @param combinationName Name of combination Experiment
+     * @param datasets Used datasets
+     * @param classifiers Used classifiers
+     * @param orientation Stroke Orientation
+     * @throws Exception
+     */
+    public void executeExperiment(String combinationName,String[]datasets,String[]classifiers,String orientation) throws Exception{
+	for(int user=1;user<=nUsers;user++){
+	    String options=takeOptions(combinationName,datasets, classifiers, user, orientation);
+	    String[] classifierOptions=Utils.splitOptions(options);
+	    callExperiment(classifierOptions);
+	}
+    }
 
+    /**
+     * Executes horizontal experiment
+     * @param combinationName Name of combination Experiment
+     * @param datasets Used datasets
+     * @param classifiers Used classifiers
+     * @throws Exception
+     */
     public void horizontalExperiment(String combinationName,String[]datasets,String[]classifiers) throws Exception{
 	for(int user=1;user<=nUsers;user++){
 	    String options=takeOptions(combinationName,datasets, classifiers, user, Const.HORIZONTAL);
@@ -53,6 +84,13 @@ public class VotingDifferentDataSets {
 	}
     }
 
+    /**
+     * Executes scrooling experiment
+     * @param combinationName Name of combination Experiment
+     * @param datasets Used datasets
+     * @param classifiers Used classifiers
+     * @throws Exception
+     */
     public void scroolingExperiment(String combinationName,String[]datasets,String[]classifiers) throws Exception{
 	for(int user=1;user<=nUsers;user++){
 	    String options=takeOptions(combinationName,datasets, classifiers, user, Const.SCROOLING);
@@ -90,55 +128,60 @@ public class VotingDifferentDataSets {
 
     /**
      * Executes the experiment
-     * @param options Full string off options
+     * @param options Full string of options
      */
     public void callExperiment(String[]options){
 	CallClassifierNEntradas.main(options);
     }
 
-    public static void main(String args[]) throws Exception{
+    /**
+     * Exemple of use
+     * @param args
+     * @throws Exception
+     */
+    /*public static void main(String args[]) throws Exception{
 	VotingDifferentDataSets teste=new VotingDifferentDataSets(10);
 	String orientation="";
 	orientation=Const.HORIZONTAL;
-	
+
 	String[]classifiers = new String[4];
-	
+
 	classifiers[0]=Const.KNN;
 	classifiers[1]=Const.SVM;
 	//teste.combination2per2(orientation,classifiers);
-	
-	
+
+
 	classifiers[0]=Const.KNN;
 	classifiers[1]=Const.SVM;
 	classifiers[2]=Const.DECISIONTREE;
 	//teste.combination3per3(orientation,classifiers);
-	
-	
+
+
 	classifiers[0]=Const.KNN;
 	classifiers[1]=Const.SVM;
 	classifiers[2]=Const.DECISIONTREE;
 	classifiers[3]=Const.MLP;
 	//teste.combination4per4(orientation,classifiers);
-	
+
 	orientation=Const.SCROOLING;
-	
+
 	classifiers[0]=Const.KNN;
 	classifiers[1]=Const.SVM;
 	//teste.combination2per2(orientation,classifiers);
-	
-	
+
+
 	classifiers[0]=Const.KNN;
 	classifiers[1]=Const.SVM;
 	classifiers[2]=Const.DECISIONTREE;
 	//teste.combination3per3(orientation,classifiers);
-	
-	
+
+
 	classifiers[0]=Const.KNN;
 	classifiers[1]=Const.SVM;
 	classifiers[2]=Const.DECISIONTREE;
 	classifiers[3]=Const.MLP;
 	//teste.combination4per4(orientation,classifiers);
-    }
+    }*/
 
 
 }

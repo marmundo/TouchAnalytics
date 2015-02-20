@@ -14,11 +14,11 @@ public class InstancesUtils {
      *            String value of class
      * @return A subset of instances
      */
-    public Instances subInstances(Instances instances, String classe) {
+    public Instances getInstances(Instances instances, String classe) {
 	Instances subDataSet = new Instances(instances);
 	subDataSet.clear();
 	for (Instance instance : instances) {
-	    if (instance.stringValue(instance.classAttribute()) == classe) {
+	    if (instance.stringValue(instance.classAttribute()).equals(classe)) {
 		subDataSet.add(instance);
 	    }
 	}

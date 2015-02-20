@@ -18,6 +18,15 @@ import weka.core.matrix.Matrix;
 public class Transformations {
 
     /**
+     * Convert a Instance object to a uni-dimensional Array
+     * 
+     * @param datarow
+     * @return
+     */
+    public static double[] instancetoArray(Instance datarow) {
+	return datarow.toDoubleArray();
+    }
+    /**
      * Convert a Instances object to a bidimensional Array
      * 
      * @param dataset
@@ -157,6 +166,27 @@ public class Transformations {
 	return dataset;
     }
 
+    /**
+     * Convert a Matrix object in a Instances object
+     * 
+     * @param matrix
+     * @return
+     */
+    public static Instance MatrixtoInstance(Matrix matrix) {
+	int m = matrix.getColumnDimension();
+	ArrayList<Attribute> attributeList = createAttributeListWithoutClass(m);
+	Instances inst = new Instances("dataset", attributeList, m);
+	inst.setClassIndex(inst.numAttributes() - 1);
+	for (int i = 0; i < matrix.getRowDimension(); i++) {
+	    Instance instance = new DenseInstance(m);
+	    for (int a = 0; a < m; a++) {
+		instance.setValue(attributeList.get(a), matrix.get(i, a));
+	    }
+	    inst.add(instance);
+	}
+	return inst.get(0);
+    }
+    
     /**
      * Convert a Matrix object in a Instances object
      * 

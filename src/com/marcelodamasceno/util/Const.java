@@ -37,5 +37,10 @@ public final class Const {
     public static final String HOMOGENEOUS="Homogeneous";
     public static final String HETEROGENEOUS="Heterogeneous";
     
+    public static final String POSITIVE="positive";
+    public static final String NEGATIVE="negative";
+    
+    
+    
 
 }

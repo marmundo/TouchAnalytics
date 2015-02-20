@@ -1,0 +1,71 @@
+=== Run information ===
+
+Scheme:       weka.classifiers.lazy.IBk -K 5 -W 0 -A "weka.core.neighboursearch.LinearNNSearch -A \"weka.core.EuclideanDistance -R first-last\""
+Relation:     dataset
+Instances:    407
+Attributes:   28
+              a0
+              a1
+              a2
+              a3
+              a4
+              a5
+              a6
+              a7
+              a8
+              a9
+              a10
+              a11
+              a12
+              a13
+              a14
+              a15
+              a16
+              a17
+              a18
+              a19
+              a20
+              a21
+              a22
+              a23
+              a24
+              a25
+              a26
+              class
+Test mode:    10-fold cross-validation
+
+=== Classifier model (full training set) ===
+
+IB1 instance-based classifier
+using 5 nearest neighbour(s) for classification
+
+
+Time taken to build model: 0 seconds
+
+=== Stratified cross-validation ===
+=== Summary ===
+
+Correctly Classified Instances         369               90.6634 %
+Incorrectly Classified Instances        38                9.3366 %
+Kappa statistic                          0.8   
+Mean absolute error                      0.1311
+Root mean squared error                  0.2739
+Relative absolute error                 28.0842 %
+Root relative squared error             56.6982 %
+Coverage of cases (0.95 level)          99.0172 %
+Mean rel. region size (0.95 level)      66.7076 %
+Total Number of Instances              407     
+
+=== Detailed Accuracy By Class ===
+
+                 TP Rate  FP Rate  Precision  Recall   F-Measure  MCC      ROC Area  PRC Area  Class
+                 0,926    0,126    0,926      0,926    0,926      0,800    0,956     0,962     positive
+                 0,874    0,074    0,874      0,874    0,874      0,800    0,956     0,935     negative
+Weighted Avg.    0,907    0,107    0,907      0,907    0,907      0,800    0,956     0,952     
+
+=== Confusion Matrix ===
+
+   a   b   <-- classified as
+ 237  19 |   a = positive
+  19 132 |   b = negative
+

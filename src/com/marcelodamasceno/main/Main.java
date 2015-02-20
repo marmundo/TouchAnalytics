@@ -31,7 +31,6 @@ public class Main {
 	}
 	String[] classifiersArray=(String[]) classifiers.toArray(new String[classifiers.size()]);
 
-	//VotingDifferentDataSets teste=new VotingDifferentDataSets(10);
 	Combination comb=null;
 	if(combination==2){
 	    comb=new Combination2x2();
@@ -133,7 +132,7 @@ public class Main {
 	    int k=3;
 	    String knn_k=Const.KNN+" -K "+k;
 	    //main.homogeneusVotingDifferentDatasets(knn_k, 5, 4,Const.HORIZONTAL);
-	    main.homogeneusVotingDifferentDatasets(knn_k, 5);
+	    main.homogeneusVotingDifferentDatasets(knn_k, 3);
 
 	}catch(Exception e){
 	    e.printStackTrace();

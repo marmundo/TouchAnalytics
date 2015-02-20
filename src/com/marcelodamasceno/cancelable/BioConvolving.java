@@ -132,7 +132,7 @@ public class BioConvolving extends Cancelable {
 	d[0] = 0;
 	d[w] = 100;
 	for (int j = 1; j <= w - 1; j++) {
-	    int random = Utils.getRandowNumber(min, max);
+	    int random = Utils.getRandomNumber(min, max);
 	    d[j] = random;
 	}
 	// Sorting d
