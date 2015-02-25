@@ -2,6 +2,7 @@ package com.marcelodamasceno.key.experiment;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import weka.core.Instances;
 
@@ -15,14 +16,51 @@ public class BioHashingExperiment {
 
     ArffConector conector = null;
     Instances dataset = null;
+    public Instances getDataset() {
+        return dataset;
+    }
+
+
+    public void setDataset(Instances dataset) {
+        this.dataset = dataset;
+    }
+
     int numAttributes=0;
     Instances keyArray=null;
     Instances tempDataSet=null;
+    public Instances getTempDataSet() {
+        return tempDataSet;
+    }
+
+
+    public void setTempDataSet(Instances tempDataSet) {
+        this.tempDataSet = tempDataSet;
+    }
+
     BioHashing bio=null;
     String projectPath = Const.DATASETPATH;
     String folderResults = "IntraSession-SemNominal/";
     String tempResults="";
     String fileName="";
+    public String getTempResults() {
+        return tempResults;
+    }
+
+
+    public void setTempResults(String tempResults) {
+        this.tempResults = tempResults;
+    }
+
+
+    public String getFileName() {
+        return fileName;
+    }
+
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     Instances client=null;
     Instances impostor=null;    
     private Instances clientProtected;
@@ -30,9 +68,8 @@ public class BioHashingExperiment {
     private InstancesUtils instUtil;
     private double threshold=0;
 
-    
-    
-    protected void executeFeatureSelectionExperiment(){
+
+    private ArrayList<Integer> getSmall(){
 	/**List of attribute Index which belongs to key with small size=0.25*/
 	ArrayList<Integer> small= new ArrayList<Integer>();
 	small.add(25);
@@ -41,7 +78,10 @@ public class BioHashingExperiment {
 	small.add(12);
 	small.add(4);
 	small.add(13);
-
+	return small;
+    }
+    
+    private ArrayList<Integer> getMedium(ArrayList<Integer> small){
 	/**List of attribute Index which belongs to key with medium size=0.5*/
 	ArrayList<Integer> medium= new ArrayList<Integer>();
 	medium.addAll(small);
@@ -51,7 +91,10 @@ public class BioHashingExperiment {
 	medium.add(18);
 	medium.add(19);
 	medium.add(3);	
-
+	return medium;
+    }
+    
+    private ArrayList<Integer> getBig(ArrayList<Integer> medium){
 	/**List of attribute Index which belongs to key with big size = 0.75*/
 	ArrayList<Integer> big= new ArrayList<Integer>();
 	big.addAll(medium);
@@ -61,21 +104,30 @@ public class BioHashingExperiment {
 	big.add(20);
 	big.add(6);
 	big.add(10);
+	return big;
+    }
+    
 
+    protected void executeFeatureSelectionExperiment(boolean saveBeforeDiscretization){
 	
-	executeFixedExperimentFS(small, medium, big);
-	executeDifferentExperimentFS(small, medium, big);
+	ArrayList<Integer> small = getSmall();
 	
+	ArrayList<Integer> medium=getMedium(small);
 
+	ArrayList<Integer> big=getBig(medium);
+
+	executeFixedExperimentFS(small, medium, big,saveBeforeDiscretization);
+	//executeDifferentExperimentFS(small, medium, big);
     }
 
 
-    private void executeFixedExperimentFS(ArrayList<Integer> small, ArrayList<Integer> medium, ArrayList<Integer> big){
-	fixedKeyStandard();
-	fixedKeySmallFS(small);
-	fixedKeyMediumFS(medium);
-	fixedKeyBigFS(big);
+    protected void executeFixedExperimentFS(ArrayList<Integer> small, ArrayList<Integer> medium, ArrayList<Integer> big,boolean saveBeforeDiscretization){
+	fixedKeyStandard(saveBeforeDiscretization);
+	fixedKeySmallFS(small,saveBeforeDiscretization);
+	fixedKeyMediumFS(medium,saveBeforeDiscretization);
+	fixedKeyBigFS(big,saveBeforeDiscretization);
     }
+    
 
     private void executeDifferentExperimentFS(ArrayList<Integer> small, ArrayList<Integer> medium, ArrayList<Integer> big){
 	differentKeyStandard();
@@ -84,12 +136,15 @@ public class BioHashingExperiment {
 	differentKeyBigFS(big);
     }
 
-    private void executeFixedExperiment(){
-	fixedKeyStandard();
-	fixedKeySmall();
-	fixedKeyMedium();
-	fixedKeyBig();
+    protected void executeFixedExperiment(boolean saveBeforeDiscretization){
+	fixedKeyStandard(saveBeforeDiscretization);
+	fixedKeySmall(saveBeforeDiscretization);
+	fixedKeyMedium(saveBeforeDiscretization);
+	fixedKeyBig(saveBeforeDiscretization);
     }
+
+   
+
 
     private void executeDifferentExperiment(){
 	differentKeyStandard();
@@ -98,37 +153,50 @@ public class BioHashingExperiment {
 	differentKeyBig();	
     }
 
-    protected void executeExperiment(){
-	executeFixedExperiment();
+    protected void executeExperiment(boolean saveBeforeDiscretization){
+	executeFixedExperiment(saveBeforeDiscretization);
 	executeDifferentExperiment();
     }
-    
-    private void fixedKeyBigFS(ArrayList<Integer> big){
+
+
+
+    private void generate(int user, boolean saveBeforeDiscretization){
+	bio=new BioHashing(tempDataSet,threshold);
+	if(user==1){
+	    numAttributes=tempDataSet.numAttributes()-1;
+	    keyArray=bio.generateRandomVectors(numAttributes);
+	}
+	if(saveBeforeDiscretization){
+	    Utils.WriteToFile(bio.generate(keyArray,saveBeforeDiscretization,fileName),tempResults,fileName);
+	}else{
+	    Utils.WriteToFile(bio.generate(keyArray),tempResults,fileName);
+	}
+    }
+
+   private void fixedKeyBigFS(ArrayList<Integer> big, boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
-	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
+	    setFileName("IntraSession-User_"+user+"_Day_1_Scrolling.arff");	
 	    try {
-		dataset = conector.openDataSet(projectPath + folderResults
-			+ fileName);
+		setDataset(conector.openDataSet(projectPath + folderResults+ fileName));
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
 
 	    //Big key
 
-	    tempResults=Const.PROJECTPATH+"BioHashing/FeatureSelection/User_"+user+"/Fixed/Big/";
+	    setTempResults(Const.PROJECTPATH+"BioHashing/FeatureSelection/User_"+user+"/Fixed/Big/");
 	    tempDataSet=Utils.getAttributes(dataset, big);
-
-	    bio=new BioHashing(tempDataSet,threshold);
-	    if(user==1){
-		numAttributes=tempDataSet.numAttributes()-1;
-		keyArray=bio.generateRandomVectors(numAttributes);
-	    }
-	    Utils.WriteToFile(bio.generate(keyArray),tempResults,"BioHashing_Fixed_Big_Threshold_"+threshold+"_"+fileName);
+	    setFileName("/Fixed/Big/FS/BioHashing_Fixed_Big_Threshold_"+threshold+"_"+fileName);
+	    generate(user,saveBeforeDiscretization);	    
 	    user++;
 	}
     }
-    private void fixedKeyBig(){
+    
+    
+    
+
+    private void fixedKeyBig(boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
@@ -141,19 +209,14 @@ public class BioHashingExperiment {
 
 	    //Big key
 
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Big/";
+	    setTempResults(Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Big/");
 	    tempDataSet=Utils.getAttributes(dataset, 0.75);
-
-	    bio=new BioHashing(tempDataSet,threshold);
-	    if(user==1){
-		numAttributes=tempDataSet.numAttributes()-1;
-		keyArray=bio.generateRandomVectors(numAttributes);
-	    }
-	    Utils.WriteToFile(bio.generate(keyArray),tempResults,"BioHashing_Fixed_Big_Threshold_"+threshold+"_"+fileName);
+	    setFileName("/Fixed/Big/NoFS/BioHashing_Fixed_Big_Threshold_"+threshold+"_"+fileName);
+	    generate(user, saveBeforeDiscretization);	    
 	    user++;
 	}
     }
-    private void fixedKeyMedium(){
+    private void fixedKeyMedium(boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
@@ -166,20 +229,15 @@ public class BioHashingExperiment {
 
 	    //Medium key
 
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Medium/";	    
+	    setTempResults(Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Medium/");	    
 	    tempDataSet=Utils.getAttributes(dataset, 0.5);
-
-	    bio=new BioHashing(tempDataSet,threshold);
-	    if(user==1){
-		numAttributes=tempDataSet.numAttributes()-1;
-		keyArray=bio.generateRandomVectors(numAttributes);
-	    }
-	    Utils.WriteToFile(bio.generate(keyArray),tempResults,"BioHashing_Fixed_Med_Threshold_"+threshold+"_"+fileName);
+	    setFileName("/Fixed/Med/NoFS/BioHashing_Fixed_Med_Threshold_"+threshold+"_"+fileName);
+	    generate(user, saveBeforeDiscretization);	    
 	    user++;
 	}
     }
 
-    private void fixedKeyMediumFS(ArrayList<Integer> medium){
+    private void fixedKeyMediumFS(ArrayList<Integer> medium, boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
@@ -191,19 +249,16 @@ public class BioHashingExperiment {
 	    }
 
 	    //Medium key
-	    
-	    tempResults=Const.PROJECTPATH+"BioHashing/FeatureSelection/User_"+user+"/Fixed/Medium/";
+
+	    setTempResults(Const.PROJECTPATH+"BioHashing/FeatureSelection/User_"+user+"/Fixed/Medium/");
 	    tempDataSet=Utils.getAttributes(dataset, medium);
-	    bio=new BioHashing(tempDataSet,threshold);
-	    if(user==1){
-		numAttributes=tempDataSet.numAttributes()-1;
-		keyArray=bio.generateRandomVectors(numAttributes);
-	    }
-	    Utils.WriteToFile(bio.generate(keyArray),tempResults,"BioHashing_Fixed_Med_Threshold_"+threshold+"_"+fileName);
+	    setFileName("/Fixed/Med/FS/BioHashing_Fixed_Med_Threshold_"+threshold+"_"+fileName);
+	    generate(user, saveBeforeDiscretization);
 	    user++;
 	}
     }
-    private void fixedKeySmallFS(ArrayList<Integer> small){
+    
+    private void fixedKeySmallFS(ArrayList<Integer> small, boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
@@ -214,22 +269,18 @@ public class BioHashingExperiment {
 		e.printStackTrace();
 	    }
 
-
 	    //Small key
 
-	    tempResults=Const.PROJECTPATH+"BioHashing/FeatureSelection/User_"+user+"/Fixed/Small/";	   
+	    setTempResults(Const.PROJECTPATH+"BioHashing/FeatureSelection/User_"+user+"/Fixed/Small/");	   
 	    tempDataSet=Utils.getAttributes(dataset, small);
+	    setFileName("/Fixed/Sml/FS/BioHashing_Fixed_Sml_Threshold_"+threshold+"_"+fileName);
 	    bio=new BioHashing(tempDataSet,threshold);
-	    if(user==1){
-		numAttributes=tempDataSet.numAttributes()-1;
-		keyArray=bio.generateRandomVectors(numAttributes);
-	    }
-	    Utils.WriteToFile(bio.generate(keyArray),tempResults,"BioHashing_Fixed_Sml_Threshold_"+threshold+"_"+fileName);
+	    generate(user, saveBeforeDiscretization);
 	    user++;
 	}
     }
 
-    private void fixedKeySmall(){
+    private void fixedKeySmall(boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
@@ -239,24 +290,17 @@ public class BioHashingExperiment {
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
-
-
 	    //Small key
 
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Small/";	  
+	    setTempResults(Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Small/");	  
 	    tempDataSet=Utils.getAttributes(dataset, 0.25);
-
-	    bio=new BioHashing(tempDataSet,threshold);
-	    if(user==1){
-		numAttributes=tempDataSet.numAttributes()-1;
-		keyArray=bio.generateRandomVectors(numAttributes);
-	    }
-	    Utils.WriteToFile(bio.generate(keyArray),tempResults,"BioHashing_Fixed_Sml_Threshold_"+threshold+"_"+fileName);
+	    setFileName("/Fixed/Sml/NoFS/BioHashing_Fixed_Sml_Threshold_"+threshold+"_"+fileName);
+	    generate(user, saveBeforeDiscretization);	    
 	    user++;
 	}
     }
 
-    private void fixedKeyStandard(){
+    private void fixedKeyStandard(boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
 	    String fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
@@ -268,15 +312,14 @@ public class BioHashingExperiment {
 	    }
 
 	    //Standard key
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Standard/";
-	    numAttributes=dataset.numAttributes()-1; 
-	    bio = new BioHashing(dataset,threshold);
-	    if(user==1)
-		keyArray=bio.generateRandomVectors(numAttributes);
-	    Utils.WriteToFile(bio.generate(keyArray),tempResults,"BioHashing_Fixed_Std_Threshold_"+threshold+"_"+fileName);
+	    setTempResults(Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Standard/");
+	    tempDataSet=dataset;
+	    setFileName("/Fixed/Std/BioHashing_Fixed_Std_Threshold_"+threshold+"_"+fileName);
+	    generate(user, saveBeforeDiscretization);	    
 	    user++;
 	}
     }
+    
     private void differentKeyBigFS(ArrayList<Integer> big){
 	int user=1;
 	while(user<=41){
@@ -341,7 +384,7 @@ public class BioHashingExperiment {
 	    user++;
 	}
     }
-    
+
     private void differentKeyMediumFS(ArrayList<Integer> medium){
 	int user=1;
 	while(user<=41){	  
@@ -482,7 +525,7 @@ public class BioHashingExperiment {
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
-	    
+
 	    client= instUtil.getInstances(dataset, Const.POSITIVE);
 	    impostor= instUtil.getInstances(dataset, Const.NEGATIVE);
 
@@ -510,11 +553,13 @@ public class BioHashingExperiment {
 
 	//Fixed key
 	BioHashingExperiment bHExperiment=new BioHashingExperiment();
-	
+
 	bHExperiment.threshold=0.5;
+
+	//bHExperiment.executeFixedExperiment(true);	
 	
-	bHExperiment.executeExperiment();
-	bHExperiment.executeFeatureSelectionExperiment();
+	//bHExperiment.executeExperiment(true);
+	bHExperiment.executeFeatureSelectionExperiment(true);
 
     }
 
