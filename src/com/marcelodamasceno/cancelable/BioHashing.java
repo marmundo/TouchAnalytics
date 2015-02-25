@@ -49,8 +49,8 @@ public class BioHashing extends Cancelable {
 	return generate(m);
     }
 
-    
-    
+
+
     /**
      * Generates a Instances object with {@code nVectors} random Instances based on {@code key}
      * The same {@code key} generates the same Instances Object.
@@ -114,19 +114,43 @@ public class BioHashing extends Cancelable {
 
     }
 
-    public Instances generate(Instances userSamples,Instances keyArray){
+    /* Generates the cancelable dataset and save the Instances before discretization with {@code fileName}
+     *  if {@code saveBeforeDiscretization}==TRUE
+     * @param userSamples User Biometric Sample
+     * @param keyArray Random array used to produce orthornormal vectors
+     * @param saveBeforeDiscretization flag used to save the instances before discretization step
+     * @param fileName fileName of instances to be saved case {@code saveBeforeDiscretization}==TRUE
+     * @return BioHashing dataset
+     */
+    public Instances generate(Instances userSamples,Instances keyArray, boolean saveBeforeDiscretization, String fileName){
 	Instances orthonormalInstances=applyGramShimidth(keyArray);
 	Attribute classe = originalDataset.classAttribute();	
 	userSamples.setClassIndex(userSamples.numAttributes() - 2);
 	userSamples.deleteAttributeAt(userSamples.numAttributes() - 1);
 	Instances userProtectedSamples=dotProduct(userSamples, orthonormalInstances);
+	if(saveBeforeDiscretization){
+	    Utils.WriteToFile(userProtectedSamples, "BioHashing-Before Discretization", fileName);
+	}
 	userProtectedSamples = discretization(userProtectedSamples,threshold);
 	userProtectedSamples.insertAttributeAt(classe, userProtectedSamples.numAttributes());
 	InstancesUtils.copyAttributeValue(originalDataset, originalDataset.classAttribute()
 		.index(), userProtectedSamples, userProtectedSamples.numAttributes() - 1);
 	userProtectedSamples.setClassIndex(userProtectedSamples.numAttributes()-1);
 	return userProtectedSamples;
+    }
 
+
+    /**
+     * Generates the cancelable dataset and save the Instances before discretization with {@code fileName}
+     *  if {@code saveBeforeDiscretization}==TRUE
+     * @param keyArray Random array used to produce orthornormal vectors
+     * @param saveBeforeDiscretization flag used to save the instances before discretization step
+     * @param fileName fileName of instances to be saved case {@code saveBeforeDiscretization}==TRUE
+     * @return cancelable BioHashing dataset
+     */
+    public Instances generate(Instances keyArray, boolean saveBeforeDiscretization,String fileName) {
+	Instances copyDataset = new Instances(originalDataset);
+	return generate(copyDataset, keyArray,saveBeforeDiscretization,fileName);
     }
 
     /**
@@ -135,21 +159,9 @@ public class BioHashing extends Cancelable {
      * @return cancelable BioHashing dataset
      */
     public Instances generate(Instances keyArray) {
-	Instances orthonormalInstances=applyGramShimidth(keyArray);
-	Attribute classe = originalDataset.classAttribute();
-	Instances copyDataset = new Instances(originalDataset);
-	copyDataset.setClassIndex(copyDataset.numAttributes() - 2);
-	copyDataset.deleteAttributeAt(copyDataset.numAttributes() - 1);
-
-	Instances userProtectedSamples=dotProduct(copyDataset, orthonormalInstances);
-	userProtectedSamples = discretization(userProtectedSamples,threshold);
-	userProtectedSamples.insertAttributeAt(classe, userProtectedSamples.numAttributes());
-	InstancesUtils.copyAttributeValue(originalDataset, originalDataset.classAttribute()
-		.index(), userProtectedSamples, userProtectedSamples.numAttributes() - 1);
-	userProtectedSamples.setClassIndex(userProtectedSamples.numAttributes()-1);
-	return userProtectedSamples;
-
+	return generate(keyArray, false,"");
     }
+
 
     /**
      * Apply the GramShimidth to get a set of orthonormal vectors from {@code randowDataSet}
