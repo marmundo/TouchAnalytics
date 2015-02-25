@@ -1,9 +1,5 @@
 package com.marcelodamasceno.cancelable;
 
-import java.io.FileNotFoundException;
-
-import com.marcelodamasceno.util.ArffConector;
-import com.marcelodamasceno.util.Const;
 import com.marcelodamasceno.util.GramSchmidt;
 import com.marcelodamasceno.util.InstancesUtils;
 import com.marcelodamasceno.util.Matriz;
