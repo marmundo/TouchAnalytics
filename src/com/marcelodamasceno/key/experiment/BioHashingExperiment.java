@@ -37,9 +37,7 @@ public class BioHashingExperiment {
         this.tempDataSet = tempDataSet;
     }
 
-    BioHashing bio=null;
-    String projectPath = Const.DATASETPATH;
-    String folderResults = "IntraSession-SemNominal/";
+    BioHashing bio=null;       
     String tempResults="";
     String fileName="";
     public String getTempResults() {
@@ -178,7 +176,7 @@ public class BioHashingExperiment {
 	while(user<=41){
 	    setFileName("IntraSession-User_"+user+"_Day_1_Scrolling.arff");	
 	    try {
-		setDataset(conector.openDataSet(projectPath + folderResults+ fileName));
+		setDataset(conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER+ fileName));
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
@@ -201,7 +199,7 @@ public class BioHashingExperiment {
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
-		dataset = conector.openDataSet(projectPath + folderResults
+		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
 			+ fileName);
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
@@ -221,7 +219,7 @@ public class BioHashingExperiment {
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
-		dataset = conector.openDataSet(projectPath + folderResults
+		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
 			+ fileName);
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
@@ -242,7 +240,7 @@ public class BioHashingExperiment {
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
-		dataset = conector.openDataSet(projectPath + folderResults
+		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
 			+ fileName);
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
@@ -263,7 +261,7 @@ public class BioHashingExperiment {
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
-		dataset = conector.openDataSet(projectPath + folderResults
+		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
 			+ fileName);
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
@@ -285,7 +283,7 @@ public class BioHashingExperiment {
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
-		dataset = conector.openDataSet(projectPath + folderResults
+		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
 			+ fileName);
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
@@ -305,7 +303,7 @@ public class BioHashingExperiment {
 	while(user<=41){
 	    String fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
-		dataset=conector.openDataSet(projectPath + folderResults
+		dataset=conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
 			+ fileName);
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
@@ -326,7 +324,7 @@ public class BioHashingExperiment {
 	    tempResults=Const.PROJECTPATH+"BioHashing/FeatureSelection/User_"+user+"/Different/Big/";
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
-		dataset = conector.openDataSet(projectPath + folderResults
+		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
 			+ fileName);
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
@@ -358,7 +356,7 @@ public class BioHashingExperiment {
 	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Different/Big/";
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
-		dataset = conector.openDataSet(projectPath + folderResults
+		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
 			+ fileName);
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
@@ -391,7 +389,7 @@ public class BioHashingExperiment {
 	    tempResults=Const.PROJECTPATH+"BioHashing/FeatureSelection/User_"+user+"/Different/Medium/";
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
-		dataset = conector.openDataSet(projectPath + folderResults
+		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
 			+ fileName);
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
@@ -422,7 +420,7 @@ public class BioHashingExperiment {
 	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Different/Medium/";
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
-		dataset = conector.openDataSet(projectPath + folderResults
+		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
 			+ fileName);
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
@@ -454,7 +452,7 @@ public class BioHashingExperiment {
 	    tempResults=Const.PROJECTPATH+"BioHashing/FeatureSelection/User_"+user+"/Different/Small/";	 
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
-		dataset = conector.openDataSet(projectPath + folderResults
+		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
 			+ fileName);
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
@@ -486,7 +484,7 @@ public class BioHashingExperiment {
 	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Different/Small/";
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
-		dataset = conector.openDataSet(projectPath + folderResults
+		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
 			+ fileName);
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
@@ -520,7 +518,7 @@ public class BioHashingExperiment {
 	    instUtil=new InstancesUtils();
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
-		dataset = conector.openDataSet(projectPath + folderResults
+		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
 			+ fileName);
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
