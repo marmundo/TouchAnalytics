@@ -1,5 +1,9 @@
 package com.marcelodamasceno.util;
 
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Enumeration;
+
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -48,11 +52,31 @@ public class InstancesUtils {
 	}
     }
 
+    public static ArrayList<Double> getMeanAtributes(Instances dataset){
+	ArrayList<Double> meanAttributes = new ArrayList<Double>();
+	for(int index=0;index<dataset.numAttributes()-2;index++){
+	    
+	    double[] attributeValues = dataset.attributeToDoubleArray(index); 
+	    meanAttributes.add(Double.valueOf(Utils.mean(attributeValues)));
+	}	    
+	return meanAttributes;
+    }
+
+
+
     /**
      * @param args
      */
     public static void main(String[] args) {
-	// TODO Auto-generated method stub
+	 String fileName="IntraSession-User_1_Day_1_Scrolling.arff";	
+	    Instances dataset = null;
+	    try {
+		ArffConector conector = new ArffConector();
+		dataset=conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER+ fileName);
+	    } catch (FileNotFoundException e) {
+		e.printStackTrace();
+	    }
+	System.out.println(InstancesUtils.getMeanAtributes(dataset).toString());
 
     }
 

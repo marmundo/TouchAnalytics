@@ -4,12 +4,17 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Random;
 
+import org.apache.commons.math3.stat.descriptive.moment.Mean;
+
 import weka.core.Attribute;
+import weka.core.Instance;
 import weka.core.Instances;
 
 /**
@@ -69,6 +74,13 @@ public class Utils {
 	    newDataSet.deleteAttributeAt(numAttributes);
 	}
 	return newDataSet;		
+    }
+    
+  
+    
+    public static double mean(double[] attributeValues){
+	Mean mean=new Mean();
+	return mean.evaluate(attributeValues);
     }
 
     /**
@@ -218,6 +230,10 @@ public class Utils {
 	}
 	return randomArray;
     }
+
+   
+
+   
 
     /**Example of Usage
      * 
