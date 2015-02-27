@@ -556,10 +556,11 @@ public class BioHashingExperiment {
 
 	bHExperiment.threshold=0.5;
 
+	bHExperiment.fixedKeyStandard(true);
 	//bHExperiment.executeFixedExperiment(true);	
 	
 	//bHExperiment.executeExperiment(true);
-	bHExperiment.executeFeatureSelectionExperiment(true);
+	//bHExperiment.executeFeatureSelectionExperiment(true);
 
     }
 
