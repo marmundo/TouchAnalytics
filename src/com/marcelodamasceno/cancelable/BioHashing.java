@@ -94,6 +94,7 @@ public class BioHashing extends Cancelable {
 	Instance userProtectedSample=dotProduct(bioSample, orthonormalInstances);
 	//Normalize before dot product
 	userProtectedSample=InstancesUtils.normalize(userProtectedSample);
+	threshold=InstancesUtils.getMeanInstance(userProtectedSample);
 	userProtectedSample=discretization(userProtectedSample,threshold);
 	userProtectedSample.insertAttributeAt(userProtectedSample.numAttributes());
 	userProtectedSample.setValue(userProtectedSample.numAttributes()-1, classe.value(0));	
@@ -131,6 +132,7 @@ public class BioHashing extends Cancelable {
 	}
 	//Normalize before dotproduct
 	userProtectedSamples=InstancesUtils.normalize(userProtectedSamples);
+	threshold=InstancesUtils.getMeanInstances(userProtectedSamples);
 	userProtectedSamples = discretization(userProtectedSamples,threshold);
 	userProtectedSamples.insertAttributeAt(classe, userProtectedSamples.numAttributes());
 	InstancesUtils.copyAttributeValue(originalDataset, originalDataset.classAttribute()
