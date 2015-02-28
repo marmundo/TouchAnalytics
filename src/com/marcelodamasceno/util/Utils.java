@@ -43,16 +43,37 @@ public class Utils {
      * @param dataset
      * @param fileName
      */
-    public static void WriteToFile(Instances dataset, String folder, String fileName){
+    public static void writeToFile(Instances dataset, String folder, String fileName){
 	ArffConector conector=new ArffConector();
 	conector.save(dataset, folder, fileName);
     }
+    
+        
+    public static double[] DoubleArrayListTodoubleArray(ArrayList<Double> arrayList){
+	double[] output= new double[arrayList.size()];
+	for (int i = 0; i < arrayList.size(); i++) {
+	    output[i]=arrayList.get(i);
+	}
+	return output;
+    }
+    
+    
+    /**
+     * Writes a ArrayList to a File
+     * @param fileName File Name
+     * @param arrayList ArrayList<Double>
+     */
+    public static void writeToFile(String fileName, ArrayList<Double> arrayList){
+	    writeToFile(fileName, arrayList.toString());	
+    }
 
+    
+    
     /**
      * Writes in a file
      * @param eerStatistics
      */
-    public static void WriteToFile(ArrayList<EERStatistics> eerStatistics){
+    public static void writeEERStatisticsToFile(ArrayList<EERStatistics> eerStatistics){
 	for (EERStatistics eerStatistic : eerStatistics) {
 	    String content="Mean= "+eerStatistic.getMean()+"\n";
 	    content+="Standard Desviation= "+eerStatistic.getStd();			
@@ -231,6 +252,7 @@ public class Utils {
 	return randomArray;
     }
 
+  
    
 
    
