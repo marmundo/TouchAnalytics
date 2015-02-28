@@ -7,8 +7,15 @@ import java.util.Enumeration;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 
+
+
+
+
+
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.Normalize;
 
 public class InstancesUtils {
 
@@ -75,6 +82,20 @@ public class InstancesUtils {
 	}	
 	return attributeValuesArray;
     }
+    
+    public static Instance normalize(Instance data) throws Exception{
+	Instances dataset=data.dataset();
+	Normalize filter= new Normalize();
+	filter.setInputFormat(dataset);
+	return Filter.useFilter(dataset, filter).get(0);
+    }
+
+    
+    public static Instances normalize(Instances dataset) throws Exception{
+	Normalize filter= new Normalize();
+	filter.setInputFormat(dataset);
+	return  Filter.useFilter(dataset,filter);
+    }
 
     /**
      * Return the median of all the values in {@code dataset} 
@@ -112,11 +133,19 @@ public class InstancesUtils {
 	} catch (FileNotFoundException e) {
 	    e.printStackTrace();
 	}
+	
+	try {
+	    System.out.println(dataset.get(0).toString());
+	    System.out.println(InstancesUtils.normalize(dataset.get(0)).toString());
+	} catch (Exception e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
 	//System.out.println(InstancesUtils.getMeanAtributes(dataset).toString());
 
 	//Utils.writeToFile("teste.R", InstancesUtils.getAttributeValues(dataset));
-	System.out.println("Median: "+InstancesUtils.getMedianInstances(dataset));
-	System.out.println("Mean: "+InstancesUtils.getMeanInstances(dataset));
+	//System.out.println("Median: "+InstancesUtils.getMedianInstances(dataset));
+	//System.out.println("Mean: "+InstancesUtils.getMeanInstances(dataset));
 	
     }
 
