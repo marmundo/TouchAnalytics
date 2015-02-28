@@ -2,15 +2,9 @@ package com.marcelodamasceno.util;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.rank.Median;
-
-
-
-
-
 
 import weka.core.Instance;
 import weka.core.Instances;
@@ -96,6 +90,16 @@ public class InstancesUtils {
 	filter.setInputFormat(dataset);
 	return  Filter.useFilter(dataset,filter);
     }
+    
+    /**
+     * Return the median of all the values in {@code dataset} 
+     * @param data
+     * @return
+     */
+    public static double getMedianInstance(Instance data){
+	Median m= new Median();
+	return m.evaluate(data.toDoubleArray());
+    }
 
     /**
      * Return the median of all the values in {@code dataset} 
@@ -108,6 +112,15 @@ public class InstancesUtils {
 	return m.evaluate(d);
     }
     
+    /**
+     * Return the mean of all the values in {@code data} 
+     * @param data
+     * @return
+     */
+    public static double getMeanInstance(Instance data){
+	Mean m= new Mean();		    
+	return m.evaluate(data.toDoubleArray());
+    }
     /**
      * Return the mean of all the values in {@code dataset} 
      * @param dataset
