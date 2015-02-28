@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
+import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 
 import weka.core.Instance;
@@ -62,7 +63,7 @@ public class InstancesUtils {
 	}	    
 	return meanAttributes;
     }
-    
+
     public static ArrayList<Double> getAttributeValues(Instances dataset){
 	ArrayList<Double> attributeValuesArray = new ArrayList<Double>();	
 	for(int index=0;index<dataset.numAttributes()-2;index++){	    
@@ -75,26 +76,48 @@ public class InstancesUtils {
 	return attributeValuesArray;
     }
 
+    /**
+     * Return the median of all the values in {@code dataset} 
+     * @param dataset
+     * @return
+     */
+    public static double getMedianInstances(Instances dataset){
+	Median m= new Median();
+	double[] d=Utils.DoubleArrayListTodoubleArray(getAttributeValues(dataset));	    
+	return m.evaluate(d);
+    }
+    
+    /**
+     * Return the mean of all the values in {@code dataset} 
+     * @param dataset
+     * @return
+     */
+    public static double getMeanInstances(Instances dataset){
+	Mean m= new Mean();
+	double[] d=Utils.DoubleArrayListTodoubleArray(getAttributeValues(dataset));	    
+	return m.evaluate(d);
+    }
+
 
 
     /**
      * @param args
      */
     public static void main(String[] args) {
-	 String fileName="IntraSession-User_1_Day_1_Scrolling.arff";	
-	    Instances dataset = null;
-	    try {
-		ArffConector conector = new ArffConector();
-		dataset=conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER+ fileName);
-	    } catch (FileNotFoundException e) {
-		e.printStackTrace();
-	    }
+	String fileName="IntraSession-User_1_Day_1_Scrolling.arff";	
+	Instances dataset = null;
+	try {
+	    ArffConector conector = new ArffConector();
+	    dataset=conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER+ fileName);
+	} catch (FileNotFoundException e) {
+	    e.printStackTrace();
+	}
 	//System.out.println(InstancesUtils.getMeanAtributes(dataset).toString());
-	    
-	    //Utils.writeToFile("teste.R", InstancesUtils.getAttributeValues(dataset));
-	    Median m= new Median();
-	    double[] d=Utils.DoubleArrayListTodoubleArray(InstancesUtils.getAttributeValues(dataset));	    
-	    System.out.println(m.evaluate(d));
+
+	//Utils.writeToFile("teste.R", InstancesUtils.getAttributeValues(dataset));
+	System.out.println("Median: "+InstancesUtils.getMedianInstances(dataset));
+	System.out.println("Mean: "+InstancesUtils.getMeanInstances(dataset));
+	
     }
 
 }
