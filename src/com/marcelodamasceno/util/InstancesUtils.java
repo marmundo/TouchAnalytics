@@ -3,8 +3,11 @@ package com.marcelodamasceno.util;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.rank.Median;
+
+import com.sun.xml.internal.bind.v2.model.impl.ModelBuilder;
 
 import weka.core.Instance;
 import weka.core.Instances;
@@ -91,6 +94,24 @@ public class InstancesUtils {
 	return  Filter.useFilter(dataset,filter);
     }
     
+    
+    /**
+     * Return the Mode
+     * @param dataset
+     * @return
+     */
+    public static double getModeInstances(Instances dataset){
+	return StatUtils.mode( Utils.DoubleArrayListTodoubleArray(getAttributeValues(dataset)))[0];	
+    }
+    
+    /**
+     * Return the mode
+     * @param data
+     * @return
+     */
+    public static double getModeInstance(Instance data){
+	return StatUtils.mode(data.toDoubleArray())[0];	
+    }
     /**
      * Return the median of all the values in {@code dataset} 
      * @param data
