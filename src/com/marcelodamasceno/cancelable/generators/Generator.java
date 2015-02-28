@@ -19,7 +19,7 @@ public abstract class Generator {
 	private ArffConector conector = new ArffConector();
 
 	private void generate(Instances dataset, String fileName,
-			String cancelableString, String session) {
+			String cancelableString, String session) throws Exception {
 		Cancelable cancelable;
 		//Needs this for switch below jdk 1.7
 		int cancelableInt=3;
@@ -71,9 +71,10 @@ public abstract class Generator {
 	 * @param user
 	 * @param fileName
 	 * @param cancelable
+	 * @throws Exception 
 	 */
 	public void generateInterSession(Instances dataset, String fileName,
-			String cancelableString) {
+			String cancelableString) throws Exception {
 		generate(dataset, fileName, cancelableString, "InterSession");
 	}
 
@@ -84,9 +85,10 @@ public abstract class Generator {
 	 * @param user
 	 * @param fileName
 	 * @param cancelable
+	 * @throws Exception 
 	 */
 	public void generateInterWeek(Instances dataset, String fileName,
-			String cancelableString) {
+			String cancelableString) throws Exception {
 		generate(dataset, fileName, cancelableString, "InterWeek");
 	}
 
@@ -98,9 +100,10 @@ public abstract class Generator {
 	 * @param user
 	 * @param fileName
 	 * @param cancelable
+	 * @throws Exception 
 	 */
 	public void generateIntraSession(Instances dataset, String fileName,
-			String cancelableString) {
+			String cancelableString) throws Exception {
 		generate(dataset, fileName, cancelableString, "IntraSession");
 	}
 

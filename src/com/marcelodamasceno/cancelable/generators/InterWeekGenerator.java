@@ -46,6 +46,9 @@ public class InterWeekGenerator extends Generator {
 			cancelableFunction);
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
+	    } catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	    }
 
 	}

@@ -36,6 +36,9 @@ public class IntraSessionGenerator extends Generator {
 
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
+	    } catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	    }
 	}
     }

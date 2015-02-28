@@ -41,6 +41,9 @@ public class InterSessionGenerator extends Generator {
 			+ user + "_Day_1_Horizontal.arff", cancelableString);
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
+	    } catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	    }
 
 	}
