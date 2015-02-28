@@ -106,7 +106,7 @@ public class BioHashingExperiment {
     }
     
 
-    protected void executeFeatureSelectionExperiment(boolean saveBeforeDiscretization){
+    protected void executeFeatureSelectionExperiment(boolean saveBeforeDiscretization) throws Exception{
 	
 	ArrayList<Integer> small = getSmall();
 	
@@ -119,7 +119,7 @@ public class BioHashingExperiment {
     }
 
 
-    protected void executeFixedExperimentFS(ArrayList<Integer> small, ArrayList<Integer> medium, ArrayList<Integer> big,boolean saveBeforeDiscretization){
+    protected void executeFixedExperimentFS(ArrayList<Integer> small, ArrayList<Integer> medium, ArrayList<Integer> big,boolean saveBeforeDiscretization) throws Exception{
 	fixedKeyStandard(saveBeforeDiscretization);
 	fixedKeySmallFS(small,saveBeforeDiscretization);
 	fixedKeyMediumFS(medium,saveBeforeDiscretization);
@@ -127,14 +127,14 @@ public class BioHashingExperiment {
     }
     
 
-    private void executeDifferentExperimentFS(ArrayList<Integer> small, ArrayList<Integer> medium, ArrayList<Integer> big){
+    private void executeDifferentExperimentFS(ArrayList<Integer> small, ArrayList<Integer> medium, ArrayList<Integer> big) throws Exception{
 	differentKeyStandard();
 	differentKeySmallFS(small);
 	differentKeyMediumFS(medium);
 	differentKeyBigFS(big);
     }
 
-    protected void executeFixedExperiment(boolean saveBeforeDiscretization){
+    protected void executeFixedExperiment(boolean saveBeforeDiscretization) throws Exception{
 	fixedKeyStandard(saveBeforeDiscretization);
 	fixedKeySmall(saveBeforeDiscretization);
 	fixedKeyMedium(saveBeforeDiscretization);
@@ -144,21 +144,21 @@ public class BioHashingExperiment {
    
 
 
-    private void executeDifferentExperiment(){
+    private void executeDifferentExperiment() throws Exception{
 	differentKeyStandard();
 	differentKeySmall();
 	differentKeyMedium();
 	differentKeyBig();	
     }
 
-    protected void executeExperiment(boolean saveBeforeDiscretization){
+    protected void executeExperiment(boolean saveBeforeDiscretization) throws Exception{
 	executeFixedExperiment(saveBeforeDiscretization);
 	executeDifferentExperiment();
     }
 
 
 
-    private void generate(int user, boolean saveBeforeDiscretization){
+    private void generate(int user, boolean saveBeforeDiscretization) throws Exception{
 	bio=new BioHashing(tempDataSet,threshold);
 	if(user==1){
 	    numAttributes=tempDataSet.numAttributes()-1;
@@ -171,7 +171,7 @@ public class BioHashingExperiment {
 	}
     }
 
-   private void fixedKeyBigFS(ArrayList<Integer> big, boolean saveBeforeDiscretization){
+   private void fixedKeyBigFS(ArrayList<Integer> big, boolean saveBeforeDiscretization) throws Exception{
 	int user=1;
 	while(user<=41){
 	    setFileName("IntraSession-User_"+user+"_Day_1_Scrolling.arff");	
@@ -194,7 +194,7 @@ public class BioHashingExperiment {
     
     
 
-    private void fixedKeyBig(boolean saveBeforeDiscretization){
+    private void fixedKeyBig(boolean saveBeforeDiscretization) throws Exception{
 	int user=1;
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
@@ -214,7 +214,7 @@ public class BioHashingExperiment {
 	    user++;
 	}
     }
-    private void fixedKeyMedium(boolean saveBeforeDiscretization){
+    private void fixedKeyMedium(boolean saveBeforeDiscretization) throws Exception{
 	int user=1;
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
@@ -235,7 +235,7 @@ public class BioHashingExperiment {
 	}
     }
 
-    private void fixedKeyMediumFS(ArrayList<Integer> medium, boolean saveBeforeDiscretization){
+    private void fixedKeyMediumFS(ArrayList<Integer> medium, boolean saveBeforeDiscretization) throws Exception{
 	int user=1;
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
@@ -256,7 +256,7 @@ public class BioHashingExperiment {
 	}
     }
     
-    private void fixedKeySmallFS(ArrayList<Integer> small, boolean saveBeforeDiscretization){
+    private void fixedKeySmallFS(ArrayList<Integer> small, boolean saveBeforeDiscretization) throws Exception{
 	int user=1;
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
@@ -278,7 +278,7 @@ public class BioHashingExperiment {
 	}
     }
 
-    private void fixedKeySmall(boolean saveBeforeDiscretization){
+    private void fixedKeySmall(boolean saveBeforeDiscretization) throws Exception{
 	int user=1;
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
@@ -298,7 +298,7 @@ public class BioHashingExperiment {
 	}
     }
 
-    private void fixedKeyStandard(boolean saveBeforeDiscretization){
+    private void fixedKeyStandard(boolean saveBeforeDiscretization) throws Exception{
 	int user=1;
 	while(user<=41){
 	    String fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
@@ -318,7 +318,7 @@ public class BioHashingExperiment {
 	}
     }
     
-    private void differentKeyBigFS(ArrayList<Integer> big){
+    private void differentKeyBigFS(ArrayList<Integer> big) throws Exception{
 	int user=1;
 	while(user<=41){
 	    tempResults=Const.PROJECTPATH+"BioHashing/FeatureSelection/User_"+user+"/Different/Big/";
@@ -350,7 +350,7 @@ public class BioHashingExperiment {
 	}
     }
 
-    private void differentKeyBig(){
+    private void differentKeyBig() throws Exception{
 	int user=1;
 	while(user<=41){
 	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Different/Big/";
@@ -383,7 +383,7 @@ public class BioHashingExperiment {
 	}
     }
 
-    private void differentKeyMediumFS(ArrayList<Integer> medium){
+    private void differentKeyMediumFS(ArrayList<Integer> medium) throws Exception{
 	int user=1;
 	while(user<=41){	  
 	    tempResults=Const.PROJECTPATH+"BioHashing/FeatureSelection/User_"+user+"/Different/Medium/";
@@ -414,7 +414,7 @@ public class BioHashingExperiment {
 	    user++;
 	}
     }
-    private void differentKeyMedium(){
+    private void differentKeyMedium() throws Exception{
 	int user=1;
 	while(user<=41){
 	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Different/Medium/";
@@ -445,7 +445,7 @@ public class BioHashingExperiment {
 	    user++;
 	}
     }
-    private void differentKeySmallFS(ArrayList<Integer> small){
+    private void differentKeySmallFS(ArrayList<Integer> small) throws Exception{
 	int user=1;
 	while(user<=41){
 
@@ -478,7 +478,7 @@ public class BioHashingExperiment {
 	}
     }
 
-    private void differentKeySmall(){
+    private void differentKeySmall() throws Exception{
 	int user=1;
 	while(user<=41){
 	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Different/Small/";
@@ -510,7 +510,7 @@ public class BioHashingExperiment {
 	}
     }
 
-    private void differentKeyStandard(){
+    private void differentKeyStandard() throws Exception{
 	int user=1;
 	/**Standard key*/
 	while(user<=41){
@@ -542,6 +542,8 @@ public class BioHashingExperiment {
 	    user++;
 	}
     }
+    
+    
 
     public BioHashingExperiment(){
 	conector=new ArffConector();
@@ -554,8 +556,18 @@ public class BioHashingExperiment {
 
 	bHExperiment.threshold=0.5;
 
-	bHExperiment.fixedKeyStandard(true);
-	//bHExperiment.executeFixedExperiment(true);	
+	try {
+	    bHExperiment.fixedKeyStandard(true);
+	} catch (Exception e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}
+	try {
+	    bHExperiment.executeFixedExperiment(true);
+	} catch (Exception e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	}	
 	
 	//bHExperiment.executeExperiment(true);
 	//bHExperiment.executeFeatureSelectionExperiment(true);
