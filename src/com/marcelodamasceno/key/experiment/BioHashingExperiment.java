@@ -2,7 +2,6 @@ package com.marcelodamasceno.key.experiment;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collection;
 
 import weka.core.Instances;
 
@@ -115,7 +114,7 @@ public class BioHashingExperiment {
 	ArrayList<Integer> big=getBig(medium);
 
 	executeFixedExperimentFS(small, medium, big,saveBeforeDiscretization);
-	//executeDifferentExperimentFS(small, medium, big);
+	executeDifferentExperimentFS(small, medium, big);
     }
 
 
@@ -158,15 +157,18 @@ public class BioHashingExperiment {
 
 
 
-    private void generate(int user, boolean saveBeforeDiscretization) throws Exception{
+    private void generate(int user, boolean saveBeforeDiscretization, String prefixFileName) throws Exception{
 	bio=new BioHashing(tempDataSet,threshold);
 	if(user==1){
 	    numAttributes=tempDataSet.numAttributes()-1;
 	    keyArray=bio.generateRandomVectors(numAttributes);
-	}
+	}	
 	if(saveBeforeDiscretization){
-	    Utils.writeToFile(bio.generate(keyArray,saveBeforeDiscretization,fileName),tempResults,fileName);
-	}else{
+	    Instances bioHashing=bio.generate(keyArray,saveBeforeDiscretization,fileName);
+	    setFileName(prefixFileName+bio.getThreshold()+"_"+fileName);
+	    Utils.writeToFile(bioHashing,tempResults,fileName);
+	}else{	
+	    setFileName(prefixFileName+bio.getThreshold()+"_"+fileName);
 	    Utils.writeToFile(bio.generate(keyArray),tempResults,fileName);
 	}
     }
@@ -184,9 +186,8 @@ public class BioHashingExperiment {
 	    //Big key
 
 	    setTempResults(Const.PROJECTPATH+"BioHashing/FeatureSelection/User_"+user+"/Fixed/Big/");
-	    tempDataSet=Utils.getAttributes(dataset, big);
-	    setFileName("/Fixed/Big/FS/BioHashing_Fixed_Big_Threshold_"+threshold+"_"+fileName);
-	    generate(user,saveBeforeDiscretization);	    
+	    tempDataSet=Utils.getAttributes(dataset, big);    
+	    generate(user,saveBeforeDiscretization,"/Fixed/Big/FS/BioHashing_Fixed_Big_Threshold_");	    
 	    user++;
 	}
     }
@@ -208,9 +209,8 @@ public class BioHashingExperiment {
 	    //Big key
 
 	    setTempResults(Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Big/");
-	    tempDataSet=Utils.getAttributes(dataset, 0.75);
-	    setFileName("/Fixed/Big/NoFS/BioHashing_Fixed_Big_Threshold_"+threshold+"_"+fileName);
-	    generate(user, saveBeforeDiscretization);	    
+	    tempDataSet=Utils.getAttributes(dataset, 0.75);	    
+	    generate(user, saveBeforeDiscretization,"/Fixed/Big/NoFS/BioHashing_Fixed_Big_Threshold_");	    
 	    user++;
 	}
     }
@@ -229,8 +229,7 @@ public class BioHashingExperiment {
 
 	    setTempResults(Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Medium/");	    
 	    tempDataSet=Utils.getAttributes(dataset, 0.5);
-	    setFileName("/Fixed/Med/NoFS/BioHashing_Fixed_Med_Threshold_"+threshold+"_"+fileName);
-	    generate(user, saveBeforeDiscretization);	    
+	    generate(user, saveBeforeDiscretization,"/Fixed/Med/NoFS/BioHashing_Fixed_Med_Threshold_");	    
 	    user++;
 	}
     }
@@ -250,8 +249,7 @@ public class BioHashingExperiment {
 
 	    setTempResults(Const.PROJECTPATH+"BioHashing/FeatureSelection/User_"+user+"/Fixed/Medium/");
 	    tempDataSet=Utils.getAttributes(dataset, medium);
-	    setFileName("/Fixed/Med/FS/BioHashing_Fixed_Med_Threshold_"+threshold+"_"+fileName);
-	    generate(user, saveBeforeDiscretization);
+	    generate(user, saveBeforeDiscretization,"/Fixed/Med/FS/BioHashing_Fixed_Med_Threshold_");
 	    user++;
 	}
     }
@@ -271,9 +269,7 @@ public class BioHashingExperiment {
 
 	    setTempResults(Const.PROJECTPATH+"BioHashing/FeatureSelection/User_"+user+"/Fixed/Small/");	   
 	    tempDataSet=Utils.getAttributes(dataset, small);
-	    setFileName("/Fixed/Sml/FS/BioHashing_Fixed_Sml_Threshold_"+threshold+"_"+fileName);
-	    bio=new BioHashing(tempDataSet,threshold);
-	    generate(user, saveBeforeDiscretization);
+	    generate(user, saveBeforeDiscretization,"/Fixed/Sml/FS/BioHashing_Fixed_Sml_Threshold_");
 	    user++;
 	}
     }
@@ -291,9 +287,8 @@ public class BioHashingExperiment {
 	    //Small key
 
 	    setTempResults(Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Small/");	  
-	    tempDataSet=Utils.getAttributes(dataset, 0.25);
-	    setFileName("/Fixed/Sml/NoFS/BioHashing_Fixed_Sml_Threshold_"+threshold+"_"+fileName);
-	    generate(user, saveBeforeDiscretization);	    
+	    tempDataSet=Utils.getAttributes(dataset, 0.25);	    
+	    generate(user, saveBeforeDiscretization,"/Fixed/Sml/NoFS/BioHashing_Fixed_Sml_Threshold_");	    
 	    user++;
 	}
     }
@@ -301,7 +296,7 @@ public class BioHashingExperiment {
     private void fixedKeyStandard(boolean saveBeforeDiscretization) throws Exception{
 	int user=1;
 	while(user<=41){
-	    String fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
+	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
 		dataset=conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
 			+ fileName);
@@ -311,9 +306,8 @@ public class BioHashingExperiment {
 
 	    //Standard key
 	    setTempResults(Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Standard/");
-	    tempDataSet=dataset;
-	    setFileName("/Fixed/Std/BioHashing_Fixed_Std_Threshold_"+threshold+"_"+fileName);
-	    generate(user, saveBeforeDiscretization);	    
+	    tempDataSet=dataset;	    
+	    generate(user, saveBeforeDiscretization,"/Fixed/Std/BioHashing_Fixed_Std_Threshold_");	    
 	    user++;
 	}
     }
@@ -344,7 +338,7 @@ public class BioHashingExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Big_Threshold_"+threshold+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Big_Threshold_"+bio.getThreshold()+"_"+fileName);
 	    }
 	    user++;
 	}
@@ -377,7 +371,7 @@ public class BioHashingExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Big_Threshold_"+threshold+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Big_Threshold_"+bio.getThreshold()+"_"+fileName);
 	    }
 	    user++;
 	}
@@ -409,7 +403,7 @@ public class BioHashingExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Med_Threshold_"+threshold+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Med_Threshold_"+bio.getThreshold()+"_"+fileName);
 	    }
 	    user++;
 	}
@@ -440,7 +434,7 @@ public class BioHashingExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Med_Threshold_"+threshold+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Med_Threshold_"+bio.getThreshold()+"_"+fileName);
 	    }
 	    user++;
 	}
@@ -472,7 +466,7 @@ public class BioHashingExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Sml_Threshold_"+threshold+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Sml_Threshold_"+bio.getThreshold()+"_"+fileName);
 	    }
 	    user++;
 	}
@@ -504,7 +498,7 @@ public class BioHashingExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Sml_Threshold_"+threshold+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Sml_Threshold_"+bio.getThreshold()+"_"+fileName);
 	    }
 	    user++;
 	}
@@ -537,7 +531,7 @@ public class BioHashingExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Std_Threshold_"+threshold+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Std_Threshold_"+bio.getThreshold()+"_"+fileName);
 	    }
 	    user++;
 	}
@@ -554,23 +548,16 @@ public class BioHashingExperiment {
 	//Fixed key
 	BioHashingExperiment bHExperiment=new BioHashingExperiment();
 
-	bHExperiment.threshold=0.5;
-
 	try {
-	    bHExperiment.fixedKeyStandard(true);
+	  //bHExperiment.executeExperiment(false);
+	  bHExperiment.executeFeatureSelectionExperiment(false);
 	} catch (Exception e) {
 	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
-	try {
-	    bHExperiment.executeFixedExperiment(true);
-	} catch (Exception e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
-	}	
+		
 	
-	//bHExperiment.executeExperiment(true);
-	//bHExperiment.executeFeatureSelectionExperiment(true);
+	
 
     }
 
