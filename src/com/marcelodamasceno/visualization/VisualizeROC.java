@@ -1,10 +1,9 @@
 package com.marcelodamasceno.visualization;
 
 import java.awt.*;
-import java.io.*;
 import java.util.ArrayList;
 
-import javax.swing.*;
+
 
 import weka.classifiers.evaluation.Evaluation;
 import weka.classifiers.evaluation.ThresholdCurve;
@@ -71,7 +70,7 @@ public class VisualizeROC {
 	visualizeMultipleROCs(evalList, names,"");
     }	
 
-    public void vizualizeMultipleROCs(ArrayList<Evaluation> evalList) throws Exception{
+    public void visualizeMultipleROCs(ArrayList<Evaluation> evalList) throws Exception{
 	ThresholdCurve tc=new ThresholdCurve();
 	ArrayList<Instances> rocCurves=new ArrayList<Instances>();
 	for (Evaluation eval : evalList) {
