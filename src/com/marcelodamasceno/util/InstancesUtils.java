@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
+import org.apache.commons.math3.stat.descriptive.rank.Median;
+
 import weka.core.Instance;
 import weka.core.Instances;
 
@@ -54,12 +56,23 @@ public class InstancesUtils {
 
     public static ArrayList<Double> getMeanAtributes(Instances dataset){
 	ArrayList<Double> meanAttributes = new ArrayList<Double>();
-	for(int index=0;index<dataset.numAttributes()-2;index++){
-	    
+	for(int index=0;index<dataset.numAttributes()-2;index++){	    
 	    double[] attributeValues = dataset.attributeToDoubleArray(index); 
 	    meanAttributes.add(Double.valueOf(Utils.mean(attributeValues)));
 	}	    
 	return meanAttributes;
+    }
+    
+    public static ArrayList<Double> getAttributeValues(Instances dataset){
+	ArrayList<Double> attributeValuesArray = new ArrayList<Double>();	
+	for(int index=0;index<dataset.numAttributes()-2;index++){	    
+	    double[] attributeValues=dataset.attributeToDoubleArray(index);
+	    //Transforming a double[] array in a ArrayList
+	    for(double d : attributeValues){
+		attributeValuesArray.add(d);
+	    }
+	}	
+	return attributeValuesArray;
     }
 
 
@@ -76,8 +89,12 @@ public class InstancesUtils {
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
-	System.out.println(InstancesUtils.getMeanAtributes(dataset).toString());
-
+	//System.out.println(InstancesUtils.getMeanAtributes(dataset).toString());
+	    
+	    //Utils.writeToFile("teste.R", InstancesUtils.getAttributeValues(dataset));
+	    Median m= new Median();
+	    double[] d=Utils.DoubleArrayListTodoubleArray(InstancesUtils.getAttributeValues(dataset));	    
+	    System.out.println(m.evaluate(d));
     }
 
 }
