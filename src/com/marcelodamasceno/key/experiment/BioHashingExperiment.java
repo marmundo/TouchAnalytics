@@ -165,9 +165,9 @@ public class BioHashingExperiment {
 	    keyArray=bio.generateRandomVectors(numAttributes);
 	}
 	if(saveBeforeDiscretization){
-	    Utils.WriteToFile(bio.generate(keyArray,saveBeforeDiscretization,fileName),tempResults,fileName);
+	    Utils.writeToFile(bio.generate(keyArray,saveBeforeDiscretization,fileName),tempResults,fileName);
 	}else{
-	    Utils.WriteToFile(bio.generate(keyArray),tempResults,fileName);
+	    Utils.writeToFile(bio.generate(keyArray),tempResults,fileName);
 	}
     }
 
@@ -344,7 +344,7 @@ public class BioHashingExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.WriteToFile(protectedData,tempResults,"BioHashing_Different_Big_Threshold_"+threshold+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Big_Threshold_"+threshold+"_"+fileName);
 	    }
 	    user++;
 	}
@@ -377,7 +377,7 @@ public class BioHashingExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.WriteToFile(protectedData,tempResults,"BioHashing_Different_Big_Threshold_"+threshold+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Big_Threshold_"+threshold+"_"+fileName);
 	    }
 	    user++;
 	}
@@ -409,7 +409,7 @@ public class BioHashingExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.WriteToFile(protectedData,tempResults,"BioHashing_Different_Med_Threshold_"+threshold+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Med_Threshold_"+threshold+"_"+fileName);
 	    }
 	    user++;
 	}
@@ -440,7 +440,7 @@ public class BioHashingExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.WriteToFile(protectedData,tempResults,"BioHashing_Different_Med_Threshold_"+threshold+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Med_Threshold_"+threshold+"_"+fileName);
 	    }
 	    user++;
 	}
@@ -472,7 +472,7 @@ public class BioHashingExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.WriteToFile(protectedData,tempResults,"BioHashing_Different_Sml_Threshold_"+threshold+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Sml_Threshold_"+threshold+"_"+fileName);
 	    }
 	    user++;
 	}
@@ -504,7 +504,7 @@ public class BioHashingExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.WriteToFile(protectedData,tempResults,"BioHashing_Different_Sml_Threshold_"+threshold+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Sml_Threshold_"+threshold+"_"+fileName);
 	    }
 	    user++;
 	}
@@ -537,7 +537,7 @@ public class BioHashingExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.WriteToFile(protectedData,tempResults,"BioHashing_Different_Std_Threshold_"+threshold+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"BioHashing_Different_Std_Threshold_"+threshold+"_"+fileName);
 	    }
 	    user++;
 	}

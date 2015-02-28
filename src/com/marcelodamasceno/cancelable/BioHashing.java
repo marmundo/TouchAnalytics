@@ -125,7 +125,7 @@ public class BioHashing extends Cancelable {
 	userSamples.deleteAttributeAt(userSamples.numAttributes() - 1);
 	Instances userProtectedSamples=dotProduct(userSamples, orthonormalInstances);
 	if(saveBeforeDiscretization){
-	    Utils.WriteToFile(userProtectedSamples, "BioHashing-Before Discretization", fileName);
+	    Utils.writeToFile(userProtectedSamples, "BioHashing-Before Discretization", fileName);
 	}
 	userProtectedSamples = discretization(userProtectedSamples,threshold);
 	userProtectedSamples.insertAttributeAt(classe, userProtectedSamples.numAttributes());
