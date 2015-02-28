@@ -40,7 +40,7 @@ public class BioHashing extends Cancelable {
     /* (non-Javadoc)
      * @see com.marcelodamasceno.cancelable.Cancelable#generate()
      */
-    public Instances generate(){
+    public Instances generate() throws Exception{
 	int m=originalDataset.numAttributes() - 1;
 	return generate(m);
     }
@@ -87,11 +87,13 @@ public class BioHashing extends Cancelable {
 	return randomDataSet;
     }
 
-    public Instance generate(Instance bioSample, Instances key){
+    public Instance generate(Instance bioSample, Instances key) throws Exception{
 	Instances orthonormalInstances=applyGramShimidth(key);
 	Attribute classe = bioSample.classAttribute();
 	bioSample.deleteAttributeAt(bioSample.numAttributes() - 1);
 	Instance userProtectedSample=dotProduct(bioSample, orthonormalInstances);
+	//Normalize before dot product
+	userProtectedSample=InstancesUtils.normalize(userProtectedSample);
 	userProtectedSample=discretization(userProtectedSample,threshold);
 	userProtectedSample.insertAttributeAt(userProtectedSample.numAttributes());
 	userProtectedSample.setValue(userProtectedSample.numAttributes()-1, classe.value(0));	
@@ -118,7 +120,7 @@ public class BioHashing extends Cancelable {
      * @param fileName fileName of instances to be saved case {@code saveBeforeDiscretization}==TRUE
      * @return BioHashing dataset
      */
-    public Instances generate(Instances userSamples,Instances keyArray, boolean saveBeforeDiscretization, String fileName){
+    public Instances generate(Instances userSamples,Instances keyArray, boolean saveBeforeDiscretization, String fileName) throws Exception{
 	Instances orthonormalInstances=applyGramShimidth(keyArray);
 	Attribute classe = originalDataset.classAttribute();	
 	userSamples.setClassIndex(userSamples.numAttributes() - 2);
@@ -127,6 +129,8 @@ public class BioHashing extends Cancelable {
 	if(saveBeforeDiscretization){
 	    Utils.writeToFile(userProtectedSamples, "BioHashing-Before Discretization", fileName);
 	}
+	//Normalize before dotproduct
+	userProtectedSamples=InstancesUtils.normalize(userProtectedSamples);
 	userProtectedSamples = discretization(userProtectedSamples,threshold);
 	userProtectedSamples.insertAttributeAt(classe, userProtectedSamples.numAttributes());
 	InstancesUtils.copyAttributeValue(originalDataset, originalDataset.classAttribute()
@@ -143,8 +147,9 @@ public class BioHashing extends Cancelable {
      * @param saveBeforeDiscretization flag used to save the instances before discretization step
      * @param fileName fileName of instances to be saved case {@code saveBeforeDiscretization}==TRUE
      * @return cancelable BioHashing dataset
+     * @throws Exception 
      */
-    public Instances generate(Instances keyArray, boolean saveBeforeDiscretization,String fileName) {
+    public Instances generate(Instances keyArray, boolean saveBeforeDiscretization,String fileName) throws Exception {
 	Instances copyDataset = new Instances(originalDataset);
 	return generate(copyDataset, keyArray,saveBeforeDiscretization,fileName);
     }
@@ -153,8 +158,9 @@ public class BioHashing extends Cancelable {
      * Generates the cancelable dataset
      * @param keyArray Random array used to produce orthornormal vectors
      * @return cancelable BioHashing dataset
+     * @throws Exception 
      */
-    public Instances generate(Instances keyArray) {
+    public Instances generate(Instances keyArray) throws Exception {
 	return generate(keyArray, false,"");
     }
 
@@ -177,8 +183,9 @@ public class BioHashing extends Cancelable {
      * @param m number of attributes of the cancelable biometric.
      * m can be considered a key. 
      * @return cancelable biometric
+     * @throws Exception 
      */
-    public Instances generate(int m) {    
+    public Instances generate(int m) throws Exception {    
 	/* Creating the m attributes */
 	int nAttributes = m;	
 	Instances randowDataSet=generateRandomVectors(nAttributes);
