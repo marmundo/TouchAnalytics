@@ -19,6 +19,14 @@ public class BioHashing extends Cancelable {
 
     private double threshold=0;
 
+    public double getThreshold() {
+        return threshold;
+    }
+
+    public void setThreshold(double threshold) {
+        this.threshold = threshold;
+    }
+
     /**
      * Constructor
      * @param data Original Dataset 
@@ -94,8 +102,8 @@ public class BioHashing extends Cancelable {
 	Instance userProtectedSample=dotProduct(bioSample, orthonormalInstances);
 	//Normalize before dot product
 	userProtectedSample=InstancesUtils.normalize(userProtectedSample);
-	//Define threshold as mean of Instances
-	threshold=InstancesUtils.getMeanInstance(userProtectedSample);
+	//Define threshold as median of Instances
+	threshold=InstancesUtils.getMedianInstance(userProtectedSample);
 	userProtectedSample=discretization(userProtectedSample,threshold);
 	userProtectedSample.insertAttributeAt(userProtectedSample.numAttributes());
 	userProtectedSample.setValue(userProtectedSample.numAttributes()-1, classe.value(0));	
@@ -133,8 +141,8 @@ public class BioHashing extends Cancelable {
 	}
 	//Normalize before dotproduct
 	userProtectedSamples=InstancesUtils.normalize(userProtectedSamples);
-	//Define the threshold as the mean of Instances
-	threshold=InstancesUtils.getMeanInstances(userProtectedSamples);
+	//Define the threshold as the median of Instances
+	threshold=InstancesUtils.getMedianInstances(userProtectedSamples);
 	userProtectedSamples = discretization(userProtectedSamples,threshold);
 	userProtectedSamples.insertAttributeAt(classe, userProtectedSamples.numAttributes());
 	InstancesUtils.copyAttributeValue(originalDataset, originalDataset.classAttribute()
