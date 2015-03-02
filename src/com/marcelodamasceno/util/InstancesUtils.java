@@ -25,7 +25,7 @@ public class InstancesUtils {
      *            String value of class
      * @return A subset of instances
      */
-    public Instances getInstances(Instances instances, String classe) {
+    public static Instances getInstances(Instances instances, String classe) {
 	Instances subDataSet = new Instances(instances);
 	subDataSet.clear();
 	for (Instance instance : instances) {
@@ -42,7 +42,7 @@ public class InstancesUtils {
      * @param classe
      * @return
      */
-    public Instances getInstancesWithoutAClass(Instances instances, String classe){
+    public static Instances getInstancesWithoutAClass(Instances instances, String classe){
 	Instances subDataSet = new Instances(instances);
 	subDataSet.clear();
 	for (Instance instance : instances) {
