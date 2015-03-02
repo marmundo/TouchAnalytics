@@ -35,6 +35,23 @@ public class InstancesUtils {
 	}
 	return subDataSet;
     }
+    
+    /**
+     * Return a subset of Instances without the instances with classe {@code classe}
+     * @param instances
+     * @param classe
+     * @return
+     */
+    public Instances getInstancesWithoutAClass(Instances instances, String classe){
+	Instances subDataSet = new Instances(instances);
+	subDataSet.clear();
+	for (Instance instance : instances) {
+	    if (!instance.stringValue(instance.classAttribute()).equals(classe)) {
+		subDataSet.add(instance);
+	    }
+	}
+	return subDataSet;
+    }
 
     /**
      * Copies the values of the attribute in the attrIndexOrigin position to the
