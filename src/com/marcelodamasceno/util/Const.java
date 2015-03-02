@@ -42,6 +42,9 @@ public final class Const {
     
     public static final String INTRASESSIONFOLDER="IntraSession-SemNominal/";
     
+    public static final String ORIGINALSCROOLINGFILENAME="ScrollingInstances.arff";
+    public static final String ORIGINAHORIZONTALFILENAME="HorizontalInstances.arff";
+    
     
     
 

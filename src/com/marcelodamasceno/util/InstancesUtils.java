@@ -2,16 +2,23 @@ package com.marcelodamasceno.util;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.rank.Median;
 
+import com.marcelodamasceno.methodology.Training;
 import com.sun.xml.internal.bind.v2.model.impl.ModelBuilder;
 
+import weka.classifiers.lazy.IBk;
+import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.ProtectedProperties;
 import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.AddValues;
 import weka.filters.unsupervised.attribute.Normalize;
 
 public class InstancesUtils {
@@ -35,7 +42,82 @@ public class InstancesUtils {
 	}
 	return subDataSet;
     }
-    
+
+    public static Instances changeClassAttribute(Instances data, List<String> values){
+	Instances copyData=new Instances(data);	
+	copyData.setClassIndex(copyData.classIndex()-1);
+	copyData.deleteAttributeAt(copyData.classIndex()+1);
+
+	Attribute classe = new Attribute("user", values);	
+	copyData.insertAttributeAt(classe, copyData.numAttributes());
+	copyData.setClassIndex(copyData.numAttributes()-1);
+
+	//Filling copyData;
+	for (int i = 0; i < copyData.numInstances(); i++) {
+	    String classValue=data.get(i).stringValue(data.classIndex());	    
+	    copyData.get(i).setClassValue(classValue);;
+
+	}
+	return copyData;
+    }
+
+    public static ArrayList<Instances> getTrainingandTestDataSet(Instances datasetTemp,String targetUser){
+	ArrayList<Instances> trainingTestDataSet= new ArrayList<Instances>();
+	Training training=new Training(datasetTemp);
+	Instances trainingDataSet=training.takeTrainingDataSet(datasetTemp,targetUser);	
+	trainingTestDataSet.add(trainingDataSet);
+
+	Instances testDataSet=takeTestDataSet(datasetTemp, training.getTrainingUsers());
+	trainingTestDataSet.add(testDataSet);
+
+	return trainingTestDataSet;
+
+    }
+
+    public static Instances removeInstancesWithClassValue(Instances dataset,String value){
+	for (Instance instance : dataset) {
+	    if(instance.classAttribute().value(instance.classIndex())==value){
+		dataset.remove(instance);
+	    }
+	}
+	return dataset;
+    }
+
+    public static Instances takeTestDataSet(Instances datasetTemp, String[] usersInTrainingDataSet){
+	ArrayList<String> usersInTraining=Utils.stringArrayToStringArrayList(usersInTrainingDataSet);
+	Instances testDataSet=new Instances(datasetTemp);
+	testDataSet.clear();
+
+	for (int testUser = 1; testUser <=41; testUser++) {
+	    if(!usersInTraining.contains(String.valueOf(testUser))){
+		try{
+		    Instances temp=InstancesUtils.changeClassLabel(InstancesUtils.getInstances(datasetTemp,String.valueOf(testUser)),String.valueOf(testUser),"negative");
+		    testDataSet.addAll(temp);
+		}catch(Exception e){
+		    e.printStackTrace();
+		}		
+	    }
+	}
+	return testDataSet;
+    }
+
+
+
+    public static Instances getInstancesWithClassValue(Instances dataset,double[] classValues){
+	Instances output=new Instances(dataset);
+	output.clear();
+	for (int i = 0; i < classValues.length; i++) {
+	    Instances temp=getInstances(dataset, String.valueOf(i));
+	    output.addAll(temp);
+	}
+	return output;
+    }
+
+    public static Instances changeClassLabel(Instances datasetTemp, String oldLabel, String newLabel){
+	datasetTemp.renameAttributeValue(datasetTemp.classAttribute(), oldLabel, newLabel);
+	return datasetTemp;
+    }
+
     /**
      * Return a subset of Instances without the instances with classe {@code classe}
      * @param instances
@@ -96,7 +178,7 @@ public class InstancesUtils {
 	}	
 	return attributeValuesArray;
     }
-    
+
     public static Instance normalize(Instance data) throws Exception{
 	Instances dataset=data.dataset();
 	Normalize filter= new Normalize();
@@ -104,14 +186,14 @@ public class InstancesUtils {
 	return Filter.useFilter(dataset, filter).get(0);
     }
 
-    
+
     public static Instances normalize(Instances dataset) throws Exception{
 	Normalize filter= new Normalize();
 	filter.setInputFormat(dataset);
 	return  Filter.useFilter(dataset,filter);
     }
-    
-    
+
+
     /**
      * Return the Mode
      * @param dataset
@@ -120,7 +202,7 @@ public class InstancesUtils {
     public static double getModeInstances(Instances dataset){
 	return StatUtils.mode( Utils.DoubleArrayListTodoubleArray(getAttributeValues(dataset)))[0];	
     }
-    
+
     /**
      * Return the mode
      * @param data
@@ -149,7 +231,7 @@ public class InstancesUtils {
 	double[] d=Utils.DoubleArrayListTodoubleArray(getAttributeValues(dataset));	    
 	return m.evaluate(d);
     }
-    
+
     /**
      * Return the mean of all the values in {@code data} 
      * @param data
@@ -184,7 +266,7 @@ public class InstancesUtils {
 	} catch (FileNotFoundException e) {
 	    e.printStackTrace();
 	}
-	
+
 	try {
 	    System.out.println(dataset.get(0).toString());
 	    System.out.println(InstancesUtils.normalize(dataset.get(0)).toString());
@@ -197,7 +279,7 @@ public class InstancesUtils {
 	//Utils.writeToFile("teste.R", InstancesUtils.getAttributeValues(dataset));
 	//System.out.println("Median: "+InstancesUtils.getMedianInstances(dataset));
 	//System.out.println("Mean: "+InstancesUtils.getMeanInstances(dataset));
-	
+
     }
 
 }

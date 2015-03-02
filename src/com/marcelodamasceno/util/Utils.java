@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
@@ -42,8 +44,8 @@ public class Utils {
 	ArffConector conector=new ArffConector();
 	conector.save(dataset, folder, fileName);
     }
-    
-        
+
+
     public static double[] DoubleArrayListTodoubleArray(ArrayList<Double> arrayList){
 	double[] output= new double[arrayList.size()];
 	for (int i = 0; i < arrayList.size(); i++) {
@@ -51,19 +53,31 @@ public class Utils {
 	}
 	return output;
     }
-    
-    
+
+    public static ArrayList<Double> doubleArrayToDoubleArrayList(double[] doubleArray){
+	ArrayList<Double> doubleArrayList=new ArrayList<Double>();    
+	for (int i = 0; i < doubleArray.length; i++) {
+	    doubleArrayList.add(doubleArray[i]);
+	}
+	return doubleArrayList;
+    }    
+
     /**
      * Writes a ArrayList to a File
      * @param fileName File Name
      * @param arrayList ArrayList<Double>
      */
     public static void writeToFile(String fileName, ArrayList<Double> arrayList){
-	    writeToFile(fileName, arrayList.toString());	
+	String content=arrayList.toString();
+	writeToFile(fileName, content.substring(1, content.length()-1));	
     }
 
-    
-    
+    public static void writeToFile(String folder, String fileName,ArrayList<Double> arrayList) {
+	String content=arrayList.toString();
+	writeToFile(folder,fileName, content.substring(1, content.length()-1));	
+    }
+
+
     /**
      * Writes in a file
      * @param eerStatistics
@@ -91,9 +105,9 @@ public class Utils {
 	}
 	return newDataSet;		
     }
-    
-  
-    
+
+
+
     public static double mean(double[] attributeValues){
 	Mean mean=new Mean();
 	return mean.evaluate(attributeValues);
@@ -189,12 +203,16 @@ public class Utils {
      * @return
      * @throws IOException
      */
-    public static File createAndCheckFile(String fileName) throws IOException{		
-	File file=new File(fileName+".txt");
+    public static File createAndCheckFile(String fileName) throws IOException{
+	return createAndCheckFile("",fileName);			
+    }
+    
+    private static File createAndCheckFile(String folder, String fileName) throws IOException {
+	File file=new File(folder+fileName+".txt");
 	// if file doesnt exists, then create it
 	if (!file.exists())
 	    file.createNewFile();
-	return file;		
+	return file;
     }
 
     /**
@@ -203,16 +221,22 @@ public class Utils {
      * @param content Content
      */
     public static void writeToFile(String fileName,String content){
-	try {
-	    File file=createAndCheckFile(fileName);
-	    BufferedWriter bw = new BufferedWriter(new FileWriter(file.getAbsoluteFile(),true));
-	    bw.append(content);		
-	    bw.close();
-	} catch (IOException e) {			
-	    fileName=fileName.substring(0,fileName.length()-20);
-	    writeToFile(fileName, content);
-	}
+	writeToFile("", fileName, content);
     }
+    
+    public static void writeToFile(String folder,String fileName,String content){
+  	try {
+  	    File file=createAndCheckFile(folder,fileName);
+  	    BufferedWriter bw = new BufferedWriter(new FileWriter(file.getAbsoluteFile(),true));
+  	    bw.append(content);		
+  	    bw.close();
+  	} catch (IOException e) {			
+  	    fileName=fileName.substring(0,fileName.length()-20);
+  	    writeToFile(fileName, content);
+  	}
+      }
+
+    
 
     /**
      * Return a random number between <code>min</code> and <code>max</code>
@@ -247,10 +271,29 @@ public class Utils {
 	return randomArray;
     }
 
-  
-   
+    public static ArrayList<String> stringArrayToStringArrayList(String[] usersInTrainingDataSet) {
+	ArrayList<String> stringArrayList=new ArrayList<String>();    
+	for (int i = 0; i < usersInTrainingDataSet.length; i++) {
+	    stringArrayList.add(usersInTrainingDataSet[i]);
+	}
+	return stringArrayList;
+    }
 
-   
+
+    public static String[] stringArrayListToStringArray(ArrayList<String> arrayList){
+	String[] output= new String[arrayList.size()];
+	for (int i = 0; i < arrayList.size(); i++) {
+	    output[i]=arrayList.get(i);
+	}
+	return output;
+    }
+
+    
+
+    
+    
+
+
 
     /**Example of Usage
      * 

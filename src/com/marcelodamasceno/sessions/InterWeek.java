@@ -2,8 +2,8 @@ package com.marcelodamasceno.sessions;
 
 import java.io.FileNotFoundException;
 
-import com.marcelodamasceno.cancelable.generators.Generator;
-import com.marcelodamasceno.cancelable.generators.InterSessionGenerator;
+import com.marcelodamasceno.generators.Generator;
+import com.marcelodamasceno.generators.InterSessionGenerator;
 
 import weka.core.Instances;
 import weka.filters.Filter;

@@ -1,6 +1,7 @@
 package com.marcelodamasceno.test;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Random;
@@ -23,22 +24,22 @@ public class MultiPleROCVisualization {
 			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Fixed/Standard/BioHashing_Fixed_Std_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
 
 	standardFixedUser1.setClassIndex(standardFixedUser1.numAttributes() - 1);
-	
+
 	Instances smallFixedUser1 = new Instances(
 		new BufferedReader(
-			new FileReader(Const.PROJECTPATH+"BioHashing/FeatureSelection/User_1/Fixed/Small/BioHashing_Fixed_Sml_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
+			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Fixed/Small/FS/BioHashing_Fixed_Sml_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
 
 	smallFixedUser1.setClassIndex(smallFixedUser1.numAttributes() - 1);
 
 	Instances mediumFixedUser1 = new Instances(
 		new BufferedReader(
-			new FileReader(Const.PROJECTPATH+"BioHashing/FeatureSelection/User_1/Fixed/Medium/BioHashing_Fixed_Med_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
+			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Fixed/Medium/FS/BioHashing_Fixed_Med_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
 
 	mediumFixedUser1 .setClassIndex(mediumFixedUser1 .numAttributes() - 1);
 
 	Instances bigFixedUser1 = new Instances(
 		new BufferedReader(
-			new FileReader(Const.PROJECTPATH+"BioHashing/FeatureSelection/User_1/Fixed/Big/BioHashing_Fixed_Big_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
+			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Fixed/Big/FS/BioHashing_Fixed_Big_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
 
 	bigFixedUser1.setClassIndex(bigFixedUser1.numAttributes() - 1);
 
@@ -48,27 +49,39 @@ public class MultiPleROCVisualization {
     }
 
     private void FeatureSelectionDifferentPlot(double threshold) throws Exception{
-	Instances standardFixedUser1 = new Instances(
+	File instances = new File(Const.PROJECTPATH+"BioHashing/User_1/Different/Standard/FS/").listFiles()[0];
+	Instances standardFixedUser1=new Instances(new BufferedReader(new FileReader(instances)));
+	/*Instances standardFixedUser1 = new Instances(
 		new BufferedReader(
-			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Different/Standard/BioHashing_Different_Std_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
+			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Different/Standard/FS/BioHashing_Different_Std_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));*/
 	standardFixedUser1.setClassIndex(standardFixedUser1.numAttributes() - 1);
 
-	Instances smallFixedUser1 = new Instances(
-		new BufferedReader(
-			new FileReader(Const.PROJECTPATH+"BioHashing/FeatureSelection/User_1/Different/Small/BioHashing_Different_Sml_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
+	instances = new File(Const.PROJECTPATH+"BioHashing/User_1/Different/Small/FS/").listFiles()[0];
+	Instances smallFixedUser1=new Instances(new BufferedReader(new FileReader(instances)));
 
+	/*Instances smallFixedUser1 = new Instances(
+		new BufferedReader(
+			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Different/Small/FS/BioHashing_Different_Sml_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
+	 */
 	smallFixedUser1.setClassIndex(smallFixedUser1.numAttributes() - 1);
 
+	instances = new File(Const.PROJECTPATH+"BioHashing/User_1/Different/Medium/FS/").listFiles()[0];
+	Instances mediumFixedUser1=new Instances(new BufferedReader(new FileReader(instances)));
+
+	/*
 	Instances mediumFixedUser1 = new Instances(
 		new BufferedReader(
-			new FileReader(Const.PROJECTPATH+"BioHashing/FeatureSelection/User_1/Different/Medium/BioHashing_Different_Med_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
-
+			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Different/Medium/FS/BioHashing_Different_Med_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
+	 */
 	mediumFixedUser1 .setClassIndex(mediumFixedUser1 .numAttributes() - 1);
 
+	instances = new File(Const.PROJECTPATH+"BioHashing/User_1/Different/Big/FS").listFiles()[0];
+	Instances bigFixedUser1=new Instances(new BufferedReader(new FileReader(instances)));
+	/*
 	Instances bigFixedUser1 = new Instances(
 		new BufferedReader(
-			new FileReader(Const.PROJECTPATH+"BioHashing/FeatureSelection/User_1/Different/Big/BioHashing_Different_Big_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
-
+			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Different/Big/FS/BioHashing_Different_Big_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
+	 */
 	bigFixedUser1.setClassIndex(bigFixedUser1.numAttributes() - 1);
 
 	trainEvaluateVizualize(standardFixedUser1, smallFixedUser1, mediumFixedUser1, bigFixedUser1,"Different Feature Selection");
@@ -82,19 +95,19 @@ public class MultiPleROCVisualization {
 
 	Instances smallFixedUser1 = new Instances(
 		new BufferedReader(
-			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Fixed/Small/BioHashing_Fixed_Sml_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
+			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Fixed/Small/NoFS/BioHashing_Fixed_Sml_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
 
 	smallFixedUser1.setClassIndex(smallFixedUser1.numAttributes() - 1);
 
 	Instances mediumFixedUser1 = new Instances(
 		new BufferedReader(
-			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Fixed/Medium/BioHashing_Fixed_Med_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
+			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Fixed/Medium/NoFS/BioHashing_Fixed_Med_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
 
 	mediumFixedUser1 .setClassIndex(mediumFixedUser1 .numAttributes() - 1);
 
 	Instances bigFixedUser1 = new Instances(
 		new BufferedReader(
-			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Fixed/Big/BioHashing_Fixed_Big_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
+			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Fixed/Big/NoFS/BioHashing_Fixed_Big_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
 
 	bigFixedUser1.setClassIndex(bigFixedUser1.numAttributes() - 1);
 
@@ -102,27 +115,41 @@ public class MultiPleROCVisualization {
     }
 
     private void DifferentPlot(double threshold) throws Exception{
+	File instances = new File(Const.PROJECTPATH+"BioHashing/User_1/Different/Standard/FS/").listFiles()[0];
+	Instances standardFixedUser1=new Instances(new BufferedReader(new FileReader(instances)));
+	/*
 	Instances standardFixedUser1 = new Instances(
 		new BufferedReader(
-			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Different/Standard/BioHashing_Different_Std_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
+			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Different/Standard/FS/BioHashing_Different_Std_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
+	 */
 	standardFixedUser1.setClassIndex(standardFixedUser1.numAttributes() - 1);
 
-	Instances smallFixedUser1 = new Instances(
-		new BufferedReader(
-			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Different/Small/BioHashing_Different_Sml_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
+	instances = new File(Const.PROJECTPATH+"BioHashing/User_1/Different/Small/NoFS/").listFiles()[0];
+	Instances smallFixedUser1=new Instances(new BufferedReader(new FileReader(instances)));
 
+	/*Instances smallFixedUser1 = new Instances(
+		new BufferedReader(
+			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Different/Small/NoFS/BioHashing_Different_Sml_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
+	 */
 	smallFixedUser1.setClassIndex(smallFixedUser1.numAttributes() - 1);
 
+	instances = new File(Const.PROJECTPATH+"BioHashing/User_1/Different/Medium/NoFS/").listFiles()[0];
+	Instances mediumFixedUser1=new Instances(new BufferedReader(new FileReader(instances)));
+	/*
 	Instances mediumFixedUser1 = new Instances(
 		new BufferedReader(
-			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Different/Medium/BioHashing_Different_Med_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
-
+			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Different/Medium/NoFS/BioHashing_Different_Med_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
+*/
 	mediumFixedUser1 .setClassIndex(mediumFixedUser1 .numAttributes() - 1);
 
+	instances = new File(Const.PROJECTPATH+"BioHashing/User_1/Different/Big/NoFS/").listFiles()[0];
+	Instances bigFixedUser1=new Instances(new BufferedReader(new FileReader(instances)));
+	
+	/*
 	Instances bigFixedUser1 = new Instances(
 		new BufferedReader(
-			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Different/Big/BioHashing_Different_Big_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
-
+			new FileReader(Const.PROJECTPATH+"BioHashing/User_1/Different/Big/NoFS/BioHashing_Different_Big_Threshold_"+threshold+"_IntraSession-User_1_Day_1_Scrolling.arff")));
+*/
 	bigFixedUser1.setClassIndex(bigFixedUser1.numAttributes() - 1);
 
 	trainEvaluateVizualize(standardFixedUser1, smallFixedUser1, mediumFixedUser1, bigFixedUser1,"Different Keys");
@@ -131,8 +158,8 @@ public class MultiPleROCVisualization {
     private void trainEvaluateVizualize(Instances standardFixedUser1, Instances smallFixedUser1, Instances mediumFixedUser1, Instances bigFixedUser1, String plotName) throws Exception{
 	// train classifier
 	Classifier cl = new IBk(5);
-	
-	
+
+
 
 	Evaluation evalStd=new Evaluation(standardFixedUser1);
 	evalStd.crossValidateModel(cl, standardFixedUser1, 10, new Random(1));
@@ -200,12 +227,12 @@ public class MultiPleROCVisualization {
     public static void main(String[] args) throws Exception{
 
 	MultiPleROCVisualization m=new MultiPleROCVisualization();
-	double threshold=0.5;
-	
-	m.FeatureSelectionFixedPlot(threshold);
-	m.FeatureSelectionDifferentPlot(threshold);
-	
-	m.FixedPlot(threshold);
+	double threshold=0.0;
+
+	//m.FeatureSelectionFixedPlot(threshold);
+	//m.FeatureSelectionDifferentPlot(threshold);
+
+	//m.FixedPlot(threshold);
 	m.DifferentPlot(threshold);
 
 
