@@ -17,10 +17,10 @@ public class Testing {
 
     public ArrayList<Double> getScores() throws Exception{
 	ArrayList<Double> scores=new ArrayList<Double>();
-	for (Instance testInstance : testDataSet) {
-	    double classIndex= classifier.classifyInstance(testInstance);	    
-	    int position=(int) Math.floor(classIndex);	    
-	    scores.add(classifier.distributionForInstance(testInstance)[position]);	    
+	for (Instance testInstance : testDataSet) {	  
+	    double[] probability=classifier.distributionForInstance(testInstance);
+	    double score=Math.log(probability[0]/probability[1]);
+	    scores.add(score);
 	}
 	return scores;
     }
