@@ -68,8 +68,17 @@ public class Utils {
      * @param arrayList ArrayList<Double>
      */
     public static void writeToFile(String fileName, ArrayList<Double> arrayList){
-	String content=arrayList.toString();
-	writeToFile(fileName, content.substring(1, content.length()-1));	
+	String content=toString(arrayList)+"\n";
+	writeToFile(fileName, content);	
+    }
+    
+    public static String toString(ArrayList<Double> arrayList){
+	String content="";
+	for (Double number : arrayList) {
+	    content+=String.valueOf(number)+",";
+	}
+	//returning and removing the last comma
+	return content.substring(0, content.length()-1);
     }
 
     public static void writeToFile(String folder, String fileName,ArrayList<Double> arrayList) {
