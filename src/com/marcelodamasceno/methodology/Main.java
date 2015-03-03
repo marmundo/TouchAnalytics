@@ -14,6 +14,12 @@ import com.marcelodamasceno.util.InstancesUtils;
 import com.marcelodamasceno.util.Utils;
 
 
+/**
+ * Main class which produces training and test user datasets. 
+Train and Test. In addiction, produces the client and impostor scores
+ * @author marcelo
+ *
+ */
 public class Main {
 
     ArffConector arff;
