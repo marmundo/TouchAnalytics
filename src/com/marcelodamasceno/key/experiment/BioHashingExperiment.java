@@ -11,7 +11,7 @@ import com.marcelodamasceno.util.Const;
 import com.marcelodamasceno.util.InstancesUtils;
 import com.marcelodamasceno.util.Utils;
 
-public class BioHashingExperiment {
+public class BioHashingExperiment extends CancelableExperiment {
 
     public static void main(String[] args){	
 
@@ -19,17 +19,17 @@ public class BioHashingExperiment {
 	BioHashingExperiment bHExperiment=new BioHashingExperiment();
 
 	try {
-	  bHExperiment.executeExperiment(false);
-	  bHExperiment.executeFeatureSelectionExperiment(false);
+	    bHExperiment.executeExperiment(false);
+
+	    ArrayList<Integer> small=getSmall();
+	    ArrayList<Integer> medium=getMedium(small);
+	    bHExperiment.executeFeatureSelectionExperiment(false,small,medium,getBig(medium));
 	} catch (Exception e) {
-	    // TODO Auto-generated catch block
 	    e.printStackTrace();
 	}
-		
-	
-	
 
     }
+
     ArffConector conector = null;
     Instances dataset = null;
 
@@ -49,21 +49,18 @@ public class BioHashingExperiment {
     private Instances clientProtected;
     private Instances impostorProtected;
 
-
-    private InstancesUtils instUtil;
-
-
     private double threshold=0;
 
 
     public BioHashingExperiment(){
+	super("BioHashing");
 	conector=new ArffConector();
     }
 
-    private void differentKeyBig() throws Exception{
+    protected void differentKeyBig( ){
 	int user=1;
 	while(user<=41){
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Different/Big/";
+	    tempResults=Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Different/Big/";
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
@@ -74,16 +71,24 @@ public class BioHashingExperiment {
 	    tempDataSet=Utils.getAttributes(dataset, 0.75);
 
 
-	    client= instUtil.getInstances(tempDataSet, Const.POSITIVE);
-	    impostor= instUtil.getInstances(tempDataSet, Const.NEGATIVE);
+	    client= InstancesUtils.getInstances(tempDataSet, Const.POSITIVE);
+	    impostor= InstancesUtils.getInstances(tempDataSet, Const.NEGATIVE);
 
 	    //Generating protected client samples using a single key
 	    bio=new BioHashing(client,threshold);
-	    clientProtected=bio.generate();
+	    try {
+		clientProtected=bio.generate();
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
 
 	    //Generating protected impostor samples using a single key
 	    bio=new BioHashing(impostor,threshold);
-	    impostorProtected=bio.generate();	    
+	    try {
+		impostorProtected=bio.generate();
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }	    
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
@@ -92,10 +97,10 @@ public class BioHashingExperiment {
 	    user++;
 	}
     }
-    private void differentKeyBigFS(ArrayList<Integer> big) throws Exception{
+    protected void differentKeyBigFS(ArrayList<Integer> big){
 	int user=1;
 	while(user<=41){
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Different/Big/";
+	    tempResults=Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Different/Big/";
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
@@ -105,16 +110,24 @@ public class BioHashingExperiment {
 	    }
 	    tempDataSet=Utils.getAttributes(dataset, big);
 
-	    client= instUtil.getInstances(tempDataSet, Const.POSITIVE);
-	    impostor= instUtil.getInstances(tempDataSet, Const.NEGATIVE);
+	    client= InstancesUtils.getInstances(tempDataSet, Const.POSITIVE);
+	    impostor= InstancesUtils.getInstances(tempDataSet, Const.NEGATIVE);
 
 	    //Generating protected client samples using a single key
 	    bio=new BioHashing(client,threshold);
-	    clientProtected=bio.generate();
+	    try {
+		clientProtected=bio.generate();
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
 
 	    //Generating protected impostor samples using a single key
 	    bio=new BioHashing(impostor,threshold);
-	    impostorProtected=bio.generate();	    
+	    try {
+		impostorProtected=bio.generate();
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }	    
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
@@ -123,10 +136,10 @@ public class BioHashingExperiment {
 	    user++;
 	}
     }    
-    private void differentKeyMedium() throws Exception{
+    protected void differentKeyMedium(){
 	int user=1;
 	while(user<=41){
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Different/Medium/";
+	    tempResults=Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Different/Medium/";
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
@@ -136,16 +149,24 @@ public class BioHashingExperiment {
 	    }
 	    tempDataSet=Utils.getAttributes(dataset, 0.5);
 
-	    client= instUtil.getInstances(tempDataSet, Const.POSITIVE);
-	    impostor= instUtil.getInstances(tempDataSet, Const.NEGATIVE);
+	    client= InstancesUtils.getInstances(tempDataSet, Const.POSITIVE);
+	    impostor= InstancesUtils.getInstances(tempDataSet, Const.NEGATIVE);
 
 	    //Generating protected client samples using a single key
 	    bio=new BioHashing(client,threshold);
-	    clientProtected=bio.generate();
+	    try {
+		clientProtected=bio.generate();
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
 
 	    //Generating protected impostor samples using a single key
 	    bio=new BioHashing(impostor,threshold);
-	    impostorProtected=bio.generate();	    
+	    try {
+		impostorProtected=bio.generate();
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }	    
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
@@ -154,10 +175,10 @@ public class BioHashingExperiment {
 	    user++;
 	}
     }
-    private void differentKeyMediumFS(ArrayList<Integer> medium) throws Exception{
+    protected void differentKeyMediumFS(ArrayList<Integer> medium){
 	int user=1;
 	while(user<=41){	  
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Different/Medium/";
+	    tempResults=Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Different/Medium/";
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
@@ -167,16 +188,24 @@ public class BioHashingExperiment {
 	    }
 	    tempDataSet=Utils.getAttributes(dataset, medium);
 
-	    client= instUtil.getInstances(tempDataSet, Const.POSITIVE);
-	    impostor= instUtil.getInstances(tempDataSet, Const.NEGATIVE);
+	    client= InstancesUtils.getInstances(tempDataSet, Const.POSITIVE);
+	    impostor= InstancesUtils.getInstances(tempDataSet, Const.NEGATIVE);
 
 	    //Generating protected client samples using a single key
 	    bio=new BioHashing(client,threshold);
-	    clientProtected=bio.generate();
+	    try {
+		clientProtected=bio.generate();
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
 
 	    //Generating protected impostor samples using a single key
 	    bio=new BioHashing(impostor,threshold);
-	    impostorProtected=bio.generate();	    
+	    try {
+		impostorProtected=bio.generate();
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }	    
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
@@ -185,10 +214,10 @@ public class BioHashingExperiment {
 	    user++;
 	}
     }
-    private void differentKeySmall() throws Exception{
+    protected void differentKeySmall(){
 	int user=1;
 	while(user<=41){
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Different/Small/";
+	    tempResults=Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Different/Small/";
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
@@ -198,16 +227,24 @@ public class BioHashingExperiment {
 	    }
 	    tempDataSet=Utils.getAttributes(dataset, 0.25);
 
-	    client= instUtil.getInstances(tempDataSet, Const.POSITIVE);
-	    impostor= instUtil.getInstances(tempDataSet, Const.NEGATIVE);
+	    client= InstancesUtils.getInstances(tempDataSet, Const.POSITIVE);
+	    impostor= InstancesUtils.getInstances(tempDataSet, Const.NEGATIVE);
 
 	    //Generating protected client samples using a single key
 	    bio=new BioHashing(client,threshold);
-	    clientProtected=bio.generate();
+	    try {
+		clientProtected=bio.generate();
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
 
 	    //Generating protected impostor samples using a single key
 	    bio=new BioHashing(impostor,threshold);
-	    impostorProtected=bio.generate();	    
+	    try {
+		impostorProtected=bio.generate();
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }	    
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
@@ -216,11 +253,11 @@ public class BioHashingExperiment {
 	    user++;
 	}
     }
-    private void differentKeySmallFS(ArrayList<Integer> small) throws Exception{
+    protected void differentKeySmallFS(ArrayList<Integer> small){
 	int user=1;
 	while(user<=41){
 
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Different/Small/";	 
+	    tempResults=Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Different/Small/";	 
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
@@ -230,16 +267,24 @@ public class BioHashingExperiment {
 	    }
 	    tempDataSet=Utils.getAttributes(dataset, small);
 
-	    client= instUtil.getInstances(tempDataSet, Const.POSITIVE);
-	    impostor= instUtil.getInstances(tempDataSet, Const.NEGATIVE);
+	    client= InstancesUtils.getInstances(tempDataSet, Const.POSITIVE);
+	    impostor= InstancesUtils.getInstances(tempDataSet, Const.NEGATIVE);
 
 	    //Generating protected client samples using a single key
 	    bio=new BioHashing(client,threshold);
-	    clientProtected=bio.generate();
+	    try {
+		clientProtected=bio.generate();
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
 
 	    //Generating protected impostor samples using a single key
 	    bio=new BioHashing(impostor,threshold);
-	    impostorProtected=bio.generate();	    
+	    try {
+		impostorProtected=bio.generate();
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }	    
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
@@ -250,13 +295,13 @@ public class BioHashingExperiment {
     }
 
 
-    private void differentKeyStandard() throws Exception{
+    protected void differentKeyStandard(){
 	int user=1;
 	/**Standard key*/
 	while(user<=41){
-	    tempResults=Const.PROJECTPATH+"BioHashing/User_"+user+"/Different/Standard/";
-	    instUtil=new InstancesUtils();
+	    tempResults=Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Different/Standard/";	
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
+
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
 			+ fileName);
@@ -264,16 +309,24 @@ public class BioHashingExperiment {
 		e.printStackTrace();
 	    }
 
-	    client= instUtil.getInstances(dataset, Const.POSITIVE);
-	    impostor= instUtil.getInstances(dataset, Const.NEGATIVE);
+	    client= InstancesUtils.getInstances(dataset, Const.POSITIVE);
+	    impostor= InstancesUtils.getInstances(dataset, Const.NEGATIVE);
 
 	    //Generating protected client samples using a single key
 	    bio=new BioHashing(client,threshold);
-	    clientProtected=bio.generate();
+	    try {
+		clientProtected=bio.generate();
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
 
 	    //Generating protected impostor samples using a single key
 	    bio=new BioHashing(impostor,threshold);
-	    impostorProtected=bio.generate();	    
+	    try {
+		impostorProtected=bio.generate();
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }	    
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
@@ -282,59 +335,8 @@ public class BioHashingExperiment {
 	    user++;
 	}
     }
-    
-    private void executeDifferentExperiment() throws Exception{
-	differentKeyStandard();
-	differentKeySmall();
-	differentKeyMedium();
-	differentKeyBig();	
-    }
-    
-    private void executeDifferentExperimentFS(ArrayList<Integer> small, ArrayList<Integer> medium, ArrayList<Integer> big) throws Exception{
-	differentKeyStandard();
-	differentKeySmallFS(small);
-	differentKeyMediumFS(medium);
-	differentKeyBigFS(big);
-    }
-    
 
-    protected void executeExperiment(boolean saveBeforeDiscretization) throws Exception{
-	executeFixedExperiment(saveBeforeDiscretization);
-	executeDifferentExperiment();
-    }
-
-
-    protected void executeFeatureSelectionExperiment(boolean saveBeforeDiscretization) throws Exception{
-	
-	ArrayList<Integer> small = getSmall();
-	
-	ArrayList<Integer> medium=getMedium(small);
-
-	ArrayList<Integer> big=getBig(medium);
-
-	executeFixedExperimentFS(small, medium, big,saveBeforeDiscretization);
-	executeDifferentExperimentFS(small, medium, big);
-    }
-    
-
-    protected void executeFixedExperiment(boolean saveBeforeDiscretization) throws Exception{
-	fixedKeyStandard(saveBeforeDiscretization);
-	fixedKeySmall(saveBeforeDiscretization);
-	fixedKeyMedium(saveBeforeDiscretization);
-	fixedKeyBig(saveBeforeDiscretization);
-    }
-
-    protected void executeFixedExperimentFS(ArrayList<Integer> small, ArrayList<Integer> medium, ArrayList<Integer> big,boolean saveBeforeDiscretization) throws Exception{
-	fixedKeyStandard(saveBeforeDiscretization);
-	fixedKeySmallFS(small,saveBeforeDiscretization);
-	fixedKeyMediumFS(medium,saveBeforeDiscretization);
-	fixedKeyBigFS(big,saveBeforeDiscretization);
-    }
-
-   
-
-
-    private void fixedKeyBig(boolean saveBeforeDiscretization) throws Exception{
+    protected void fixedKeyBig(boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
@@ -347,35 +349,57 @@ public class BioHashingExperiment {
 
 	    //Big key
 
-	    setTempResults(Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Big/");
+	    setTempResults(Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Fixed/Big/");
 	    tempDataSet=Utils.getAttributes(dataset, 0.75);	    
-	    generate(user, saveBeforeDiscretization,"NoFS/BioHashing_Fixed_Big_Threshold_");	    
+	    try {
+		generate(user, saveBeforeDiscretization,"NoFS/BioHashing_Fixed_Big_Threshold_");
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }	    
+	    user++;
+	}
+    }
+    
+    protected void generate(int user, boolean saveBeforeDiscretization, String prefixFileName) throws Exception{
+	BioHashing bio=new BioHashing(tempDataSet,threshold);	
+	if(user==1){
+	    int numAttributes = tempDataSet.numAttributes()-1;
+	    keyArray=bio.generateRandomVectors(numAttributes);
+	}	
+	if(saveBeforeDiscretization){
+	    Instances bioHashing=bio.generate(keyArray,saveBeforeDiscretization,fileName);
+	    setFileName(prefixFileName+bio.getThreshold()+"_"+fileName);
+	    Utils.writeToFile(bioHashing,tempResults,fileName);
+	}else{	
+	    setFileName(prefixFileName+bio.getThreshold()+"_"+fileName);
+	    Utils.writeToFile(bio.generate(keyArray),tempResults,fileName);
+	}
+ }
+
+    protected void fixedKeyBigFS(ArrayList<Integer> big, boolean saveBeforeDiscretization){
+	int user=1;
+	while(user<=41){
+	    setFileName("IntraSession-User_"+user+"_Day_1_Scrolling.arff");	
+	    try {
+		setDataset(conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER+ fileName));
+	    } catch (FileNotFoundException e) {
+		e.printStackTrace();
+	    }
+
+	    //Big key
+
+	    setTempResults(Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Fixed/Big/");
+	    tempDataSet=Utils.getAttributes(dataset, big);    
+	    try {
+		generate(user,saveBeforeDiscretization,"FS/BioHashing_Fixed_Big_Threshold_");
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }	    
 	    user++;
 	}
     }
 
-    private void fixedKeyBigFS(ArrayList<Integer> big, boolean saveBeforeDiscretization) throws Exception{
-    	int user=1;
-    	while(user<=41){
-    	    setFileName("IntraSession-User_"+user+"_Day_1_Scrolling.arff");	
-    	    try {
-    		setDataset(conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER+ fileName));
-    	    } catch (FileNotFoundException e) {
-    		e.printStackTrace();
-    	    }
-    
-    	    //Big key
-    
-    	    setTempResults(Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Big/");
-    	    tempDataSet=Utils.getAttributes(dataset, big);    
-    	    generate(user,saveBeforeDiscretization,"FS/BioHashing_Fixed_Big_Threshold_");	    
-    	    user++;
-    	}
-        }
-
-
-
-    private void fixedKeyMedium(boolean saveBeforeDiscretization) throws Exception{
+    protected void fixedKeyMedium(boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
@@ -388,37 +412,45 @@ public class BioHashingExperiment {
 
 	    //Medium key
 
-	    setTempResults(Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Medium/");	    
+	    setTempResults(Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Fixed/Medium/");	    
 	    tempDataSet=Utils.getAttributes(dataset, 0.5);
-	    generate(user, saveBeforeDiscretization,"NoFS/BioHashing_Fixed_Med_Threshold_");	    
+	    try {
+		generate(user, saveBeforeDiscretization,"NoFS/BioHashing_Fixed_Med_Threshold_");
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }	    
 	    user++;
 	}
     }
 
-   private void fixedKeyMediumFS(ArrayList<Integer> medium, boolean saveBeforeDiscretization) throws Exception{
-int user=1;
-while(user<=41){
-    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
-    try {
-	dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
-		+ fileName);
-    } catch (FileNotFoundException e) {
-	e.printStackTrace();
+    protected void fixedKeyMediumFS(ArrayList<Integer> medium, boolean saveBeforeDiscretization){
+	int user=1;
+	while(user<=41){
+	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
+	    try {
+		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
+			+ fileName);
+	    } catch (FileNotFoundException e) {
+		e.printStackTrace();
+	    }
+
+	    //Medium key
+
+	    setTempResults(Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Fixed/Medium/");
+	    tempDataSet=Utils.getAttributes(dataset, medium);
+	    try {
+		generate(user, saveBeforeDiscretization,"FS/BioHashing_Fixed_Med_Threshold_");
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
+	    user++;
+	}
     }
 
-    //Medium key
 
-    setTempResults(Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Medium/");
-    tempDataSet=Utils.getAttributes(dataset, medium);
-    generate(user, saveBeforeDiscretization,"FS/BioHashing_Fixed_Med_Threshold_");
-    user++;
-}
-}
-    
-    
-    
 
-    private void fixedKeySmall(boolean saveBeforeDiscretization) throws Exception{
+
+    protected void fixedKeySmall(boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
@@ -430,13 +462,17 @@ while(user<=41){
 	    }
 	    //Small key
 
-	    setTempResults(Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Small/");	  
+	    setTempResults(Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Fixed/Small/");	  
 	    tempDataSet=Utils.getAttributes(dataset, 0.25);	    
-	    generate(user, saveBeforeDiscretization,"NoFS/BioHashing_Fixed_Sml_Threshold_");	    
+	    try {
+		generate(user, saveBeforeDiscretization,"NoFS/BioHashing_Fixed_Sml_Threshold_");
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }	    
 	    user++;
 	}
     }
-    private void fixedKeySmallFS(ArrayList<Integer> small, boolean saveBeforeDiscretization) throws Exception{
+    protected void fixedKeySmallFS(ArrayList<Integer> small, boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
@@ -449,14 +485,18 @@ while(user<=41){
 
 	    //Small key
 
-	    setTempResults(Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Small/");	   
+	    setTempResults(Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Fixed/Small/");	   
 	    tempDataSet=Utils.getAttributes(dataset, small);
-	    generate(user, saveBeforeDiscretization,"FS/BioHashing_Fixed_Sml_Threshold_");
+	    try {
+		generate(user, saveBeforeDiscretization,"FS/BioHashing_Fixed_Sml_Threshold_");
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
 	    user++;
 	}
     }
 
-    private void fixedKeyStandard(boolean saveBeforeDiscretization) throws Exception{
+    protected void fixedKeyStandard(boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
 	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
@@ -468,30 +508,20 @@ while(user<=41){
 	    }
 
 	    //Standard key
-	    setTempResults(Const.PROJECTPATH+"BioHashing/User_"+user+"/Fixed/Standard/");
+	    setTempResults(Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Fixed/Standard/");
 	    tempDataSet=dataset;	    
-	    generate(user, saveBeforeDiscretization,"BioHashing_Fixed_Std_Threshold_");	    
+	    try {
+		generate(user, saveBeforeDiscretization,"BioHashing_Fixed_Std_Threshold_");
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }	    
 	    user++;
 	}
     }
-    
-    private void generate(int user, boolean saveBeforeDiscretization, String prefixFileName) throws Exception{
-	bio=new BioHashing(tempDataSet,threshold);
-	if(user==1){
-	    numAttributes=tempDataSet.numAttributes()-1;
-	    keyArray=bio.generateRandomVectors(numAttributes);
-	}	
-	if(saveBeforeDiscretization){
-	    Instances bioHashing=bio.generate(keyArray,saveBeforeDiscretization,fileName);
-	    setFileName(prefixFileName+bio.getThreshold()+"_"+fileName);
-	    Utils.writeToFile(bioHashing,tempResults,fileName);
-	}else{	
-	    setFileName(prefixFileName+bio.getThreshold()+"_"+fileName);
-	    Utils.writeToFile(bio.generate(keyArray),tempResults,fileName);
-	}
-    }
 
-    private ArrayList<Integer> getBig(ArrayList<Integer> medium){
+ 
+
+    public static ArrayList<Integer> getBig(ArrayList<Integer> medium){
 	/**List of attribute Index which belongs to key with big size = 0.75*/
 	ArrayList<Integer> big= new ArrayList<Integer>();
 	big.addAll(medium);
@@ -505,14 +535,14 @@ while(user<=41){
     }
 
     public Instances getDataset() {
-        return dataset;
-    }
-    
-    public String getFileName() {
-        return fileName;
+	return dataset;
     }
 
-    private ArrayList<Integer> getMedium(ArrayList<Integer> small){
+    public String getFileName() {
+	return fileName;
+    }
+
+    public static ArrayList<Integer> getMedium(ArrayList<Integer> small){
 	/**List of attribute Index which belongs to key with medium size=0.5*/
 	ArrayList<Integer> medium= new ArrayList<Integer>();
 	medium.addAll(small);
@@ -525,7 +555,7 @@ while(user<=41){
 	return medium;
     }
 
-    private ArrayList<Integer> getSmall(){
+    public static  ArrayList<Integer> getSmall(){
 	/**List of attribute Index which belongs to key with small size=0.25*/
 	ArrayList<Integer> small= new ArrayList<Integer>();
 	small.add(25);
@@ -537,28 +567,29 @@ while(user<=41){
 	return small;
     }
     public Instances getTempDataSet() {
-        return tempDataSet;
+	return tempDataSet;
     }
     public String getTempResults() {
-        return tempResults;
+	return tempResults;
     }
 
     public void setDataset(Instances dataset) {
-        this.dataset = dataset;
+	this.dataset = dataset;
     }
 
     public void setFileName(String fileName) {
-        this.fileName = fileName;
+	this.fileName = fileName;
     }
-    
-    
+
+
 
     public void setTempDataSet(Instances tempDataSet) {
-        this.tempDataSet = tempDataSet;
+	this.tempDataSet = tempDataSet;
     }
 
     public void setTempResults(String tempResults) {
-        this.tempResults = tempResults;
+	this.tempResults = tempResults;
     }
 
+   
 }
