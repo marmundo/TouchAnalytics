@@ -1,4 +1,4 @@
-function [bioH_train]=generatingBioHashingTraining(trainingSet,user,savefilePath,optionkey)   
+function [bioH_train]=generatingBioHashingTraining(trainingSet,user,savefilePath,optionkey,keySize)   
 %optionkey = 
 % 1: use the same key to all the users
 % 2: use a different key to each user
@@ -15,7 +15,8 @@ elseif optionkey==2
     users=unique(trainingSet(:,1));
     for i=1:length(users)        
         userData=trainingSet(find(trainingSet(:,1) == users(i)),:);
-        key=rand(numFeatures-1);
+        userData=userData(:,1:numFeatures*keySize);
+        key=rand(numFeatures-1*keySize);
         bioHashingData=biohashing(userData(:,2:end),key);
         bioH_train=[bioH_train; bioHashingData];
     end        
@@ -28,7 +29,7 @@ end
     
     %Folder used to save the biohashing data
     if(isempty(savefilePath))
-        savefilePath=strcat(pwd(),'Data/Horizontal/BioHashing/Same_key/User_',user);    
+        savefilePath=strcat(pwd(),'/Data/Horizontal/BioHashing/Same_Key/User_',user);    
     end
     if ~exist(savefilePath,'dir')
         mkdir(savefilePath);

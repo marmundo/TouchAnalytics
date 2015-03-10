@@ -7,10 +7,10 @@ function main(option)
 if option==0
     %% Generating scrolling Original Data by User
 
-    load('scrolling_data.mat');
+    load('scrolling data.mat');
     usersSize=length(unique(scrolling(:,1)));
     for user=1:usersSize  
-        [train,test]=generatingTrainingAndTest(scrolling,user,'/home/marcelo/Dropbox/Surrey/Norman/Data/Scrolling/Original/User_Label/',option);
+        [train,test]=generatingTrainingAndTest(scrolling,user,strcat(pwd(),'/Data/Scrolling/Original/User_Label/'),option);
     end
 
 
@@ -19,15 +19,15 @@ if option==0
     load('horizontal data.mat');
     usersSize=length(unique(scrolling(:,1)));
     for user=1:usersSize
-        [train,test]=generatingTrainingAndTest(horizontal,user,'/home/marcelo/Dropbox/Surrey/Norman/Data/Horizontal/Original/User_Label/',option);
+        [train,test]=generatingTrainingAndTest(horizontal,user,strcat(pwd(),'/Data/Horizontal/Original/User_Label/'),option);
     end
 elseif option==1
     %% Generating scrolling Original Data by User
 
-    load('scrolling_data.mat');
+    load('scrolling data.mat');
     usersSize=length(unique(scrolling(:,1)));
     for user=1:usersSize  
-        [train,test]=generatingTrainingAndTest(scrolling,user,'/home/marcelo/Dropbox/Surrey/Norman/Data/Scrolling/Original/User_Discre/',option);
+        [train,test]=generatingTrainingAndTest(scrolling,user,strcat(pwd(),'/Data/Scrolling/Original/User_Discre/'),option);
     end
 
 
@@ -36,74 +36,74 @@ elseif option==1
     load('horizontal data.mat');
     usersSize=length(unique(scrolling(:,1)));
     for user=1:usersSize
-        [train,test]=generatingTrainingAndTest(horizontal,user,'/home/marcelo/Dropbox/Surrey/Norman/Data/Horizontal/Original/User_Discre/',option);
+        [train,test]=generatingTrainingAndTest(horizontal,user,strcat(pwd(),'/Data/Horizontal/Original/User_Discre/'),option);
     end
 elseif option==2
     
     %% Generating scrolling BioHashing Data by User
     
-    load('/home/marcelo/Dropbox/Surrey/Norman/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat');
-    prefix='/home/marcelo/Dropbox/Surrey/Norman/Data/Scrolling/Original/User_Label/User_';
+    %load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
+    %prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
     
-    load('scrolling_data.mat');
-    usersSize=length(unique(scrolling(:,1)));
-    for user=1:usersSize  
-        userS=num2str(user);
-        filePath=strcat('/home/marcelo/Dropbox/Surrey/Norman/Data/Scrolling/BioHashing/Same_Key/User_',userS);
-        load(strcat(prefix,userS,'/trainingSet.mat'));
-        train=generatingBioHashingTraining(trainingSet,userS,filePath,1);
-        load(strcat(prefix,userS,'/testSet.mat'));
-        test=generatingBioHashingTest(testSet,userS,filePath,1);    
-    end
+    %load('scrolling data.mat');
+    %usersSize=length(unique(scrolling(:,1)));
+    %for user=1:usersSize  
+    %    userS=num2str(user);
+    %    filePath=strcat(strcat(pwd(),'/Data/Scrolling/BioHashing/Same_Key/User_'),userS);
+    %    load(strcat(prefix,userS,'/trainingSet.mat'));
+    %    train=generatingBioHashingTraining(trainingSet,userS,filePath,1,1);
+    %    load(strcat(prefix,userS,'/testSet.mat'));
+    %    test=generatingBioHashingTest(testSet,userS,filePath,1,1);    
+    %end
 
 
     %% Generating Horizontal BioHashing Data by User
 
-    load('/home/marcelo/Dropbox/Surrey/Norman/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat');
-    prefix='/home/marcelo/Dropbox/Surrey/Norman/Data/Horizontal/Original/User_Label/User_';
+    load(strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat'));
+    prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_');
     
     load('horizontal data.mat');
     usersSize=length(unique(horizontal(:,1)));
     for user=1:usersSize        
         userS=num2str(user);
-        filePath=strcat('/home/marcelo/Dropbox/Surrey/Norman/Data/Horizontal/BioHashing/Same_Key/User_',userS);
+        filePath=strcat(strcat(pwd(),'/Data/Horizontal/BioHashing/Same_Key/User_',userS));
         load(strcat(prefix,userS,'/trainingSet.mat'));
-        train=generatingBioHashingTraining(trainingSet,userS,'',1);
+        train=generatingBioHashingTraining(trainingSet,userS,filePath,1,1);
         load(strcat(prefix,userS,'/testSet.mat'));
-        test=generatingBioHashingTest(testSet,userS,'',1);
+        test=generatingBioHashingTest(testSet,userS,'',1,1);
     end
 elseif option==3
      %% Generating scrolling BioHashing Data by User
     
-    load('/home/marcelo/Dropbox/Surrey/Norman/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat');
-    prefix='/home/marcelo/Dropbox/Surrey/Norman/Data/Scrolling/Original/User_Label/User_';
+    load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
+    prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
     
-    load('scrolling_data.mat');
+    load('scrolling data.mat');
     usersSize=length(unique(scrolling(:,1)));
     for user=1:usersSize  
         userS=num2str(user);
-        filePath=strcat('/home/marcelo/Dropbox/Surrey/Norman/Data/Scrolling/BioHashing/Different_Key/User_',userS);
+        filePath=strcat(strcat(pwd(),'/Data/Scrolling/BioHashing/Different_Key/User_',userS));
         load(strcat(prefix,userS,'/trainingSet.mat'));
-        train=generatingBioHashingTraining(trainingSet,userS,filePath,2);
+        train=generatingBioHashingTraining(trainingSet,userS,filePath,2,1);
         load(strcat(prefix,userS,'/testSet.mat'));
-        test=generatingBioHashingTest(testSet,userS,filePath,2);    
+        test=generatingBioHashingTest(testSet,userS,filePath,2,1);    
     end
 
 
     %% Generating Horizontal BioHashing Data by User
 
-    load('/home/marcelo/Dropbox/Surrey/Norman/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat');
-    prefix='/home/marcelo/Dropbox/Surrey/Norman/Data/Horizontal/Original/User_Label/User_';
+    load(strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat'));
+    prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_');
     
     load('horizontal data.mat');
     usersSize=length(unique(horizontal(:,1)));
     for user=1:usersSize        
         userS=num2str(user);
-        filePath=strcat('/home/marcelo/Dropbox/Surrey/Norman/Data/Horizontal/BioHashing/Different_Key/User_',userS);
+        filePath=strcat(pwd(),'/Data/Horizontal/BioHashing/Different_Key/User_',userS);
         load(strcat(prefix,userS,'/trainingSet.mat'));
-        train=generatingBioHashingTraining(trainingSet,userS,filePath,2);
+        train=generatingBioHashingTraining(trainingSet,userS,filePath,2,1);
         load(strcat(prefix,userS,'/testSet.mat'));
-        test=generatingBioHashingTest(testSet,userS,filePath,2);
+        test=generatingBioHashingTest(testSet,userS,filePath,2,1);
     end
 end    
 end
