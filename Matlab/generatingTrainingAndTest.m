@@ -6,7 +6,7 @@ function [trainingSet,testSet] = generatingTrainingAndTest(data,user,filePath,op
 % 0: Generating Unprotected data with origianl user label
 % 1: Generating Unprotected data with user label= 1 (client) or 0(impostor)
 if(isempty(filePath))
-    filePath='/home/marcelo/Dropbox/Surrey/Norman/Data/Horizontal/Original/';
+    filePath=strcat(pwd(),'Data/Horizontal/Original/');
 end
 userFolder=strcat('User_',num2str(user));
 filePath=strcat(filePath,userFolder);

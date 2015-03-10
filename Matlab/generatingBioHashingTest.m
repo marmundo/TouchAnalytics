@@ -27,7 +27,7 @@ end
     
      %Folder used to save the biohashing data
     if(isempty(savefilePath))
-       savefilePath=strcat('/home/marcelo/Dropbox/Surrey/Norman/Data/Horizontal/BioHashing/Same_Key/User_',user);    
+       savefilePath=strcat(pwd(),'Data/Horizontal/BioHashing/Same_Key/User_',user);    
     end
     if ~exist(savefilePath,'dir')
         mkdir(savefilePath);
