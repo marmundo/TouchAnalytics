@@ -134,33 +134,33 @@ public abstract class Experiment {
 	    ArrayList<Double> horizontalResults, boolean eerBool,
 	    boolean correctStatistics) {
 	Utils util = new Utils();
-	util.writeToFile(dataset, "\n");
+	Utils.writeToFile(dataset, "\n",false);
 	if (eerBool) {
-	    util.writeToFile(dataset, "EER Scrooling:\n ");
+	    Utils.writeToFile(dataset, "EER Scrooling:\n ",false);
 
 	} else {
 	    if (correctStatistics) {
-		util.writeToFile(dataset, "Scrooling-Correct Statistics:\n ");
+		Utils.writeToFile(dataset, "Scrooling-Correct Statistics:\n ",false);
 	    } else {
-		util.writeToFile(dataset, "Scrooling-Incorrect Statistics:\n ");
+		Utils.writeToFile(dataset, "Scrooling-Incorrect Statistics:\n ",false);
 	    }
 	}
 	for (int i = 0; i < scrollingResults.size(); i++) {
-	    util.writeToFile(dataset, scrollingResults.get(i) + "\n");
+	    Utils.writeToFile(dataset, scrollingResults.get(i) + "\n",false);
 	}
 
 	if (eerBool) {
-	    util.writeToFile(dataset, "\nEER Horizontal:\n ");
+	    Utils.writeToFile(dataset, "\nEER Horizontal:\n ",false);
 	} else {
 	    if (correctStatistics) {
-		util.writeToFile(dataset, "Horizontal-Correct Statistics:\n ");
+		Utils.writeToFile(dataset, "Horizontal-Correct Statistics:\n ",false);
 	    } else {
-		util.writeToFile(dataset,
-			"\nHorizontal-Incorrect Statistics:\n ");
+		Utils.writeToFile(dataset,
+			"\nHorizontal-Incorrect Statistics:\n ",false);
 	    }
 	}
 	for (int i = 0; i < horizontalResults.size(); i++) {
-	    util.writeToFile(dataset, horizontalResults.get(i) + "\n");
+	    Utils.writeToFile(dataset, horizontalResults.get(i) + "\n",false);
 	}
     }
 
