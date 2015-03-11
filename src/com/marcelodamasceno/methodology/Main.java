@@ -39,7 +39,7 @@ public class Main {
 	generateTrainingandTestDataSet(Const.SCROOLING);
     }
 
-    private Instances getDataSet(String orientation){
+    public Instances getDataSet(String orientation){
 	Instances dataset=null;
 	if(orientation==Const.SCROOLING){
 	    try {
@@ -96,6 +96,17 @@ public class Main {
 
 
     public static void main(String[] args){
+	//String prefixBiometricSample="/Norman Methodology/Scrolling/Original/User_";
+	String prefixBiometricSample="/BioHashing_Norman/Scrolling/User_";
+	
+	
+	//String prefixClientScoreMatrixFileName="KNN_Original_Client_ScoreMatrix_User_";
+	String prefixClientScoreMatrixFileName="KNN_BioHashing_Client_ScoreMatrix_User_";
+	String posfixTraining="/Fixed/Standard/BioHashing_Fixed_Std_0.0_training.arff";
+	
+	//String prefixImpostorScoreMatrixFileName="KNN_Original_Impostor_ScoreMatrix_User_";
+	String prefixImpostorScoreMatrixFileName="KNN_BioHashing_Impostor_ScoreMatrix_User_";
+	String posFixTesting="/Fixed/Standard/BioHashing_Fixed_Std_0.0_testing.arff";
 	Main sub=new Main();
 	//sub.Experiment();
 	ArrayList<ArrayList<Double>> scoreMatrix=new ArrayList<ArrayList<Double>>();
@@ -104,22 +115,22 @@ public class Main {
 	for(int user=1;user<=1;user++){
 	    System.out.println("Experiment User "+user);
 	    try {
-		training = arff.openDataSet(Const.PROJECTPATH+"/Norman Methodology/Scrolling/Original/User_"+user+"/training.arff");
+		training = arff.openDataSet(Const.PROJECTPATH+prefixBiometricSample+user+posfixTraining);
 		System.out.println("Training");
 		Classifier trainedClass=sub.train(new IBk(5), training);
 		
-		Instances testing=arff.openDataSet(Const.PROJECTPATH+"/Norman Methodology/Scrolling/Original/User_"+user+"/testing.arff");
+		Instances testing=arff.openDataSet(Const.PROJECTPATH+prefixBiometricSample+user+posFixTesting);
 		System.out.println("Testing");
 		
 		System.out.println("Generating Client ScoreMatrix");
 		Instances clientInstances=InstancesUtils.getInstances(training, "positive");
 		ArrayList<Double> userScoreMatrix=sub.teste(trainedClass, clientInstances);		
-		Utils.writeToFile("KNN_Original_Client_ScoreMatrix_User_"+user, userScoreMatrix);
+		Utils.writeToFile(prefixClientScoreMatrixFileName+user, userScoreMatrix,true);
 		scoreMatrix.add(userScoreMatrix);
 		
 		System.out.println("Generating Impostor ScoreMatrix");
 		userScoreMatrix=sub.teste(trainedClass, testing);		
-		Utils.writeToFile("KNN_Original_Impostor_ScoreMatrix_User_"+user, userScoreMatrix);
+		Utils.writeToFile(prefixImpostorScoreMatrixFileName+user, userScoreMatrix,true);
 		scoreMatrix.add(userScoreMatrix);
 		
 	    } catch (FileNotFoundException e) {
