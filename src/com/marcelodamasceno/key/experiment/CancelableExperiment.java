@@ -2,6 +2,8 @@ package com.marcelodamasceno.key.experiment;
 
 import java.util.ArrayList;
 
+import weka.core.Instances;
+
 
 
 /**
@@ -19,11 +21,37 @@ public abstract class CancelableExperiment {
     /**
      * Cancelable Function Name 
      */
-    private String cancelableFunctionName;
+    protected String cancelableFunctionName;
+
+    protected String orientation;
+
+    protected String tempResults;
+
+    protected Instances dataset;
 
 
-    public CancelableExperiment(String cancelableFunctionName){
+    public CancelableExperiment(String cancelableFunctionName, String orientation){
 	this.setCancelableFunctionName(cancelableFunctionName);    
+	this.setOrientation(orientation);
+    }
+
+   
+    public String getTempResults() {
+	return tempResults;
+    }
+
+    public void setDataset(Instances dataset) {
+	this.dataset = dataset;
+    }
+
+   
+
+    public void setTempResults(String tempResults) {
+	this.tempResults = tempResults;
+    }
+
+    public Instances getDataset() {
+	return dataset;
     }
 
     /**
@@ -97,6 +125,7 @@ public abstract class CancelableExperiment {
     /**
      * Execute the experiments with fixed and different key/password
      * @param saveBeforeDiscretization true, when you wanna see the dataset before discretization
+     * @param  
      * @throws Exception
      */
     protected void executeExperiment(boolean saveBeforeDiscretization) throws Exception{
@@ -130,7 +159,7 @@ public abstract class CancelableExperiment {
 	fixedKeyBig(saveBeforeDiscretization);
     }
 
-   /**
+    /**
      * Execute the experiments with fixed key/password with feature selection
      * @param small list with attributes
      * @param medium list with attributes
@@ -145,7 +174,7 @@ public abstract class CancelableExperiment {
 	fixedKeyBigFS(big,saveBeforeDiscretization);
     }
 
-    
+
     /**
      * Executes the experiment with a fixed big key for all users
      * @param saveBeforeDiscretization true, when you wanna see the dataset before discretization
@@ -227,6 +256,14 @@ public abstract class CancelableExperiment {
      */
     protected void setFileName(String fileName) {
 	this.fileName=fileName;
+    }
+
+    public String getOrientation() {
+	return orientation;
+    }
+
+    public void setOrientation(String orientation) {
+	this.orientation = orientation;
     }
 
 
