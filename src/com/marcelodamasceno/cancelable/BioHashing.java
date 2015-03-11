@@ -23,6 +23,14 @@ public class BioHashing extends Cancelable {
         return threshold;
     }
 
+    public Instances getOriginalDataset() {
+        return originalDataset;
+    }
+
+    public void setOriginalDataset(Instances originalDataset) {
+        this.originalDataset = originalDataset;
+    }
+
     public void setThreshold(double threshold) {
         this.threshold = threshold;
     }
@@ -43,7 +51,8 @@ public class BioHashing extends Cancelable {
     public BioHashing(Instances data, double threshold) {
 	this.originalDataset = data;
 	this.threshold=threshold;
-    }
+    }    
+   
 
     /* (non-Javadoc)
      * @see com.marcelodamasceno.cancelable.Cancelable#generate()
