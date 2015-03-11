@@ -63,5 +63,24 @@ public class Training {
 	return training;
     }
 
+    public Instances takeTrainingDataSetWithoutClassChange(Instances datasetTemp, String targetUser){
+   	ArrayList<String> trainingUsersList=new ArrayList<String>();
+   	Instances temp=InstancesUtils.getInstances(datasetTemp, targetUser);
+   	Instances training=temp;
+   	int targetUserInt=Integer.valueOf(targetUser);
+   	int quantityClassValues=datasetTemp.classAttribute().numValues();
+   	int count=1;
+   	trainingUsersList.add(targetUser);
+   	while(count!=(quantityClassValues-1)/2){
+   	    if(count!=targetUserInt){
+   		temp=InstancesUtils.getInstances(datasetTemp, String.valueOf(count));   		
+   		training.addAll(temp);
+   	    }
+   	    trainingUsersList.add(String.valueOf(count));
+   	    count++;
+   	}
+   	setTrainingUsers(Utils.stringArrayListToStringArray(trainingUsersList));	
+   	return training;
+       }
     
 }
