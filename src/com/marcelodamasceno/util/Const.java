@@ -16,6 +16,7 @@ public final class Const {
     public static final String EER="eer";
     public static final String DATASETPATH="/home/marcelo/ÁreadeTrabalho/projeto/dataset/BasedeToque/";
     public static final String PROJECTPATH="/media/marcelo/Acer/Users/Marcelo/workspace/TouchAnalytics/";
+    public static final String NORMANMETHOD="/media/marcelo/Acer/Users/Marcelo/workspace/TouchAnalytics/Norman Methodology";
     public static final String USERPATH = System.getProperty("user.home") + File.separator+"TouchAnalytics"+File.separator+"Results";
     
     public static final String INTERPOLATION="Interpolation";
