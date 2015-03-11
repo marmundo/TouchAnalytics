@@ -15,34 +15,33 @@ public class BioHashingExperiment extends CancelableExperiment {
 
     public static void main(String[] args){	
 
-	//Fixed key
-	BioHashingExperiment bHExperiment=new BioHashingExperiment();
+	//Filling the orientation array
+	String[] orientation=new String[2];
+	orientation[0]=Const.SCROOLING;
+	orientation[1]=Const.HORIZONTAL;
+	
+	//Executing the experiment to each orientation
+	for (int i = 0; i < orientation.length; i++) {	
+	    BioHashingExperiment bHExperiment=new BioHashingExperiment(orientation[i]);	
+	    try {
+		bHExperiment.executeExperiment(false);
 
-	try {
-	    bHExperiment.executeExperiment(false);
-
-	    ArrayList<Integer> small=getSmall();
-	    ArrayList<Integer> medium=getMedium(small);
-	    bHExperiment.executeFeatureSelectionExperiment(false,small,medium,getBig(medium));
-	} catch (Exception e) {
-	    e.printStackTrace();
+		ArrayList<Integer> small=getSmall();
+		ArrayList<Integer> medium=getMedium(small);
+		bHExperiment.executeFeatureSelectionExperiment(false,small,medium,getBig(medium));
+	    } catch (Exception e) {
+		e.printStackTrace();
+	    }
 	}
-
     }
 
     ArffConector conector = null;
-    Instances dataset = null;
-
 
     int numAttributes=0;
 
-    Instances keyArray=null;
-    Instances tempDataSet=null;
+    Instances keyArray=null;  
     BioHashing bio=null;
-    String tempResults="";
 
-
-    String fileName="";
 
     Instances client=null;       
     Instances impostor=null;
@@ -52,19 +51,22 @@ public class BioHashingExperiment extends CancelableExperiment {
     private double threshold=0;
 
 
-    public BioHashingExperiment(){
-	super("BioHashing");
+    private Instances tempDataSet;
+
+
+    public BioHashingExperiment(String orientation){
+	super("BioHashing",orientation);
 	conector=new ArffConector();
     }
 
     protected void differentKeyBig( ){
 	int user=1;
 	while(user<=41){
-	    tempResults=Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Different/Big/";
-	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
+	    setTempResults(Const.PROJECTPATH+"/"+getCancelableFunctionName()+"/"+getOrientation()+"/User_"+user+"/Different/Big/");
+	    setFileName("IntraSession-User_"+user+"_Day_1_"+getOrientation()+".arff");	
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
-			+ fileName);
+			+ getFileName());
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
@@ -92,7 +94,7 @@ public class BioHashingExperiment extends CancelableExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.writeToFile(protectedData,tempResults,"FS/BioHashing_Different_Big_Threshold_"+bio.getThreshold()+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"FS/BioHashing_Different_Big_Threshold_"+bio.getThreshold()+"_"+getFileName());
 	    }
 	    user++;
 	}
@@ -100,11 +102,11 @@ public class BioHashingExperiment extends CancelableExperiment {
     protected void differentKeyBigFS(ArrayList<Integer> big){
 	int user=1;
 	while(user<=41){
-	    tempResults=Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Different/Big/";
-	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
+	    setTempResults(Const.PROJECTPATH+"/"+getCancelableFunctionName()+"/"+getOrientation()+"/User_"+user+"/Different/Big/");
+	    setFileName("IntraSession-User_"+user+"_Day_1_"+getOrientation()+".arff");
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
-			+ fileName);
+			+ getFileName());
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
@@ -131,7 +133,7 @@ public class BioHashingExperiment extends CancelableExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.writeToFile(protectedData,tempResults,"NoFS/BioHashing_Different_Big_Threshold_"+bio.getThreshold()+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"NoFS/BioHashing_Different_Big_Threshold_"+bio.getThreshold()+"_"+getFileName());
 	    }
 	    user++;
 	}
@@ -139,11 +141,11 @@ public class BioHashingExperiment extends CancelableExperiment {
     protected void differentKeyMedium(){
 	int user=1;
 	while(user<=41){
-	    tempResults=Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Different/Medium/";
-	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
+	    setTempResults(Const.PROJECTPATH+"/"+getCancelableFunctionName()+"/"+getOrientation()+"/User_"+user+"/Different/Medium/");
+	    setFileName("IntraSession-User_"+user+"_Day_1_"+getOrientation()+".arff");
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
-			+ fileName);
+			+ getFileName());
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
@@ -170,7 +172,7 @@ public class BioHashingExperiment extends CancelableExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.writeToFile(protectedData,tempResults,"FS/BioHashing_Different_Med_Threshold_"+bio.getThreshold()+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"FS/BioHashing_Different_Med_Threshold_"+bio.getThreshold()+"_"+getFileName());
 	    }
 	    user++;
 	}
@@ -178,11 +180,11 @@ public class BioHashingExperiment extends CancelableExperiment {
     protected void differentKeyMediumFS(ArrayList<Integer> medium){
 	int user=1;
 	while(user<=41){	  
-	    tempResults=Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Different/Medium/";
-	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
+	    setTempResults(Const.PROJECTPATH+"/"+getCancelableFunctionName()+"/"+getOrientation()+"/User_"+user+"/Different/Medium/");
+	    setFileName("IntraSession-User_"+user+"_Day_1_"+getOrientation()+".arff");	
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
-			+ fileName);
+			+ getFileName());
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
@@ -209,7 +211,7 @@ public class BioHashingExperiment extends CancelableExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.writeToFile(protectedData,tempResults,"NoFS/BioHashing_Different_Med_Threshold_"+bio.getThreshold()+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"NoFS/BioHashing_Different_Med_Threshold_"+bio.getThreshold()+"_"+getFileName());
 	    }
 	    user++;
 	}
@@ -217,11 +219,11 @@ public class BioHashingExperiment extends CancelableExperiment {
     protected void differentKeySmall(){
 	int user=1;
 	while(user<=41){
-	    tempResults=Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Different/Small/";
-	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
+	    setTempResults(Const.PROJECTPATH+"/"+getCancelableFunctionName()+"/"+getOrientation()+"/User_"+user+"/Different/Small/");
+	    setFileName("IntraSession-User_"+user+"_Day_1_"+getOrientation()+".arff");
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
-			+ fileName);
+			+ getFileName());
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
@@ -248,7 +250,7 @@ public class BioHashingExperiment extends CancelableExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.writeToFile(protectedData,tempResults,"FS/BioHashing_Different_Sml_Threshold_"+bio.getThreshold()+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"FS/BioHashing_Different_Sml_Threshold_"+bio.getThreshold()+"_"+getFileName());
 	    }
 	    user++;
 	}
@@ -257,11 +259,11 @@ public class BioHashingExperiment extends CancelableExperiment {
 	int user=1;
 	while(user<=41){
 
-	    tempResults=Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Different/Small/";	 
-	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
+	    setTempResults(Const.PROJECTPATH+"/"+getCancelableFunctionName()+"/"+getOrientation()+"/User_"+user+"/Different/Small/");	 
+	    setFileName("IntraSession-User_"+user+"_Day_1_"+getOrientation()+".arff");	
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
-			+ fileName);
+			+ getFileName());
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
@@ -288,7 +290,7 @@ public class BioHashingExperiment extends CancelableExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.writeToFile(protectedData,tempResults,"NoFS/BioHashing_Different_Sml_Threshold_"+bio.getThreshold()+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"NoFS/BioHashing_Different_Sml_Threshold_"+bio.getThreshold()+"_"+getFileName());
 	    }
 	    user++;
 	}
@@ -299,12 +301,12 @@ public class BioHashingExperiment extends CancelableExperiment {
 	int user=1;
 	/**Standard key*/
 	while(user<=41){
-	    tempResults=Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Different/Standard/";	
-	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
+	    setTempResults(Const.PROJECTPATH+"/"+getCancelableFunctionName()+"/"+getOrientation()+"/User_"+user+"/Different/Standard/");	
+	    setFileName("IntraSession-User_"+user+"_Day_1_"+getOrientation()+".arff");	
 
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
-			+ fileName);
+			+ getFileName());
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
@@ -330,7 +332,7 @@ public class BioHashingExperiment extends CancelableExperiment {
 
 	    if(clientProtected.addAll(impostorProtected)){
 		Instances protectedData=clientProtected;
-		Utils.writeToFile(protectedData,tempResults,"FS/BioHashing_Different_Std_Threshold_"+bio.getThreshold()+"_"+fileName);
+		Utils.writeToFile(protectedData,tempResults,"FS/BioHashing_Different_Std_Threshold_"+bio.getThreshold()+"_"+getFileName());
 	    }
 	    user++;
 	}
@@ -339,17 +341,17 @@ public class BioHashingExperiment extends CancelableExperiment {
     protected void fixedKeyBig(boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
-	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
+	    setFileName("IntraSession-User_"+user+"_Day_1_"+getOrientation()+".arff");	
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
-			+ fileName);
+			+ getFileName());
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
 
 	    //Big key
 
-	    setTempResults(Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Fixed/Big/");
+	    setTempResults(Const.PROJECTPATH+"/"+getCancelableFunctionName()+"/"+getOrientation()+"/User_"+user+"/Fixed/Big/");
 	    tempDataSet=Utils.getAttributes(dataset, 0.75);	    
 	    try {
 		generate(user, saveBeforeDiscretization,"NoFS/BioHashing_Fixed_Big_Threshold_");
@@ -359,7 +361,7 @@ public class BioHashingExperiment extends CancelableExperiment {
 	    user++;
 	}
     }
-    
+
     protected void generate(int user, boolean saveBeforeDiscretization, String prefixFileName) throws Exception{
 	BioHashing bio=new BioHashing(tempDataSet,threshold);	
 	if(user==1){
@@ -367,28 +369,28 @@ public class BioHashingExperiment extends CancelableExperiment {
 	    keyArray=bio.generateRandomVectors(numAttributes);
 	}	
 	if(saveBeforeDiscretization){
-	    Instances bioHashing=bio.generate(keyArray,saveBeforeDiscretization,fileName);
-	    setFileName(prefixFileName+bio.getThreshold()+"_"+fileName);
-	    Utils.writeToFile(bioHashing,tempResults,fileName);
+	    Instances bioHashing=bio.generate(keyArray,saveBeforeDiscretization,getFileName());
+	    setFileName(prefixFileName+bio.getThreshold()+"_"+getFileName());
+	    Utils.writeToFile(bioHashing,tempResults,getFileName());
 	}else{	
-	    setFileName(prefixFileName+bio.getThreshold()+"_"+fileName);
-	    Utils.writeToFile(bio.generate(keyArray),tempResults,fileName);
+	    setFileName(prefixFileName+bio.getThreshold()+"_"+getFileName());
+	    Utils.writeToFile(bio.generate(keyArray),tempResults,getFileName());
 	}
- }
+    }
 
     protected void fixedKeyBigFS(ArrayList<Integer> big, boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
 	    setFileName("IntraSession-User_"+user+"_Day_1_Scrolling.arff");	
 	    try {
-		setDataset(conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER+ fileName));
+		setDataset(conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER+ getFileName()));
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
 
 	    //Big key
 
-	    setTempResults(Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Fixed/Big/");
+	    setTempResults(Const.PROJECTPATH+"/"+getCancelableFunctionName()+"/"+getOrientation()+"/User_"+user+"/Fixed/Big/");
 	    tempDataSet=Utils.getAttributes(dataset, big);    
 	    try {
 		generate(user,saveBeforeDiscretization,"FS/BioHashing_Fixed_Big_Threshold_");
@@ -402,17 +404,17 @@ public class BioHashingExperiment extends CancelableExperiment {
     protected void fixedKeyMedium(boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
-	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
+	    setFileName("IntraSession-User_"+user+"_Day_1_"+getOrientation()+".arff");	
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
-			+ fileName);
+			+ getFileName());
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
 
 	    //Medium key
 
-	    setTempResults(Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Fixed/Medium/");	    
+	    setTempResults(Const.PROJECTPATH+"/"+getCancelableFunctionName()+"/"+getOrientation()+"/User_"+user+"/Fixed/Medium/");	    
 	    tempDataSet=Utils.getAttributes(dataset, 0.5);
 	    try {
 		generate(user, saveBeforeDiscretization,"NoFS/BioHashing_Fixed_Med_Threshold_");
@@ -426,17 +428,17 @@ public class BioHashingExperiment extends CancelableExperiment {
     protected void fixedKeyMediumFS(ArrayList<Integer> medium, boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
-	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
+	    setFileName("IntraSession-User_"+user+"_Day_1_"+getOrientation()+".arff");	
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
-			+ fileName);
+			+ getFileName());
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
 
 	    //Medium key
 
-	    setTempResults(Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Fixed/Medium/");
+	    setTempResults(Const.PROJECTPATH+"/"+getCancelableFunctionName()+"/"+getOrientation()+"/User_"+user+"/Fixed/Medium/");
 	    tempDataSet=Utils.getAttributes(dataset, medium);
 	    try {
 		generate(user, saveBeforeDiscretization,"FS/BioHashing_Fixed_Med_Threshold_");
@@ -453,16 +455,16 @@ public class BioHashingExperiment extends CancelableExperiment {
     protected void fixedKeySmall(boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
-	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
+	    setFileName("IntraSession-User_"+user+"_Day_1_"+getOrientation()+".arff");	
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
-			+ fileName);
+			+ getFileName());
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
 	    //Small key
 
-	    setTempResults(Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Fixed/Small/");	  
+	    setTempResults(Const.PROJECTPATH+"/"+getCancelableFunctionName()+"/"+getOrientation()+"/User_"+user+"/Fixed/Small/");	  
 	    tempDataSet=Utils.getAttributes(dataset, 0.25);	    
 	    try {
 		generate(user, saveBeforeDiscretization,"NoFS/BioHashing_Fixed_Sml_Threshold_");
@@ -475,17 +477,17 @@ public class BioHashingExperiment extends CancelableExperiment {
     protected void fixedKeySmallFS(ArrayList<Integer> small, boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
-	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
+	    setFileName("IntraSession-User_"+user+"_Day_1_"+getOrientation()+".arff");	
 	    try {
 		dataset = conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
-			+ fileName);
+			+ getFileName());
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
 
 	    //Small key
 
-	    setTempResults(Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Fixed/Small/");	   
+	    setTempResults(Const.PROJECTPATH+"/"+getCancelableFunctionName()+"/"+getOrientation()+"/User_"+user+"/Fixed/Small/");	   
 	    tempDataSet=Utils.getAttributes(dataset, small);
 	    try {
 		generate(user, saveBeforeDiscretization,"FS/BioHashing_Fixed_Sml_Threshold_");
@@ -499,17 +501,17 @@ public class BioHashingExperiment extends CancelableExperiment {
     protected void fixedKeyStandard(boolean saveBeforeDiscretization){
 	int user=1;
 	while(user<=41){
-	    fileName="IntraSession-User_"+user+"_Day_1_Scrolling.arff";	
+	    setFileName("IntraSession-User_"+user+"_Day_1_"+getOrientation()+".arff");	
 	    try {
-		dataset=conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
-			+ fileName);
+		setDataset(conector.openDataSet(Const.DATASETPATH + Const.INTRASESSIONFOLDER
+			+ getFileName()));
 	    } catch (FileNotFoundException e) {
 		e.printStackTrace();
 	    }
 
 	    //Standard key
-	    setTempResults(Const.PROJECTPATH+getCancelableFunctionName()+"/User_"+user+"/Fixed/Standard/");
-	    tempDataSet=dataset;	    
+	    setTempResults(Const.PROJECTPATH+"/"+getCancelableFunctionName()+"/"+getOrientation()+"/User_"+user+"/Fixed/Standard/");
+	    tempDataSet=getDataset();	    	    
 	    try {
 		generate(user, saveBeforeDiscretization,"BioHashing_Fixed_Std_Threshold_");
 	    } catch (Exception e) {
@@ -519,7 +521,7 @@ public class BioHashingExperiment extends CancelableExperiment {
 	}
     }
 
- 
+
 
     public static ArrayList<Integer> getBig(ArrayList<Integer> medium){
 	/**List of attribute Index which belongs to key with big size = 0.75*/
@@ -534,13 +536,7 @@ public class BioHashingExperiment extends CancelableExperiment {
 	return big;
     }
 
-    public Instances getDataset() {
-	return dataset;
-    }
-
-    public String getFileName() {
-	return fileName;
-    }
+   
 
     public static ArrayList<Integer> getMedium(ArrayList<Integer> small){
 	/**List of attribute Index which belongs to key with medium size=0.5*/
@@ -566,30 +562,4 @@ public class BioHashingExperiment extends CancelableExperiment {
 	small.add(13);
 	return small;
     }
-    public Instances getTempDataSet() {
-	return tempDataSet;
-    }
-    public String getTempResults() {
-	return tempResults;
-    }
-
-    public void setDataset(Instances dataset) {
-	this.dataset = dataset;
-    }
-
-    public void setFileName(String fileName) {
-	this.fileName = fileName;
-    }
-
-
-
-    public void setTempDataSet(Instances tempDataSet) {
-	this.tempDataSet = tempDataSet;
-    }
-
-    public void setTempResults(String tempResults) {
-	this.tempResults = tempResults;
-    }
-
-   
 }
