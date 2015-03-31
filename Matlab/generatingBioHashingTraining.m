@@ -1,43 +1,62 @@
-function [bioH_train]=generatingBioHashingTraining(trainingSet,user,savefilePath,optionkey,keySize)   
-%optionkey = 
+function [bioH_train]=generatingBioHashingTraining(trainingSet,user,saveFilePath,optionkey,keySize)
+% trainingSet= training dataset will be protected
+% user= original user of the training dataset
+% saveFilePath=Path wich the training biohashing data will be save
+% optionkey =
 % 1: use the same key to all the users
 % 2: use a different key to each user
+% keysize= size of key. Maximum value is the number of features.
 
-
-% Generating the biohashing data
-% generating the bioHashing data without the user label
-% (trainingSet(:,2:end)
+%starting variable
 bioH_train=[];
+
 if optionkey==1
-    bioH_train=biohashing(trainingSet(:,2:end),'');    
-elseif optionkey==2   
+    %% Same key for all users
+    bioH_train=biohashing(trainingSet(:,2:end),'');
+elseif optionkey==2
+    %% Different key for each user
     numFeatures=length(trainingSet(1,:));
     users=unique(trainingSet(:,1));
-    for i=1:length(users)        
-        userData=trainingSet(find(trainingSet(:,1) == users(i)),:);
+    
+    for currentUser=1:length(users)
+        % data of user i
+        userData=trainingSet(find(trainingSet(:,1) == users(currentUser)),:);
+      
+        % taking the user data based on size of keySize
         userData=userData(:,1:numFeatures*keySize);
+       
+        % creating the key for the currentUser
         key=rand(numFeatures-1*keySize);
+       
+        % protecting the user data using the generated key
         bioHashingData=biohashing(userData(:,2:end),key);
+       
+        % adding user protected data to the bioH_train variable
         bioH_train=[bioH_train; bioHashingData];
-    end        
+    end
 end
 
-%adding the user label to the biohashing data
-    bioH_train=[bioH_train trainingSet(:,1)];
-    
-    bioH_train=discretizeUser(str2num(user),length(bioH_train(1,:)),bioH_train);
-    
-    %Folder used to save the biohashing data
-    if(isempty(savefilePath))
-        savefilePath=strcat(pwd(),'/Data/Horizontal/BioHashing/Same_Key/User_',user);    
-    end
-    if ~exist(savefilePath,'dir')
-        mkdir(savefilePath);
-    end
-    
-    %saving the training data
-    save(strcat(savefilePath,'/trainingSet.mat'),'bioH_train');
-   
-    end
+% adding the user label to the biohashing data
+bioH_train=[bioH_train trainingSet(:,1)];
+
+% discretizing protected dataset
+bioH_train=discretizeUser(str2num(user),length(bioH_train(1,:)),bioH_train);
+
+%% Saving protected data
+
+% If empty, create the variable
+if(isempty(saveFilePath))
+    saveFilePath=strcat(pwd(),'/Data/Horizontal/BioHashing/Same_Key/User_',user);
+end
+
+% If doesn't exist, create the Folder
+if ~exist(saveFilePath,'dir')
+    mkdir(saveFilePath);
+end
+
+%saving the training data
+save(strcat(saveFilePath,'/trainingSet.mat'),'bioH_train');
+
+end
 
     
