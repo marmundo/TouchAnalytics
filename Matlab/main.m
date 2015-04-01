@@ -4,6 +4,7 @@ function main(option)
 % 1: Generating Unprotected data with user label= 1 (client) or 0(impostor)
 % 2: BioHashing, use the same key to all the users
 % 3: BioHashing, use a different key to each user
+% 4: Test Score Matrix Production
 
 if option==0
     %% Generating scrolling Original Data by User
@@ -106,6 +107,17 @@ elseif option==3
         load(strcat(prefix,userS,'/testSet.mat'));
         test=generatingBioHashingTest(testSet,userS,filePath,2,1);
     end
+elseif option==4
+    % Loading training data
+    load(strcat(pwd(),'/Data/Scrolling/BioHashing/Same_Key/User_1/trainingSet.mat'));
+    
+    % Loading testData
+    load(strcat(pwd(),'/Data/Scrolling/BioHashing/Same_Key/User_1/testSet.mat'));
+    
+    %executing svm to generate score matrix
+    [clientScore,impostorScore]=prediction('svm',bioH_train,bioH_test);
+    
+    wer(impostorScore',clientScore', [],2,[],1)
 end
 end
 
