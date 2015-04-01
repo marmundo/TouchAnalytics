@@ -84,7 +84,7 @@ public class Main {
 	return training.train();
     }
 
-    public ArrayList<Double> teste(Classifier trainedClassifier, Instances testDataset){
+    public ArrayList<Double> testClassifier(Classifier trainedClassifier, Instances testDataset){
 	Testing testing=new Testing(trainedClassifier, testDataset);
 	try {
 	    return testing.getScores();	    
@@ -107,29 +107,31 @@ public class Main {
 	//String prefixImpostorScoreMatrixFileName="KNN_Original_Impostor_ScoreMatrix_User_";
 	String prefixImpostorScoreMatrixFileName="KNN_BioHashing_Impostor_ScoreMatrix_User_";
 	String posFixTesting="/Fixed/Standard/BioHashing_Fixed_Std_0.0_testing.arff";
-	Main sub=new Main();
+	Main system=new Main();
 	//sub.Experiment();
 	ArrayList<ArrayList<Double>> scoreMatrix=new ArrayList<ArrayList<Double>>();
-	ArffConector arff=new ArffConector();
+	ArffConector arffConector=new ArffConector();
 	Instances training;
 	for(int user=1;user<=1;user++){
 	    System.out.println("Experiment User "+user);
 	    try {
-		training = arff.openDataSet(Const.PROJECTPATH+prefixBiometricSample+user+posfixTraining);
-		System.out.println("Training");
-		Classifier trainedClass=sub.train(new IBk(5), training);
+		training = arffConector.openDataSet(Const.PROJECTPATH+prefixBiometricSample+user+posfixTraining);
+		System.out.println("Training...");
+		Classifier trainedClassifier=system.train(new IBk(5), training);
 		
-		Instances testing=arff.openDataSet(Const.PROJECTPATH+prefixBiometricSample+user+posFixTesting);
+		Instances impostorInstances=arffConector.openDataSet(Const.PROJECTPATH+prefixBiometricSample+user+posFixTesting);
 		System.out.println("Testing");
 		
 		System.out.println("Generating Client ScoreMatrix");
 		Instances clientInstances=InstancesUtils.getInstances(training, "positive");
-		ArrayList<Double> userScoreMatrix=sub.teste(trainedClass, clientInstances);		
+		//userScoreMatrix has the score of the positive samples
+		ArrayList<Double> userScoreMatrix=system.testClassifier(trainedClassifier, clientInstances);		
 		Utils.writeToFile(prefixClientScoreMatrixFileName+user, userScoreMatrix,true);
 		scoreMatrix.add(userScoreMatrix);
 		
 		System.out.println("Generating Impostor ScoreMatrix");
-		userScoreMatrix=sub.teste(trainedClass, testing);		
+		//UserScoreMatrix has the impostor scores
+		userScoreMatrix=system.testClassifier(trainedClassifier, impostorInstances);		
 		Utils.writeToFile(prefixImpostorScoreMatrixFileName+user, userScoreMatrix,true);
 		scoreMatrix.add(userScoreMatrix);
 		
