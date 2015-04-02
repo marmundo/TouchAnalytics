@@ -40,7 +40,7 @@ end
 bioH_train=[bioH_train trainingSet(:,1)];
 
 % discretizing protected dataset
-bioH_train=discretizeUser(str2num(user),length(bioH_train(1,:)),bioH_train);
+[bioH_train, trainUserLabels]=discretizeUser(str2num(user),length(bioH_train(1,:)),bioH_train);
 
 %% Saving protected data
 
@@ -55,7 +55,7 @@ if ~exist(saveFilePath,'dir')
 end
 
 %saving the training data
-save(strcat(saveFilePath,'/trainingSet.mat'),'bioH_train');
+save(strcat(saveFilePath,'/trainingSet.mat'),'bioH_train','trainUserLabels');
 
 end
 
