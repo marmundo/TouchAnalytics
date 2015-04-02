@@ -26,7 +26,7 @@ testSet=[];
 
 %users data used to create the training data
 %ex: from 41 users, 21 will be used to create the training data
-training_users=length(unique(data(:,1)))/2+1;
+training_users=round(length(unique(data(:,1)))/2);
 
 %list of users
 users=unique(data(:,1));
@@ -44,10 +44,10 @@ for i=1:training_users
     end
     
     %biometric samples from the current user
-    userSamlples=find(data(:,1)==currentUser);
+    userSamples=find(data(:,1)==currentUser);
     
     %adding user samples to trainingSet variable
-    trainingSet=[trainingSet;data(userSamlples,:)];
+    trainingSet=[trainingSet;data(userSamples,:)];
     
     %updating the current user
     currentUser=currentUser+1;
@@ -55,7 +55,7 @@ end
 
 if option==1
     %discretize the user to 1, and the remaining users to 0
-    trainingSet=discretizeUser(user,1,trainingSet);
+    [trainingSet, trainUserLabels]=discretizeUser(user,1,trainingSet);
 end
 
 %% Creating testset File
@@ -75,16 +75,16 @@ end
 if option==1
     %%Changing the label of the testSet users to impostor
     testSet(:,1)=0;
-    testSet=discretizeUser(user,1,testSet);
+    [testSet,testUserLabels]=discretizeUser(user,1,testSet);
 end
 
 %% Saving training
 if ~exist(filePath,'dir')
     mkdir(filePath);
 end
-save(strcat(filePath,'/trainingSet.mat'),'trainingSet');
+save(strcat(filePath,'/trainingSet.mat'),'trainingSet','trainUserLabels');
 
 %% Saving testing
-save(strcat(filePath,'/testSet.mat'),'testSet');
+save(strcat(filePath,'/testSet.mat'),'testSet','testUserLabels');
 
 end
