@@ -1,10 +1,12 @@
-function main(option)
+function main(option,classifierName)
 %option =
 % 0: Generating Unprotected data with original user label
-% 1: Generating Unprotected data with user label= 1 (client) or 0(impostor)
+% 1: Generating Unprotected data with user label= (client) or (impostor)
 % 2: BioHashing, use the same key to all the users
 % 3: BioHashing, use a different key to each user
 % 4: Test Score Matrix Production
+%
+% classifier= classifier name will be used to analyse the biometric data
 
 if option==0
     %% Generating scrolling Original Data by User
@@ -47,8 +49,10 @@ elseif option==2
     load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
     prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
     
+    %loading scrolling to know how many users there are
     load('scrolling data.mat');
     usersSize=length(unique(scrolling(:,1)));
+    
     for user=1:usersSize
         userS=num2str(user);
         filePath=strcat(strcat(pwd(),'/Data/Scrolling/BioHashing/Same_Key/User_'),userS);
@@ -115,9 +119,11 @@ elseif option==4
     load(strcat(pwd(),'/Data/Scrolling/BioHashing/Same_Key/User_1/testSet.mat'));
     
     %executing svm to generate score matrix
-    [clientScore,impostorScore]=prediction('svm',bioH_train,bioH_test);
+    [clientScore,impostorScore] = prediction(classifierName,bioH_train,trainUserLabels,bioH_test,testUserLabels);
     
-    wer(impostorScore',clientScore', [],2,[],1)
+    wer(impostorScore,clientScore, [],1,[],1);
+    unique(impostorScore)
+    unique(clientScore)
 end
 end
 
