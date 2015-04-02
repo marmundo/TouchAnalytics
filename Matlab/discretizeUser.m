@@ -9,9 +9,9 @@ if ischar(user)
 end
  %% Changing the label of User to positive
  userLines=find(biometricData(:,userIndex)==user);
- biometricData(userLines,userIndex)=1;
+ biometricData(userLines,userIndex)='client';
 
  %% Changing the label of the remaining users to impostor
  userLines=find(biometricData(:,userIndex)~=user);
- biometricData(userLines,userIndex)=0;
+ biometricData(userLines,userIndex)='impostor';
 end
