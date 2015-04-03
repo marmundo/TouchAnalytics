@@ -4,7 +4,9 @@ function main(option,classifierName)
 % 1: Generating Unprotected data with user label= (client) or (impostor)
 % 2: BioHashing, use the same key to all the users
 % 3: BioHashing, use a different key to each user
-% 4: Test Score Matrix Production
+% 4: BioConvolving, use the same key to all the users
+% 5: BioConvolving, use a different key to each user
+% 6: Test Score Matrix Production
 %
 % classifier= classifier name will be used to analyse the biometric data
 
@@ -111,7 +113,76 @@ elseif option==3
         load(strcat(prefix,userS,'/testSet.mat'));
         test=generatingBioHashingTest(testSet,userS,filePath,2,1);
     end
-elseif option==4
+    elseif option==4
+    
+    %% Generating scrolling BioConvolving Data by User
+    
+    load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
+    prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
+    
+    %loading scrolling to know how many users there are
+    load('scrolling data.mat');
+    usersSize=length(unique(scrolling(:,1)));
+    
+    for user=1:usersSize
+        userS=num2str(user);
+        filePath=strcat(strcat(pwd(),'/Data/Scrolling/BioConvolving/Same_Key/User_'),userS);
+        load(strcat(prefix,userS,'/trainingSet.mat'));
+        train=generatingBioConvolvingTraining(trainingSet,userS,filePath,1,1);
+        load(strcat(prefix,userS,'/testSet.mat'));
+        test=generatingBioConvolvingTest(testSet,userS,filePath,1,1);
+    end
+    
+    
+    %% Generating Horizontal BioConvolving Data by User
+    
+    load(strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat'));
+    prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_');
+    
+    load('horizontal data.mat');
+    usersSize=length(unique(horizontal(:,1)));
+    for user=1:usersSize
+        userS=num2str(user);
+        filePath=strcat(strcat(pwd(),'/Data/Horizontal/BioConvolving/Same_Key/User_',userS));
+        load(strcat(prefix,userS,'/trainingSet.mat'));
+        train=generatingBioConvolvingTraining(trainingSet,userS,filePath,1,1);
+        load(strcat(prefix,userS,'/testSet.mat'));
+        test=generatingBioConvolvingTest(testSet,userS,'',1,1);
+    end
+elseif option==5
+    %% Generating scrolling BioConvolving Data by User
+    
+    load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
+    prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
+    
+    load('scrolling data.mat');
+    usersSize=length(unique(scrolling(:,1)));
+    for user=1:usersSize
+        userS=num2str(user);
+        filePath=strcat(strcat(pwd(),'/Data/Scrolling/BioConvolving/Different_Key/User_',userS));
+        load(strcat(prefix,userS,'/trainingSet.mat'));
+        train=generatingBioConvolvingTraining(trainingSet,userS,filePath,2,1);
+        load(strcat(prefix,userS,'/testSet.mat'));
+        test=generatingBioConvolvingTest(testSet,userS,filePath,2,1);
+    end
+    
+    
+    %% Generating Horizontal BioConvolving Data by User
+    
+    load(strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat'));
+    prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_');
+    
+    load('horizontal data.mat');
+    usersSize=length(unique(horizontal(:,1)));
+    for user=1:usersSize
+        userS=num2str(user);
+        filePath=strcat(pwd(),'/Data/Horizontal/BioConvolving/Different_Key/User_',userS);
+        load(strcat(prefix,userS,'/trainingSet.mat'));
+        train=generatingBioConvolvingTraining(trainingSet,userS,filePath,2,1);
+        load(strcat(prefix,userS,'/testSet.mat'));
+        test=generatingBioConvolvingTest(testSet,userS,filePath,2,1);
+    end
+elseif option==6
     % Loading training data
     load(strcat(pwd(),'/Data/Scrolling/BioHashing/Same_Key/User_1/trainingSet.mat'));
     
