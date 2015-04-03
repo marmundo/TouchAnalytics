@@ -14,7 +14,7 @@ if optionkey==1
     bioH_test=biohashing(testSet(:,2:end),'');
 elseif optionkey==2
     %% Different Keys for each user
-    numFeatures=length(testSet(1,:));
+    numFeatures=length(testSet(1,2:end));
     users=unique(testSet(:,1));
     for currentUser=1:length(users)
         % user data presented in testSet
