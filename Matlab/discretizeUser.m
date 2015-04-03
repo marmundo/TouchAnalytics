@@ -17,5 +17,5 @@ end
  userLabels(biometricData(:,userIndex)~=user)={'impostor'};
  
  % Deleting the userLabels
- biometricData=biometricData(:,2:end);
+ biometricData=biometricData(:,1:end-1);
 end
