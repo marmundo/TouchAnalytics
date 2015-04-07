@@ -32,8 +32,8 @@ for i=1:numSamples
     %polynomial creation based on interpolation
     P = spline(xCoordinates,sample);
     
-    transformed_sample= ppval(P,key)'
-    transformed_data=[transformed_data; transformed_sample]
+    transformed_sample= ppval(P,key)';
+    transformed_data=[transformed_data; transformed_sample];
 end
 
 
