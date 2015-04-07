@@ -12,8 +12,6 @@ function [key]=generateBioConvolvingKey(w,n)
     d(1)=0;
     d(end+1)=100;
     
-    n=length(biometric_data(1,:));
-    
     key=round((d/100)*n);
     
 end
