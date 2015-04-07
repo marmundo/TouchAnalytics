@@ -82,9 +82,18 @@ end
 if ~exist(filePath,'dir')
     mkdir(filePath);
 end
-save(strcat(filePath,'/trainingSet.mat'),'trainingSet','trainUserLabels');
+
+if option==1
+    save(strcat(filePath,'/trainingSet.mat'),'trainingSet','trainUserLabels');
+else
+    save(strcat(filePath,'/trainingSet.mat'),'trainingSet');
+end
 
 %% Saving testing
-save(strcat(filePath,'/testSet.mat'),'testSet','testUserLabels');
+if option==1
+    save(strcat(filePath,'/testSet.mat'),'testSet','testUserLabels');
+else
+    save(strcat(filePath,'/testSet.mat'),'testSet');
+end
 
 end
