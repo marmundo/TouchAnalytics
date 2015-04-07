@@ -26,14 +26,14 @@ for i=1:numSamples
     % getting biometric sample and normalizint it to 0 to 1
     sample=biometric_data(i,:);
     
-    xCoordinates=[0:numFeature];
+    xCoordinates=[1:numFeatures];
     xCoordinates=xCoordinates/norm(xCoordinates);
     
     %polynomial creation based on interpolation
-    [P,R,S] = lagrangepoly(xCoordinates,sample);
+    P = spline(xCoordinates,sample);
     
-    transformed_sample= polyVal(P,key)
-    transformed_data=[transformed_data, transformed_sample]
+    transformed_sample= ppval(P,key)'
+    transformed_data=[transformed_data; transformed_sample]
 end
 
 
