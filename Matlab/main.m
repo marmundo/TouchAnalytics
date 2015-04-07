@@ -115,7 +115,7 @@ elseif option==3
     end
     elseif option==4
     
-    %% Generating scrolling BioHashing Data by User
+    %% Generating scrolling Interpolation Data by User
     
     load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
     prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
@@ -134,7 +134,7 @@ elseif option==3
     end
     
     
-    %% Generating Horizontal BioHashing Data by User
+    %% Generating Horizontal Interpolation Data by User
     
     load(strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat'));
     prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_');
@@ -150,7 +150,7 @@ elseif option==3
         test=generatingInterpolationTest(testSet,userS,'',1,1);
     end
 elseif option==5
-    %% Generating scrolling BioHashing Data by User
+    %% Generating scrolling Interpolation Data by User
     
     load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
     prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
@@ -167,7 +167,7 @@ elseif option==5
     end
     
     
-    %% Generating Horizontal BioHashing Data by User
+    %% Generating Horizontal Interpolation Data by User
     
     load(strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat'));
     prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_');
