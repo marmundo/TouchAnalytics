@@ -20,7 +20,7 @@ if(isempty(key))
 end
 
 
-%protecting each biometric sample using bioghashing method with the given
+%protecting each biometric sample using interpolation method with the given
 %key.
 for i=1:numSamples
     % getting biometric sample and normalizint it to 0 to 1
