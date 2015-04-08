@@ -27,21 +27,21 @@ elseif optionkey==2
         key=rand(numFeatures-1*keySize,1);
         
         % Protecting the User data
-        interpolationData=biohashing(userData(:,2:end),key);
+        interpolationData=interpolation(userData(:,2:end),key);
         
-        % Adding the biohashingData to the Protected BioHashing test
+        % Adding the interpolationData to the Protected interpolation test
         % dataset
         inter_test=[inter_test; interpolationData];
     end
 end
 
-% Adding the user label to the biohashing data
+% Adding the user label to the interpolation data
 inter_test=[inter_test testSet(:,1)];
 
 % Discretizing the user. 1, for user, and 0 for remaining users
 [inter_test,testUserLabels]=discretizeUser(str2num(user),length(inter_test(1,:)),inter_test);
 
-%% Folder used to save the biohashing data
+%% Folder used to save the interpolation data
 % If empty create the variable
 if(isempty(saveFilePath))
     saveFilePath=strcat(pwd(),'/Data/Horizontal/Interpolation/Same_Key/User_',user);

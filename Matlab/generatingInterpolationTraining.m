@@ -29,14 +29,14 @@ elseif optionkey==2
         key=rand(numFeatures-1*keySize,1);
        
         % protecting the user data using the generated key
-        interpolationData=biohashing(userData(:,2:end),key);
+        interpolationData=interpolation(userData(:,2:end),key);
        
         % adding user protected data to the bioH_train variable
         inter_train=[inter_train; interpolationData];
     end
 end
 
-% adding the user label to the biohashing data
+% adding the user label to the interpolation data
 inter_train=[inter_train trainingSet(:,1)];
 
 % discretizing protected dataset
