@@ -1,6 +1,6 @@
 function [transformed_data] = interpolation(biometric_data,key)
-% BIOHASHING function protects a biometric data using biometric method
-% transformed_data=biohashing(biometric_data,key)
+% INTERPOLATION function protects a biometric data using biometric method
+% transformed_data=interpolation(biometric_data,key)
 % biometric_data is the biometric data
 % key is optional. key which will be used to encode the data
 
