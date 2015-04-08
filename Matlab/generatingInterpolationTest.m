@@ -1,7 +1,7 @@
 function [inter_test]=generatingInterpolationTest(testSet,user,saveFilePath,optionkey,keySize)
 % testSet= test dataset used in data protection
 % user= user label of testSet
-% saveFilePath= Full Path where the biohashing test set will be saved
+% saveFilePath= Full Path where the interpolation test set will be saved
 % optionkey =
 % 1: use the same key to all the users
 % 2: use a different key to each user

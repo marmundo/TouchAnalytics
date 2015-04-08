@@ -1,7 +1,7 @@
 function [inter_train]=generatingInterpolationTraining(trainingSet,user,saveFilePath,optionkey,keySize)
 % trainingSet= training dataset will be protected
 % user= original user of the training dataset
-% saveFilePath=Path wich the training biohashing data will be save
+% saveFilePath=Path wich the training interpolation data will be save
 % optionkey =
 % 1: use the same key to all the users
 % 2: use a different key to each user
