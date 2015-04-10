@@ -11,7 +11,7 @@ function [bioC_train]=generatingBioConvolvingTraining(trainingSet,user,saveFileP
 bioC_train=[];
 
 if optionkey==1
-    %% Same key for all users    
+    %% Same key for all users
     nFeatures=length(trainingSet(1,2:end));
     key=[0,round(nFeatures/2),nFeatures];
     bioC_train=bioconvolving(trainingSet(:,2:end),key);
@@ -23,29 +23,38 @@ elseif optionkey==2
     for currentUser=1:length(users)
         % data of user i
         userData=trainingSet(find(trainingSet(:,1) == users(currentUser)),:);
-      
-            
+        
+        
         % creating the key for the currentUser
         % 2 is the standard size of bioconvolving
         % TODO: In future analysis the performance changing the size of key
         key=generateBioConvolvingKey(2,numFeatures);
         
-         %This is was implemented because some times the key has this
+        flag=0;
+        
+        %This is was implemented because some times the key has this
         %behavior [0,31,31]. Thus, the protected data is the same the
         %original one. So, I decided to cut the sample to fit the other
         %protected one.
         for i=1:length(key)-1
-        if key(i+1)-key(i)==numFeatures
-            key=generateBioConvolvingKey(2,numFeatures);
-           break
-        end
+            if key(i+1)-key(i)==numFeatures
+                key=generateBioConvolvingKey(2,numFeatures);
+                break
+            end
         end
         
         % protecting the user data using the generated key
         bioConvolvingData=bioconvolving(userData(:,2:end),key);
-       
-        % adding user protected data to the bioH_train variable            
+        
+        if flag==1
+            if length(bioC_train(1,:))~=length(bioConvolvingData(1,:))
+                disp('OK');
+            end
+        end
+        % adding user protected data to the bioH_train variable
         bioC_train=[bioC_train; bioConvolvingData];
+        
+        flag=1;
     end
 end
 
@@ -67,9 +76,11 @@ if ~exist(saveFilePath,'dir')
     mkdir(saveFilePath);
 end
 
+trainingSet=bioC_train;
+
 %saving the training data
-save(strcat(saveFilePath,'/trainingSet.mat'),'bioC_train','trainUserLabels');
+save(strcat(saveFilePath,'/trainingSet.mat'),'trainingSet','trainUserLabels');
 
 end
 
-    
+

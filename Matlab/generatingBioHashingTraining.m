@@ -54,8 +54,10 @@ if ~exist(saveFilePath,'dir')
     mkdir(saveFilePath);
 end
 
+trainingSet=bioH_train;
+
 %saving the training data
-save(strcat(saveFilePath,'/trainingSet.mat'),'bioH_train','trainUserLabels');
+save(strcat(saveFilePath,'/trainingSet.mat'),'trainingSet','trainUserLabels');
 
 end
 

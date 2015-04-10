@@ -57,8 +57,10 @@ if ~exist(saveFilePath,'dir')
     mkdir(saveFilePath);
 end
 
+trainingSet=ds_train;
+
 %saving the training data
-save(strcat(saveFilePath,'/trainingSet.mat'),'ds_train','trainUserLabels');
+save(strcat(saveFilePath,'/trainingSet.mat'),'trainingSet','trainUserLabels');
 
 end
 

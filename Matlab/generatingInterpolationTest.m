@@ -51,8 +51,10 @@ if ~exist(saveFilePath,'dir')
     mkdir(saveFilePath);
 end
 
+testSet=inter_test;
+
 %% Saving the testing data
-save(strcat(saveFilePath,'/testSet.mat'),'inter_test','testUserLabels');
+save(strcat(saveFilePath,'/testSet.mat'),'testSet','testUserLabels');
 
 
 end

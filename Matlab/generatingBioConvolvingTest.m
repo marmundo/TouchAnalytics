@@ -51,7 +51,7 @@ end
 bioC_test=[bioC_test testSet(:,1)];
 
 % Discretizing the user. 1, for user, and 0 for remaining users
-[bioC_test,testUserLabels]=discretizeUser(str2num(user),length(bioC_test(1,:)),bioC_test);
+[bioC_test,testUserLabels]=discretizeUser(str2double(user),length(bioC_test(1,:)),bioC_test);
 
 %% Folder used to save the biohashing data
 % If empty create the variable
@@ -63,7 +63,9 @@ if ~exist(saveFilePath,'dir')
     mkdir(saveFilePath);
 end
 
+testSet=bioC_test;
+
 %% Saving the testing data
-save(strcat(saveFilePath,'/testSet.mat'),'bioC_test','testUserLabels');
+save(strcat(saveFilePath,'/testSet.mat'),'testSet','testUserLabels');
 
 end
