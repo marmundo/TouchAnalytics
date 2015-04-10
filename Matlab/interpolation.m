@@ -4,6 +4,11 @@ function [transformed_data] = interpolation(biometric_data,key)
 % biometric_data is the biometric data
 % key is optional. key which will be used to encode the data
 
+%Turning off all warning because some biological samples has NaN.
+% When MatLab tries to interpolate has problems and show a warning.
+% I'm supressing to increase the velocity of this function.
+warning('off','all');
+
 %starting variable
 transformed_data=[];
 
