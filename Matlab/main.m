@@ -1,5 +1,5 @@
-function main(option,classifierName)
-%option =
+function main(option,classifierName,user, biometricDataName, keyType, orientation)
+% option =
 % 0: Generating Unprotected data with original user label
 % 1: Generating Unprotected data with user label= (client) or (impostor)
 % 2: BioHashing, use the same key to all the users
@@ -10,9 +10,19 @@ function main(option,classifierName)
 % 7: Interpolation, use a different key to each user
 % 8: Double Sum, use the same key to all the users
 % 9: Double Sum, use a different key to each user
-% 10: Test Score Matrix Production
+% 10: Test Score Matrix Production to the user @user using the classifier
+% @classifierName, biometreic Data @biometricDataName  amnd key type
+% @keyType
 %
 % classifier= classifier name will be used to analyse the biometric data
+% user= user name which the classifier will analyse the biometric data
+% biometricDataName= name of the biometric data. biometricDataName accepts
+% the values 'Original', 'Interpolation', 'BioHashing', 'BioConvolving',
+%'DoubleSum'
+% keyType= Type of key used by to produce the cancelable biometric data.
+% The keyType can be 'Same_Key' or 'Different_Key'
+%orientation= orientation Stroke. This variable deals with values
+%'Scrolling' and 'Horizontal'
 
 scrolling=[];
 horizontal=[];
@@ -326,14 +336,19 @@ elseif option==9
         generatingDoubleSumTest(testSet,userS,filePath,2,1);
     end
 elseif option==10
+    
     % Loading training data
-    load(strcat(pwd(),'/Data/Scrolling/BioHashing/Same_Key/User_1/trainingSet.mat'));
+    load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
     
     % Loading testData
-    load(strcat(pwd(),'/Data/Scrolling/BioHashing/Same_Key/User_1/testSet.mat'));
+    load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/testSet.mat'));
     
-    %executing svm to generate score matrix
-    [clientScore,impostorScore] = prediction(classifierName,bioH_train,trainUserLabels,bioH_test,testUserLabels);
+    
+    [clientScore,impostorScore] = prediction(classifierName,trainingSet,trainUserLabels,testSet,testUserLabels);
+    
+    save(strcat('Score_',classifierName,'_',orientation,'_',biometricDataName,'_',keyType,'_User_',num2str(user),'.mat'),'clientScore','impostorScore');
+    
+    addpath('lib')
     
     wer(impostorScore,clientScore, [],1,[],1);
     unique(impostorScore)
