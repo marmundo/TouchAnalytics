@@ -14,7 +14,7 @@ if optionkey==1
     bioH_test=biohashing(testSet(:,2:end),'');
 elseif optionkey==2
     %% Different Keys for each user
-    numFeatures=length(testSet(1,2:end));
+    numFeatures=length(testSet(1,:));
     users=unique(testSet(:,1));
     for currentUser=1:length(users)
         % user data presented in testSet
@@ -40,6 +40,7 @@ bioH_test=[bioH_test testSet(:,1)];
 
 % Discretizing the user. 1, for user, and 0 for remaining users
 [bioH_test,testUserLabels]=discretizeUser(str2num(user),length(bioH_test(1,:)),bioH_test);
+
 
 %% Folder used to save the biohashing data
 % If empty create the variable
