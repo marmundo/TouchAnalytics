@@ -27,7 +27,8 @@ public class BioHashingExperimentNorman extends CancelableExperiment {
     private Instances keyArray;
     String[] datasets=new String[2];
     private String[] trainingUsers;   
-    
+    BioHashing bio;
+
     ArrayList<String> trainingUsersList=new ArrayList<String>();
 
 
@@ -80,50 +81,50 @@ public class BioHashingExperimentNorman extends CancelableExperiment {
 	// TODO Auto-generated method stub
 
     }
-    
+
     private Instances generateTrainingSet(Integer user,String orientation){
-		    
+
 	Main main=new Main();
 	Instances dataset=main.getDataSet(orientation);
-	
+
 	String targetUser=String.valueOf(user);
 	Instances temp=InstancesUtils.getInstances(dataset, targetUser);
-	
+
 	BioHashing bio=new BioHashing(temp);
 	try {
 	    temp=bio.generate();
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-	   
-   	Instances training=temp;
-   	int targetUserInt=Integer.valueOf(user);
-   	int quantityClassValues=dataset.classAttribute().numValues();
-   	int count=1;
-   	trainingUsersList.add(targetUser);
-   	while(count!=(quantityClassValues-1)/2){
-   	    if(count!=targetUserInt){
-   		temp=InstancesUtils.getInstances(dataset, String.valueOf(count));
-   		bio.setOriginalDataset(temp);
-   		try {
+
+	Instances training=temp;
+	int targetUserInt=Integer.valueOf(user);
+	int quantityClassValues=dataset.classAttribute().numValues();
+	int count=1;
+	trainingUsersList.add(targetUser);
+	while(count!=(quantityClassValues-1)/2){
+	    if(count!=targetUserInt){
+		temp=InstancesUtils.getInstances(dataset, String.valueOf(count));
+		bio.setOriginalDataset(temp);
+		try {
 		    temp=bio.generate();
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}
-   		training.addAll(temp);
-   	    }
-   	    trainingUsersList.add(String.valueOf(count));
-   	    count++;
-   	}
-   	setTrainingUsers(Utils.stringArrayListToStringArray(trainingUsersList));	
-   	return training;
+		training.addAll(temp);
+	    }
+	    trainingUsersList.add(String.valueOf(count));
+	    count++;
+	}
+	setTrainingUsers(Utils.stringArrayListToStringArray(trainingUsersList));	
+	return training;
     }
-    
+
     private Instances generateTestSet(Integer user,String orientation){
 	ArrayList<String> usersInTraining=trainingUsersList;
 	Instances testDataSet=new Instances(dataset);
 	testDataSet.clear();
-	
+
 	BioHashing bio=new BioHashing(testDataSet);
 
 	for (int testUser = 1; testUser <=41; testUser++) {
@@ -140,9 +141,9 @@ public class BioHashingExperimentNorman extends CancelableExperiment {
 	}
 	return testDataSet;
     }
-    
+
     public void setTrainingUsers(String[] trainingUsers) {
-        this.trainingUsers = trainingUsers;
+	this.trainingUsers = trainingUsers;
     }
 
     @Override
@@ -151,39 +152,40 @@ public class BioHashingExperimentNorman extends CancelableExperiment {
 	    setFileName(datasets[i]);
 	    int user=1;
 	    while(user<=41){	
-	/**Standard key*/
-	
-	    setTempResults(Const.PROJECTPATH+"/"+getCancelableFunctionName()+"/"+getOrientation()+"/User_"+user+"/Different/Standard/");	
-	    setDataSetUser(user);
+		/**Standard key*/
 
-	    
-	    Instances client= InstancesUtils.getInstances(dataset, Const.POSITIVE);
-	    Instances impostor= InstancesUtils.getInstances(dataset, Const.NEGATIVE);
+		setTempResults(Const.PROJECTPATH+"/"+getCancelableFunctionName()+"/"+getOrientation()+"/User_"+user+"/Different/Standard/");	
+		setDataSetUser(user);
 
-	    //Generating protected client samples using a single key
-	    bio=new BioHashing(client);
-	    try {
-		clientProtected=bio.generate();
-	    } catch (Exception e) {
-		e.printStackTrace();
+
+		Instances client= InstancesUtils.getInstances(dataset, Const.POSITIVE);
+		Instances impostor= InstancesUtils.getInstances(dataset, Const.NEGATIVE);
+
+		//Generating protected client samples using a single key
+		bio=new BioHashing(client);
+		Instances clientProtected = null;
+		try {
+		    clientProtected=bio.generate();
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}
+
+		//Generating protected impostor samples using a single key
+		BioHashing bio=new BioHashing(impostor);
+		Instances impostorProtected = null;
+		try {
+		    impostorProtected=bio.generate();
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}	    
+
+		if(clientProtected.addAll(impostorProtected)){
+		    Instances protectedData=clientProtected;
+		    Utils.writeToFile(protectedData,tempResults,"FS/BioHashing_Different_Std_Threshold_"+bio.getThreshold()+"_"+getFileName());
+		}
+		user++;
 	    }
-
-	    //Generating protected impostor samples using a single key
-	    BioHashing bio=new BioHashing(impostor);
-	    try {
-		impostorProtected=bio.generate();
-	    } catch (Exception e) {
-		e.printStackTrace();
-	    }	    
-
-	    if(clientProtected.addAll(impostorProtected)){
-		Instances protectedData=clientProtected;
-		Utils.writeToFile(protectedData,tempResults,"FS/BioHashing_Different_Std_Threshold_"+bio.getThreshold()+"_"+getFileName());
-	    }
-	    user++;
 	}
-
-
     }
 
     @Override
