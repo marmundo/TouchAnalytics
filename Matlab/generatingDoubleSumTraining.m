@@ -28,7 +28,7 @@ elseif optionkey==2
         userData=trainingSet(find(trainingSet(:,1) == users(currentUser)),:);
       
         % taking the user data based on size of keySize
-        userData=userData(:,1:numFeatures*keySize);
+        userData=userData(:,1:numFeatures+1*keySize);
        
         
         % protecting the user data using the generated key

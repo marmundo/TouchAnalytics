@@ -10,7 +10,7 @@ function [ds_test]=generatingDoubleSumTest(testSet,user,saveFilePath,optionkey,k
 ds_test=[];
 
 %number of features
-numFeatures=length(testSet(1,:));
+numFeatures=length(testSet(1,:))-1;
 
 %% Same key for all users
 if optionkey==1
@@ -26,7 +26,7 @@ elseif optionkey==2
         userData=testSet(find(testSet(:,1) == users(currentUser)),:);
         
         % user data based on the size of keySize
-        userData=userData(:,1:numFeatures*keySize);
+        userData=userData(:,1:numFeatures+1*keySize);
         
                 
         % Protecting the User data
