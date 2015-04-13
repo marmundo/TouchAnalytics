@@ -13,7 +13,7 @@ bioC_test=[];
 if optionkey==1
     nFeatures=length(testSet(1,2:end));
     key=[0,round(nFeatures/2),nFeatures];
-    bioC_test=biohashing(testSet(:,2:end),key);
+    bioC_test=bioconvolving(testSet(:,2:end),key);
 elseif optionkey==2
     %% Different Keys for each user
     numFeatures=length(testSet(1,2:end));
