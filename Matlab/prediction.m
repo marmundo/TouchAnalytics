@@ -76,9 +76,9 @@ for cIndex=1:length(clientIndexes)
     %and svm gives the score
     if strcmp('knn',classifierName) | strcmp(classifierName,'discriminant')
         if score(1,1)==1
-            score(1,2)=10^-50;
+            score(1,2)=10^-100;
         elseif score(1,1)==0
-            score(1,1)=10^-50;
+            score(1,1)=10^-100;
         end
         logScore=real(log(score(1,1)/score(1,2)));
         if isnan(logScore)  | isinf(logScore)
@@ -126,9 +126,9 @@ for impostorIndexes=1:numSamples
     %calculating the matrix score
     if strcmp('knn',classifierName) | strcmp(classifierName,'discriminant')
         if score(1,2)==1
-            score(1,1)=10^-50;
+            score(1,1)=10^-100;
         elseif score(1,2)==0
-            score(1,2)=10^-50;
+            score(1,2)=10^-100;
         end
         
         logScore=real(log(score(1,1)/score(1,2)));
