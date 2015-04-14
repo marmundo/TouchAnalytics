@@ -444,6 +444,7 @@ elseif option==9
         generatingDoubleSumTest(testSet,userS,filePath,2,1);
     end
 elseif option==10
+    disp(strcat('Processing User_ ',num2str(user)));
     %% Generating and Plot the Scores by users, cancelable function, stroke orientation and key type
     % Loading training data
     load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
@@ -472,6 +473,8 @@ elseif option==11
     addpath('lib')     
     saveFilePath=strcat(pwd(),'/ScoreMatrix/',orientation,'/',biometricDataName,'/',keyType);
     
+    disp(strcat('Genrating_',biometricDataName,'_Score'));
+    
     clientScore=[];
     impostorScore=[];
     for user=1:41
@@ -489,7 +492,14 @@ elseif option==11
         if isempty(uclientScore) | isempty(uimpostorScore)
             disp('empty score');
         end
-        wer(uimpostorScore,uclientScore, [],1,[],1);
+         wer(uimpostorScore,uclientScore, [],1,[],1);
+         
+         %saving the scores in a file
+        
+        if ~exist(saveFilePath,'dir')
+            mkdir(saveFilePath);
+        end
+        
         savefig(strcat(saveFilePath,'/Score_User_',num2str(user)));
         
         % I cant put [clientScore,uclientScore], i.e, organize by columns
@@ -499,13 +509,7 @@ elseif option==11
         impostorScore=[impostorScore;uimpostorScore];
         
         
-        %saving the scores in a file
-        
-        if ~exist(saveFilePath,'dir')
-            mkdir(saveFilePath);
-        end
-        save(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
-    end
+        save(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');   end
     
     %ploting the scores
        
