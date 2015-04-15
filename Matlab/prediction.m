@@ -1,4 +1,4 @@
-function [clientScoreMatrix,impostorScoreMatrix]=prediction(classifierName,trainingDataSet,trainUserLabels,testDataSet,testUserLabels)
+function [clientScoreMatrix,impostorScoreMatrix]=prediction(classifierName,trainingDataSet,trainUserLabels,testDataSet,testUserLabels,saveFilePath,user)
 %classifierName=name of classifier. Can receive knn, svm or discriminant
 
 %addpath('lib/Inpaint_nans');
@@ -31,6 +31,8 @@ elseif strcmp(classifierName,'discriminant')
     classifier=fitcdiscr(trainingDataSet,trainUserLabels);
 end
 
+%save classifier
+save(strcat(saveFilePath,'/Classifier_User_',num2str(user),'.mat'),'classifier');
 
 %% Score Production
 
