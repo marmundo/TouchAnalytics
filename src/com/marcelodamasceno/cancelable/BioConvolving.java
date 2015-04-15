@@ -8,6 +8,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 import com.marcelodamasceno.util.ArffConector;
+import com.marcelodamasceno.util.Const;
 import com.marcelodamasceno.util.Transformations;
 import com.marcelodamasceno.util.Utils;
 
@@ -205,7 +206,8 @@ public class BioConvolving extends Cancelable {
 
 	ArffConector conector = new ArffConector();
 	Instances dataset = null;
-	String projectPath = "/home/marcelo/Área de Trabalho/Documentos-Windows/Google Drive/doutorado/projeto/dataset/Base de Toque/";
+
+	String projectPath = Const.DATASETPATH;
 	String folderResults = "IntraSession/";
 
 	try {
