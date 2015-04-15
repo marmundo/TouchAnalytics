@@ -76,7 +76,7 @@ for cIndex=1:length(clientIndexes)
     %calculating the matrix score
     %if done because knn and discriminant gives the posterior probabilities
     %and svm gives the score
-    if strcmp('knn',classifierName) | strcmp(classifierName,'discriminant')
+    %if strcmp('knn',classifierName) | strcmp(classifierName,'discriminant')
         if score(1,1)==1
             score(1,2)=10^-100;
         elseif score(1,1)==0
@@ -87,9 +87,9 @@ for cIndex=1:length(clientIndexes)
             logScore=real(log(score(1,1)));
         end
         
-    else
-        logScore=score(1,1);
-    end
+  %  else
+   %     logScore=score(1,1);
+  %  end
     
     
     %user label of this sample
@@ -126,7 +126,7 @@ for impostorIndexes=1:numSamples
     
     [predictedClass,score] = predict(classifier,sample);
     %calculating the matrix score
-    if strcmp('knn',classifierName) | strcmp(classifierName,'discriminant')
+    %if strcmp('knn',classifierName) | strcmp(classifierName,'discriminant')
         if score(1,2)==1
             score(1,1)=10^-100;
         elseif score(1,2)==0
@@ -139,9 +139,9 @@ for impostorIndexes=1:numSamples
             logScore=-100;
         end
         
-    else
-        logScore=score(1,2);
-    end
+   % else
+   %     logScore=score(1,2);
+  %  end
     
     %user label of this sample
     %impostorScoreMatrix(impostorIndex,1)=testUserLabels(impostorIndex);

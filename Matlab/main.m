@@ -495,6 +495,7 @@ elseif option==11
     clientScore=[];
     impostorScore=[];
     for user=1:41
+        disp('Processing User', num2str(user));
         % Loading training data
         load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
         
