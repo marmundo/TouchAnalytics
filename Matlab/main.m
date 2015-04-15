@@ -38,6 +38,7 @@ horizontal=[];
 
 if option==0
     %% Generating scrolling Original Data by User Label
+    disp('Generating User Label Original');
     
     load('scrolling data.mat','scrolling');
     usersSize=length(unique(scrolling(:,1)));
@@ -59,6 +60,7 @@ if option==0
     end
 elseif option==1
     %% Generating scrolling Original Data by Discretized User
+    disp('Generating User Discretized Original');
     
     load('scrolling data.mat','scrolling');
     usersSize=length(unique(scrolling(:,1)));
@@ -83,6 +85,7 @@ elseif option==1
 elseif option==2
     
     %% Generating scrolling BioHashing Data by User
+    disp('Generating Same Key BioHashing Data');
     
     load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
     prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
@@ -128,6 +131,7 @@ elseif option==2
     end
 elseif option==3
     %% Generating scrolling BioHashing Data by User
+    disp('Generating Different Key BioHashing Data');
     
     load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
     prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
@@ -172,6 +176,7 @@ elseif option==3
 elseif option==4
     
     %% Generating scrolling BioConvolving Data by User
+    disp('Generating Same Key BioConvolving Data');
     
     load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
     prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
@@ -216,8 +221,9 @@ elseif option==4
         generatingBioConvolvingTest(testSet,userS,'',1,1);
     end
 elseif option==5
-    %% Generating scrolling BioConvolving Data by User
+    disp('Generating Different Key BioConvolving Data');
     
+    %% Generating scrolling BioConvolving Data by User
     load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
     prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
     
@@ -259,6 +265,7 @@ elseif option==5
         generatingBioConvolvingTest(testSet,userS,filePath,2,1);
     end
 elseif option==6
+    disp('Generating Same Key Interpolation Data');
     %% Generating scrolling Interpolation Data by User
     
     load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
@@ -305,6 +312,7 @@ elseif option==6
         generatingInterpolationTest(testSet,userS,filePath,1,1);
     end
 elseif option==7
+    disp('Generating Different Key Interpolation Data');
     %% Generating scrolling Interpolation Data by User
     
     load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
@@ -351,6 +359,7 @@ elseif option==7
         generatingInterpolationTest(testSet,userS,filePath,2,1);
     end
 elseif option==8
+    disp('Generating Same Key DoubleSum Data');
     %% Generating scrolling DoubleSum Data by User
     
     load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
@@ -396,6 +405,7 @@ elseif option==8
         generatingDoubleSumTest(testSet,userS,filePath,1,1);
     end
 elseif option==9
+    disp('Generating Different Key DoubleSum Data');
     %% Generating scrolling DoubleSum Data by User
     
     %loading training data
@@ -404,7 +414,7 @@ elseif option==9
     %prefix of the file name
     prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
     
-    %loading scrolling data    
+    %loading scrolling data
     load('scrolling data.mat','scrolling');
     
     %quantity of users in the dataset
@@ -418,7 +428,7 @@ elseif option==9
         filePath=strcat(strcat(pwd(),'/Data/Scrolling/DoubleSum/Different_Key/User_',userS));
         
         %loading and generating double sum training data
-        load(strcat(prefix,userS,'/trainingSet.mat'), 'trainingSet');        
+        load(strcat(prefix,userS,'/trainingSet.mat'), 'trainingSet');
         generatingDoubleSumTraining(trainingSet,userS,filePath,2,1);
         
         %loading and generating double sum test data
@@ -444,7 +454,7 @@ elseif option==9
         generatingDoubleSumTest(testSet,userS,filePath,2,1);
     end
 elseif option==10
-    disp(strcat('Processing User_ ',num2str(user)));
+    disp(strcat('Generatng and Ploting User_',num2str(user),'_Score Plot_',classifierName,'_',orientation,'_',biometricDataName,'_',keyType));
     %% Generating and Plot the Scores by users, cancelable function, stroke orientation and key type
     % Loading training data
     load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
@@ -456,30 +466,28 @@ elseif option==10
     [clientScore,impostorScore] = prediction(classifierName,trainingSet,trainUserLabels,testSet,testUserLabels);
     
     %saving the scores in a file
-    saveFilePath=strcat(pwd(),'/ScoreMatrix/',orientation,'/',biometricDataName,'/',keyType);
+    saveFilePath=strcat(pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType);
     if ~exist(saveFilePath,'dir')
         mkdir(saveFilePath);
     end
     save(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
     
     %Ploting the scores
-    addpath('lib')    
+    addpath('lib')
     wer(impostorScore,clientScore, [],1,[],1);
     savefig(strcat(saveFilePath,'/Score_User_',num2str(user)));
     
 elseif option==11
     
     %% Generating and Plot the Scores by cancelable function, stroke orientation and key type
-    addpath('lib')     
-    saveFilePath=strcat(pwd(),'/ScoreMatrix/',orientation,'/',biometricDataName,'/',keyType);
+    addpath('lib')
+    saveFilePath=strcat(pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType);
     
-    disp(strcat('Genrating_',biometricDataName,'_Score'));
+    disp(strcat('Generating and Ploting All Users Score Plot_',classifierName,'_',orientation,'_',biometricDataName,'_',keyType));
     
     clientScore=[];
     impostorScore=[];
     for user=1:41
-        
-        disp(strcat('Processing User_ ',num2str(user)));
         % Loading training data
         load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
         
@@ -492,9 +500,9 @@ elseif option==11
         if isempty(uclientScore) | isempty(uimpostorScore)
             disp('empty score');
         end
-         wer(uimpostorScore,uclientScore, [],1,[],1);
-         
-         %saving the scores in a file
+        wer(uimpostorScore,uclientScore, [],1,[],1);
+        
+        %saving the scores in a file
         
         if ~exist(saveFilePath,'dir')
             mkdir(saveFilePath);
@@ -508,20 +516,21 @@ elseif option==11
         clientScore=[clientScore;uclientScore];
         impostorScore=[impostorScore;uimpostorScore];
         
-        
+    end 
         save(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');   end
-    
+
     %ploting the scores
-       
+    
     wer(impostorScore,clientScore, [],1,[],1);
     savefig(strcat(saveFilePath,'/Score'));
     
     beep;
     
 elseif option==12
-    addpath('lib') 
+    addpath('lib')
     % Loading score matrix
-    saveFilePath=strcat(pwd(),'/ScoreMatrix/',orientation,'/',biometricDataName,'/',keyType);
+    disp(strcat('Ploting User_',num2str(user),'_Score Plot_',classifierName,'_',orientation,'_',biometricDataName,'_',keyType));
+    saveFilePath=strcat(pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType);
     load(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
     
     %ploting the scores
@@ -534,8 +543,8 @@ elseif option==13
     allImpostorScore=[];
     for user=1:41
         % Loading score matrix
-        saveFilePath=strcat(pwd(),'/ScoreMatrix/',orientation,'/',biometricDataName,'/',keyType);
-        load(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');        
+        saveFilePath=strcat(pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType);
+        load(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
         
         if isempty(clientScore) | isempty(impostorScore)
             disp('empty score');
@@ -549,6 +558,7 @@ elseif option==13
     
     %ploting the scores
     addpath('lib')
+    disp(strcat('Ploting All Users Score Plot_',classifierName,'_',orientation,'_',biometricDataName,'_',keyType));
     wer(allImpostorScore,allClientScore, [],1,[],1);
     savefig(strcat(saveFilePath,'/Score'));
 end
