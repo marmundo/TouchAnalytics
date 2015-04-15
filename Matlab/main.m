@@ -22,6 +22,12 @@ function main(option,classifierName,user, biometricDataName, keyType, orientatio
 % 13: Test Score Matrix Production using all users and the classifier
 % @classifierName, biometreic Data @biometricDataName  and key type
 % @keyType
+% 14: Score Matrix Production to the user @user using the trained classifier
+% @classifierName, biometreic Data @biometricDataName  and key type
+% @keyType
+% 15: Test Score Matrix Production using all users and the trained classifier
+% @classifierName, biometreic Data @biometricDataName  and key type
+% @keyType
 %
 % classifier= classifier name will be used to analyse the biometric data
 % user= user name which the classifier will analyse the biometric data
@@ -198,7 +204,7 @@ elseif option==4
         load(strcat(prefix,userS,'/testSet.mat'),'testSet');
         generatingBioConvolvingTest(testSet,userS,filePath,1,1);
     end
-        
+    
     %% Generating Horizontal BioConvolving Data by User
     
     load(strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat'));
@@ -242,7 +248,7 @@ elseif option==5
         load(strcat(prefix,userS,'/testSet.mat'),'testSet');
         generatingBioConvolvingTest(testSet,userS,filePath,2,1);
     end
-        
+    
     %% Generating Horizontal BioConvolving Data by User
     
     load(strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat'));
@@ -379,7 +385,7 @@ elseif option==8
         load(strcat(prefix,userS,'/testSet.mat'),'testSet');
         generatingDoubleSumTest(testSet,userS,filePath,1,1);
     end
-       
+    
     %% Generating Horizontal Double Sum Data by User
     
     load(strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat'));
@@ -458,10 +464,10 @@ elseif option==10
     
     %saving the scores in a file
     saveFilePath=strcat(pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType);
-     if ~exist(saveFilePath,'dir')
-            mkdir(saveFilePath);
-     end
-        
+    if ~exist(saveFilePath,'dir')
+        mkdir(saveFilePath);
+    end
+    
     %% Generating and Plot the Scores by users, cancelable function, stroke orientation and key type
     % Loading training data
     load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
@@ -486,16 +492,16 @@ elseif option==11
     saveFilePath=strcat(pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType);
     saveFilePath=saveFilePath{1,:};
     
-     if ~exist(saveFilePath,'dir')
-            mkdir(saveFilePath);
-     end
-        
+    if ~exist(saveFilePath,'dir')
+        mkdir(saveFilePath);
+    end
+    
     disp(strcat('Generating and Ploting All Users Score Plot_',classifierName,'_',orientation,'_',biometricDataName,'_',keyType));
     
-    clientScore=[];
-    impostorScore=[];
+    uclientScore=[];
+    uimpostorScore=[];
     for user=1:41
-        disp('Processing User', num2str(user));
+        disp(strcat('Processing User', num2str(user)));
         % Loading training data
         load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
         
@@ -503,42 +509,42 @@ elseif option==11
         load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/testSet.mat'));
         
         %getting the scores
-        [uclientScore,uimpostorScore] = prediction(classifierName,trainingSet,trainUserLabels,testSet,testUserLabels,saveFilePath,user);
+        [clientScore,impostorScore] = prediction(classifierName,trainingSet,trainUserLabels,testSet,testUserLabels,saveFilePath,user);
         
         if isempty(uclientScore) || isempty(uimpostorScore)
             disp('empty score');
         end
-        wer(uimpostorScore,uclientScore, [],1,[],1);
+        wer(impostorScore,clientScore, [],1,[],1);
         
         %saving the scores in a file
-        
-       
-        
         savefig(strcat(saveFilePath,'/Score_User_',num2str(user)));
         
         % I cant put [clientScore,uclientScore], i.e, organize by columns
         %because the dimensions of clientScore some times is different of uclientScore
         %Thus, the scores are organized by line, i.e, a giant column 1.
-        clientScore=[clientScore;uclientScore];
-        impostorScore=[impostorScore;uimpostorScore];
+        uclientScore=[clientScore;clientScore];
+        uimpostorScore=[impostorScore;impostorScore];
         
-     
-    save(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
+        
+        save(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
     end
-%ploting the scores
-
-wer(impostorScore,clientScore, [],1,[],1);
-savefig(strcat(saveFilePath,'/Score'));
-
+    %ploting the scores
+    
+    wer(uimpostorScore,uclientScore, [],1,[],1);
+    savefig(strcat(saveFilePath,'/Score'));
+    clientScore=uclientScore;
+    impostorScore=uimpostorScore;
+    save(strcat(saveFilePath,'/Score_Total.mat'),'clientScore','impostorScore');
+    
 elseif option==12
     addpath('lib')
     % Loading score matrix
     disp(strcat('Ploting User_',num2str(user),'_Score Plot_',classifierName,'_',orientation,'_',biometricDataName,'_',keyType));
     saveFilePath=strcat(pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType);
-     if ~exist(saveFilePath,'dir')
-            mkdir(saveFilePath);
-     end
-        
+    if ~exist(saveFilePath,'dir')
+        mkdir(saveFilePath);
+    end
+    
     load(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
     
     %ploting the scores
@@ -546,30 +552,82 @@ elseif option==12
     wer(impostorScore,clientScore, [],1,[],1);
     savefig(strcat(saveFilePath,'/Score_User_',num2str(user)));
     
-    elseif option==13
-        allClientScore=[];
-        allImpostorScore=[];
-        for user=1:41
-            % Loading score matrix
-            saveFilePath=strcat(pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType);
-            load(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
-            
-            if isempty(clientScore) | isempty(impostorScore)
-                disp('empty score');
-            end
-            
-            %storing the score to plot
-            allClientScore=[allClientScore;clientScore];
-            allImpostorScore=[allImpostorScore;impostorScore];
-            
+elseif option==13
+    allClientScore=[];
+    allImpostorScore=[];
+    for user=1:41
+        % Loading score matrix
+        saveFilePath=strcat(pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType);
+        load(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
+        
+        if isempty(clientScore) | isempty(impostorScore)
+            disp('empty score');
         end
         
-        %ploting the scores
-        addpath('lib')
-        disp(strcat('Ploting All Users Score Plot_',classifierName,'_',orientation,'_',biometricDataName,'_',keyType));
-        wer(allImpostorScore,allClientScore, [],1,[],1);
-        savefig(strcat(saveFilePath,'/Score'));
+        %storing the score to plot
+        allClientScore=[allClientScore;clientScore];
+        allImpostorScore=[allImpostorScore;impostorScore];
         
+    end
+    
+    %ploting the scores
+    addpath('lib')
+    disp(strcat('Ploting All Users Score Plot_',classifierName,'_',orientation,'_',biometricDataName,'_',keyType));
+    wer(allImpostorScore,allClientScore, [],1,[],1);
+    savefig(strcat(saveFilePath,'/Score'));
+elseif option==14
+    %loading the classifier
+    saveFilePath=strcat(pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType);
+    load(strcat(saveFilePath,'/Classifier_User_',num2str(user),'.mat'),'classifier');
+    
+    % Loading training data
+    load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
+    
+    % Loading testData
+    load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/testSet.mat'));
+    
+    %calculating the score
+    [clientScore,impostorScore]=calculateScoreMatrix(classifier,trainingSet,trainUserLabels,testSet,testUserLabels);
+    
+    save(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
+    
+    %Ploting the scores
+    addpath('lib')
+    wer(impostorScore,clientScore, [],1,[],1);
+    savefig(strcat(saveFilePath,'/Score_User_',num2str(user)));
+    
+elseif option==15    
+    uclientScore=[];
+    uimpostorScore=[];
+    for user=1:41
+        %loading the classifier
+        saveFilePath=strcat(pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType);
+        load(strcat(saveFilePath,'/Classifier_User_',num2str(user),'.mat'),'classifier');
+        
+        % Loading training data
+        load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
+        
+        % Loading testData
+        load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/testSet.mat'));
+        
+        %calculating the score
+        [clientScore,impostorScore] = calculateScoreMatrix(classifier,trainingSet,trainUserLabels,testSet,testUserLabels);
+        uclientScore=[uclientScore;clientScore];
+        uimpostorScore=[uimpostorScore;impostorScore];
+        save(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
+        
+        %Ploting the scores
+        addpath('lib')
+        wer(impostorScore,clientScore, [],1,[],1);
+        savefig(strcat(saveFilePath,'/Score_User_',num2str(user)));
+    end
+    
+    clientScore=uclientScore;
+    impostorScore=uimpostorScore;
+    save(strcat(saveFilePath,'/Score_Total.mat'),'clientScore','impostorScore');
+    
+    wer(impostorScore,clientScore, [],1,[],1);
+    savefig(strcat(saveFilePath,'/Score_Total'));
 end
 
 
