@@ -27,6 +27,7 @@ if strcmp(classifierName,'knn')
 elseif strcmp(classifierName,'svm')
     %classifier = fitcsvm(trainingDataSet,trainUserLabels,'KernelFunction','rbf');
     classifier = fitcsvm(trainingDataSet,trainUserLabels);
+     classifier = fitSVMPosterior(classifier);
 elseif strcmp(classifierName,'discriminant')
     classifier=fitcdiscr(trainingDataSet,trainUserLabels);
 end
@@ -54,9 +55,6 @@ for i=1:length(clientIndex)
 end
 
 %% Calculating score Matrix to the client samples
-if strcmp('svm',classifierName)
-    classifier = fitSVMPosterior(classifier);
-end
 for cIndex=1:length(clientIndexes)
 
     sample=trainingDataSet(clientIndexes(cIndex),:);   
