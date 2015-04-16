@@ -108,7 +108,7 @@ disp(rightPredictions);
 disp('Wrong Predictions:');
 disp(wrongPredictions);
 disp('Accuracy:');
-disp(rightPredictions/numSamples);
+disp(rightPredictions/(numSamples+length(clientIndex)));
 disp('Error Rate:');
-disp(wrongPredictions/numSamples);
+disp(wrongPredictions/(numSamples+length(clientIndex)));
 end
