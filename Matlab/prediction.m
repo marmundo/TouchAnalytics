@@ -20,13 +20,12 @@ numFeatures=length(trainingDataSet(1,:));
 if strcmp(classifierName,'knn')
     %training knn
     classifier = ClassificationKNN.fit(trainingDataSet,trainUserLabels,'NumNeighbors',5);
-elseif strcmp(classifierName,'svm')    
-    tic
-    classifier = fitcsvm(trainingDataSet,trainUserLabels,'KernelFunction','rbf');
+elseif strcmp(classifierName,'svm')
     
-   % classifier = fitcsvm(trainingDataSet,trainUserLabels,'KernelFunction','rbf','Standardize',true,'ClassNames',{'impostor','client'});
-    toc
-     classifier = fitSVMPosterior(classifier);
+    %classifier = fitcsvm(trainingDataSet,trainUserLabels,'KernelFunction','rbf');
+    
+    classifier = fitcsvm(trainingDataSet,trainUserLabels,'KernelFunction','rbf','Standardize',true,'ClassNames',{'impostor','client'});
+    classifier = fitSVMPosterior(classifier);
 elseif strcmp(classifierName,'discriminant')
     classifier=fitcdiscr(trainingDataSet,trainUserLabels);
 end
