@@ -5,10 +5,17 @@ wrongPredictions=0;
 
 %% Score Production
 
+index = cellfun(@(x) strcmp(x,'impostor'), trainUserLabels);
+%index = strcmp(trainUserLabels{1},'impostor');
+
+trainNumLabels = zeros(size(trainUserLabels));
+trainNumLabels(index==0) = 1;
+trainNumLabels(index~=0) = -1;
+
 clientIndexes=[];
 
 % storing the index of samples which belongs to the clients and impostors
-if strcmp('svm',classifierName)
+if strcmp('libsvm',classifierName)
     clientIndex=trainUserLabels==1;
     for i=1:length(clientIndex)
         if clientIndex(i)
@@ -35,7 +42,7 @@ for cIndex=1:length(clientIndexes)
     sample(isnan(sample)) = 0;
     sample(isinf(sample)) = 0;
     
-    if strcmp('svm',classifierName)
+    if strcmp('libsvm',classifierName)
         [predictedClass, accuracy, score] = svmpredict(trainUserLabels(cIndex), sample,classifier,'-b 1');
     else
         [predictedClass,score] = predict(classifier,sample);
@@ -62,7 +69,7 @@ for cIndex=1:length(clientIndexes)
     clientScoreMatrix(cIndex,1)=logScore;
     
     %structure used to calculate the accuracy and error rate
-    if strcmp('svm',classifierName)
+    if strcmp('libsvm',classifierName)
         if trainUserLabels(cIndex)==predictedClass
             rightPredictions=rightPredictions+1;
         else
@@ -84,6 +91,17 @@ disp(wrongPredictions);
 
 %testing test dataset with the recent trained classifier
 numSamples=length(testDataSet(:,1));
+
+
+%%
+if strcmp('libsvm',classifierName)
+  [predictedClass, accuracy, score] = svmpredict(testUserLabels, testDataSet,classifier,'-b 1');
+else
+  [predictedClass,score] = predict(classifier,sample);
+end
+
+%%
+
 for impostorIndexes=1:numSamples
     
     sample=testDataSet(impostorIndexes,:);
@@ -96,7 +114,7 @@ for impostorIndexes=1:numSamples
     %    sample = inpaint_nans(sample);
     %end
     
-    if strcmp('svm',classifierName)
+    if strcmp('libsvm',classifierName)
         [predictedClass, accuracy, score] = svmpredict(testUserLabels(impostorIndexes), sample,classifier,'-b 1');
     else
         [predictedClass,score] = predict(classifier,sample);
@@ -110,18 +128,18 @@ for impostorIndexes=1:numSamples
         score(1,2)=10^-100;
     end
     
-    logScore=real(log(score(1,1)/score(1,2)));
-    if isnan(logScore) | isinf(logScore)
-        %logScore=real(log(score(1,2)));
-        logScore=-100;
-    end
+    logScore=log(score(1,1)+ realmin) - log(score(1,2)+realmin);
+    %     if isnan(logScore) | isinf(logScore)
+    %         %logScore=real(log(score(1,2)));
+    %         logScore=-100;
+    %     end
     % else
     %     logScore=score;
     % end
     
     %storing the score of the classifier for this sample
     impostorScoreMatrix(impostorIndexes,1)=logScore;
-    if strcmp('svm',classifierName)
+    if strcmp('libsvm',classifierName)
         if testUserLabels(impostorIndexes)==predictedClass
             rightPredictions=rightPredictions+1;
         else

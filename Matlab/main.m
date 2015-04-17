@@ -490,7 +490,7 @@ elseif option==11
     %% Generating and Plot the Scores by cancelable function, stroke orientation and key type
     addpath('lib')
     saveFilePath=strcat(pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType);
-    saveFilePath=saveFilePath{1,:};
+%    saveFilePath=saveFilePath{1,:};
     
     if ~exist(saveFilePath,'dir')
         mkdir(saveFilePath);
