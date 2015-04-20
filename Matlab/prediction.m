@@ -28,7 +28,9 @@ elseif strcmp(classifierName,'libsvm')
     testUserLabels=testLabels;
     
     %% Training
-    classifier = svmtrain(trainUserLabels, trainingDataSet,'-b 1');
+    clientProportion=num2str(sum(trainUserLabels==1)/size(trainUserLabels,1));
+    impostorProportion=num2str(sum(trainUserLabels==-1)/size(trainUserLabels,1));
+    classifier = svmtrain(trainUserLabels, trainingDataSet,['-b 1 -w1 ',clientProportion,'-w0 ',impostorProportion]);
     
 elseif strcmp(classifierName,'discriminant')
     classifier=fitcdiscr(trainingDataSet,trainUserLabels);
