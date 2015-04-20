@@ -45,12 +45,10 @@ trainingDataSet = (trainingDataSet - repmat(minimums, size(trainingDataSet, 1), 
 
 testDataSet = (testDataSet - repmat(minimums, size(testDataSet, 1), 1)) ./ repmat(ranges, size(testDataSet, 1), 1);
 
-save('trainingdata.scale','trainingDataSet');
-save('testdata.scale','testDataSet');
 [c,g]=grid(trainUserLabels, trainingDataSet);
 c=num2str(c);
 g=num2str(g);
-classifier = svmtrain(trainUserLabels, trainingDataSet,['-c ', c, ' -g ', g,' -b 1 -w-1 ',impostorProportion,' -w1 ',clientProportion]);
+classifier = svmtrain(trainUserLabels, trainingDataSet,['-h 0 -c ', c, ' -g ', g,' -b 1 -w-1 ',impostorProportion,' -w1 ',clientProportion]);
   
 elseif strcmp(classifierName,'discriminant')
   classifier=fitcdiscr(trainingDataSet,trainUserLabels);
