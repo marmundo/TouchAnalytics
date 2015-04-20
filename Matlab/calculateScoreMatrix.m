@@ -10,7 +10,7 @@ if ~strcmp(classifierName,'libsvm')
   trainIndexClient = cellfun(@(x) strcmp(x,'client'), trainUserLabels);
   trainNumLabels = zeros(size(trainUserLabels));
   trainNumLabels(trainIndexClient==1) = 1;
-  trainNumLabels(trainIndexClient~=0) = -1;
+  trainNumLabels(trainIndexClient==0) = -1;
 else
   trainIndexClient = trainUserLabels==1;
   trainNumLabels=trainUserLabels;
@@ -23,7 +23,7 @@ if ~strcmp(classifierName,'libsvm')
   testIndexClient = cellfun(@(x) strcmp(x,'client'), testUserLabels);
   testNumLabels = zeros(size(testUserLabels));
   testNumLabels(testIndexClient==1) = 1;
-  testNumLabels(testIndexClient~=0) = -1;
+  testNumLabels(testIndexClient==0) = -1;
 else
   testIndexClient=testUserLabels==1;
   testNumLabels=testUserLabels;
@@ -66,7 +66,7 @@ impostorOutput = log(impostorOutput + realmin) - log(1-impostorOutput + realmin)
 %%
 
 if ~strcmp(classifierName,'libsvm')
-comp=strcmp(testUserLabels(trainIndexClient==1),predictedClass(testIndexClient==1));
+comp=strcmp(testUserLabels(testIndexClient==0),predictedClass(testIndexClient==0));
 else
   comp=testUserLabels(testIndexClient==0)==predictedClass(testIndexClient==0);
 end
