@@ -41,16 +41,16 @@ function main(option,classifierName,user, biometricDataName, keyType, orientatio
 
 scoreMatrixPath=['/media/SAMSUNG/Backup/workspace/TouchAnalytics/Matlab/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
 if ~exist(scoreMatrixPath,'dir')
-    mkdir(scoreMatrixPath);
-  end
+  mkdir(scoreMatrixPath);
+end
 scorePlotsFigPath=['/media/SAMSUNG/Backup/workspace/TouchAnalytics/Matlab/ScorePlots/fig/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
 if ~exist(scorePlotsFigPath,'dir')
-    mkdir(scorePlotsFigPath);
+  mkdir(scorePlotsFigPath);
 end
-  
+
 scorePlotsJpgPath=['/media/SAMSUNG/Backup/workspace/TouchAnalytics/Matlab/ScorePlots/jpg/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
 if ~exist(scorePlotsJpgPath,'dir')
-    mkdir(scorePlotsJpgPath);
+  mkdir(scorePlotsJpgPath);
 end
 
 scrolling=[];
@@ -537,6 +537,8 @@ elseif option==11
     
     %saving the scores in a file
     savefig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user)));
+    fig=openfig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user),'.fig'));
+    saveas(fig,[scorePlotsJpgPath,'/Score_User_',num2str(user),'.fig']);
     
     % I cant put [clientScore,uclientScore], i.e, organize by columns
     %because the dimensions of clientScore some times is different of uclientScore
@@ -551,7 +553,8 @@ elseif option==11
   
   wer(uimpostorScore,uclientScore, [],1,[],1);
   savefig(strcat(scorePlotsFigPath,'/ScoreTotal'));
-  %saveas(fig,[scorePlotsjpgPath,'/Score.jpg']); 
+  fig=openfig(strcat(scorePlotsFigPath,'/ScoreTotal.fig'));
+  saveas(fig,[scorePlotsJpgPath,'/ScoreTotal.jpg']);
   clientScore=uclientScore;
   impostorScore=uimpostorScore;
   save(strcat(saveFilePath,'/Score_Total.mat'),'clientScore','impostorScore');
@@ -560,7 +563,7 @@ elseif option==12
   addpath('lib')
   % Loading score matrix
   disp(strcat('Ploting User_',num2str(user),'_Score Plot_',classifierName,'_',orientation,'_',biometricDataName,'_',keyType));
-  saveFilePath=scoreMatrixPath; 
+  saveFilePath=scoreMatrixPath;
   
   load(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
   
@@ -568,6 +571,8 @@ elseif option==12
   addpath('lib')
   wer(impostorScore,clientScore, [],1,[],1);
   savefig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user)));
+  fig=openfig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user),'.fig'));
+  saveas(fig,[scorePlotsJpgPath,'/Score_User_',num2str(user),'.jpg']);
   
 elseif option==13
   allClientScore=[];
@@ -587,7 +592,10 @@ elseif option==13
   addpath('lib')
   disp(strcat('Ploting All Users Score Plot_',classifierName,'_',orientation,'_',biometricDataName,'_',keyType));
   wer(allImpostorScore,allClientScore, [],1,[],1);
-  savefig(strcat(scorePlotsFigPath,'/Score'));
+  savefig(strcat(scorePlotsFigPath,'/ScoreTotal'));
+  fig=openfig(strcat(scorePlotsFigPath,'/ScoreTotal.fig'));
+  saveas(fig,[scorePlotsJpgPath,'/ScoreTotal.jpg']);
+  
 elseif option==14
   %loading the classifier
   saveFilePath=scoreMatrixPath;
@@ -614,6 +622,8 @@ elseif option==14
   addpath('lib')
   wer(impostorScore,clientScore, [],1,[],1);
   savefig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user)));
+  fig=openfig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user),'.fig'));
+  saveas(fig,[scorePlotsJpgPath,'/Score_User_',num2str(user),'.jpg']);
   
 elseif option==15
   uclientScore=[];
@@ -644,6 +654,8 @@ elseif option==15
     addpath('lib')
     wer(impostorScore,clientScore, [],1,[],1);
     savefig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user)));
+    fig=openfig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user),'.fig'));
+    saveas(fig,[scorePlotsJpgPath,'/Score_User_',num2str(user),'.jpg']);
   end
   
   clientScore=uclientScore;
@@ -652,6 +664,8 @@ elseif option==15
   
   wer(impostorScore,clientScore, [],1,[],1);
   savefig(strcat(scorePlotsFigPath,'/Score_Total'));
+  fig=openfig(strcat(scorePlotsFigPath,'/ScoreTotal.fig'));
+  saveas(fig,[scorePlotsJpgPath,'/ScoreTotal.jpg']);
 end
 
 
