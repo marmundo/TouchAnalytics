@@ -39,6 +39,7 @@ function main(option,classifierName,user, biometricDataName, keyType, orientatio
 %orientation= orientation Stroke. This variable deals with values
 %'Scrolling' and 'Horizontal'
 
+scoreMatrixPath=['/media/SAMSUNG/Backup/workspace/TouchAnalytics/Matlab/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
 scrolling=[];
 horizontal=[];
 
@@ -463,7 +464,7 @@ elseif option==10
   disp(strcat('Generatng and Ploting User_',num2str(user),'_Score Plot_',classifierName,'_',orientation,'_',biometricDataName,'_',keyType));
   
   %saving the scores in a file
-  saveFilePath=strcat(pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType);
+  saveFilePath=scoreMatrixPath;
   if ~exist(saveFilePath,'dir')
     mkdir(saveFilePath);
   end
@@ -498,7 +499,7 @@ elseif option==11
   
   %% Generating and Plot the Scores by cancelable function, stroke orientation and key type
   addpath('lib')
-  saveFilePath=strcat(pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType);
+  saveFilePath=scoreMatrixPath;
   %    saveFilePath=saveFilePath{1,:};
   
   if ~exist(saveFilePath,'dir')
@@ -526,9 +527,6 @@ elseif option==11
     %getting the scores
     [clientScore,impostorScore] = prediction(classifierName,trainingSet,trainUserLabels,testSet,testUserLabels,saveFilePath,user);
     
-    if isempty(uclientScore) || isempty(uimpostorScore)
-      disp('empty score');
-    end
     wer(impostorScore,clientScore, [],1,[],1);
     
     %saving the scores in a file
@@ -555,7 +553,7 @@ elseif option==12
   addpath('lib')
   % Loading score matrix
   disp(strcat('Ploting User_',num2str(user),'_Score Plot_',classifierName,'_',orientation,'_',biometricDataName,'_',keyType));
-  saveFilePath=strcat(pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType);
+  saveFilePath=scoreMatrixPath;
   if ~exist(saveFilePath,'dir')
     mkdir(saveFilePath);
   end
@@ -572,7 +570,7 @@ elseif option==13
   allImpostorScore=[];
   for user=1:41
     % Loading score matrix
-    saveFilePath=strcat(pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType);
+    saveFilePath=scoreMatrixPath;
     load(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
     
     if isempty(clientScore) | isempty(impostorScore)
@@ -592,7 +590,7 @@ elseif option==13
   savefig(strcat(saveFilePath,'/Score'));
 elseif option==14
   %loading the classifier
-  saveFilePath=strcat(pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType);
+  saveFilePath=scoreMatrixPath;
   load(strcat(saveFilePath,'/Classifier_User_',num2str(user),'.mat'),'classifier');
   
   if strcmp(biometricDataName,'Original')
@@ -622,7 +620,7 @@ elseif option==15
   uimpostorScore=[];
   for user=1:41
     %loading the classifier
-    saveFilePath=strcat(pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType);
+    saveFilePath=scoreMatrixPath;
     load(strcat(saveFilePath,'/Classifier_User_',num2str(user),'.mat'),'classifier');
     
     if strcmp(biometricDataName,'Original')
