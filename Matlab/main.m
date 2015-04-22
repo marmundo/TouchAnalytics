@@ -44,13 +44,13 @@ if ~exist(scoreMatrixPath,'dir')
     mkdir(scoreMatrixPath);
   end
 scorePlotsFigPath=['/media/SAMSUNG/Backup/workspace/TouchAnalytics/Matlab/ScorePlots/fig/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
-if ~exist(scorePlotsPath,'dir')
-    mkdir(scorePlotsPath);
+if ~exist(scorePlotsFigPath,'dir')
+    mkdir(scorePlotsFigPath);
 end
   
 scorePlotsJpgPath=['/media/SAMSUNG/Backup/workspace/TouchAnalytics/Matlab/ScorePlots/jpg/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
-if ~exist(scorePlotsPath,'dir')
-    mkdir(scorePlotsPath);
+if ~exist(scorePlotsJpgPath,'dir')
+    mkdir(scorePlotsJpgPath);
 end
 
 scrolling=[];
