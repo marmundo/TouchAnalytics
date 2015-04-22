@@ -537,8 +537,8 @@ elseif option==11
     
     %saving the scores in a file
     savefig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user)));
-    fig=openfig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user),'.fig'));
-    saveas(fig,[scorePlotsJpgPath,'/Score_User_',num2str(user),'.fig']);
+    fig=openfig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user),'.fig'),'invisible');
+    saveas(fig,[scorePlotsJpgPath,'/Score_User_',num2str(user),'.jpg']);
     
     % I cant put [clientScore,uclientScore], i.e, organize by columns
     %because the dimensions of clientScore some times is different of uclientScore
@@ -553,7 +553,7 @@ elseif option==11
   
   wer(uimpostorScore,uclientScore, [],1,[],1);
   savefig(strcat(scorePlotsFigPath,'/ScoreTotal'));
-  fig=openfig(strcat(scorePlotsFigPath,'/ScoreTotal.fig'));
+  fig=openfig(strcat(scorePlotsFigPath,'/ScoreTotal.fig'),'invisible');
   saveas(fig,[scorePlotsJpgPath,'/ScoreTotal.jpg']);
   clientScore=uclientScore;
   impostorScore=uimpostorScore;
@@ -571,7 +571,7 @@ elseif option==12
   addpath('lib')
   wer(impostorScore,clientScore, [],1,[],1);
   savefig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user)));
-  fig=openfig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user),'.fig'));
+  fig=openfig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user),'.fig'),'invisible');
   saveas(fig,[scorePlotsJpgPath,'/Score_User_',num2str(user),'.jpg']);
   
 elseif option==13
@@ -593,7 +593,7 @@ elseif option==13
   disp(strcat('Ploting All Users Score Plot_',classifierName,'_',orientation,'_',biometricDataName,'_',keyType));
   wer(allImpostorScore,allClientScore, [],1,[],1);
   savefig(strcat(scorePlotsFigPath,'/ScoreTotal'));
-  fig=openfig(strcat(scorePlotsFigPath,'/ScoreTotal.fig'));
+  fig=openfig(strcat(scorePlotsFigPath,'/ScoreTotal.fig'),'invisible');
   saveas(fig,[scorePlotsJpgPath,'/ScoreTotal.jpg']);
   
 elseif option==14
@@ -622,7 +622,7 @@ elseif option==14
   addpath('lib')
   wer(impostorScore,clientScore, [],1,[],1);
   savefig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user)));
-  fig=openfig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user),'.fig'));
+  fig=openfig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user),'.fig'),'invisible');
   saveas(fig,[scorePlotsJpgPath,'/Score_User_',num2str(user),'.jpg']);
   
 elseif option==15
@@ -654,7 +654,7 @@ elseif option==15
     addpath('lib')
     wer(impostorScore,clientScore, [],1,[],1);
     savefig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user)));
-    fig=openfig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user),'.fig'));
+    fig=openfig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user),'.fig'),'invisible');
     saveas(fig,[scorePlotsJpgPath,'/Score_User_',num2str(user),'.jpg']);
   end
   
@@ -664,7 +664,7 @@ elseif option==15
   
   wer(impostorScore,clientScore, [],1,[],1);
   savefig(strcat(scorePlotsFigPath,'/Score_Total'));
-  fig=openfig(strcat(scorePlotsFigPath,'/ScoreTotal.fig'));
+  fig=openfig(strcat(scorePlotsFigPath,'/ScoreTotal.fig'),'invisible');
   saveas(fig,[scorePlotsJpgPath,'/ScoreTotal.jpg']);
 end
 
