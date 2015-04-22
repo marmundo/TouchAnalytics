@@ -39,20 +39,22 @@ function main(option,classifierName,user, biometricDataName, keyType, orientatio
 %orientation= orientation Stroke. This variable deals with values
 %'Scrolling' and 'Horizontal'
 
-scoreMatrixPath=['/media/SAMSUNG/Backup/workspace/TouchAnalytics/Matlab/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
-if ~exist(scoreMatrixPath,'dir')
-  mkdir(scoreMatrixPath);
+if option>9
+  scoreMatrixPath=['/media/SAMSUNG/Backup/workspace/TouchAnalytics/Matlab/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
+  if ~exist(scoreMatrixPath,'dir')
+    mkdir(scoreMatrixPath);
+  end
+  scorePlotsFigPath=['/media/SAMSUNG/Backup/workspace/TouchAnalytics/Matlab/ScorePlots/fig/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
+  if ~exist(scorePlotsFigPath,'dir')
+    mkdir(scorePlotsFigPath);
+  end
+  
+  scorePlotsJpgPath=['/media/SAMSUNG/Backup/workspace/TouchAnalytics/Matlab/ScorePlots/jpg/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
+  if ~exist(scorePlotsJpgPath,'dir')
+    mkdir(scorePlotsJpgPath);
+  end
+  
 end
-scorePlotsFigPath=['/media/SAMSUNG/Backup/workspace/TouchAnalytics/Matlab/ScorePlots/fig/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
-if ~exist(scorePlotsFigPath,'dir')
-  mkdir(scorePlotsFigPath);
-end
-
-scorePlotsJpgPath=['/media/SAMSUNG/Backup/workspace/TouchAnalytics/Matlab/ScorePlots/jpg/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
-if ~exist(scorePlotsJpgPath,'dir')
-  mkdir(scorePlotsJpgPath);
-end
-
 scrolling=[];
 horizontal=[];
 
@@ -107,8 +109,8 @@ elseif option==2
   %% Generating scrolling BioHashing Data by User
   disp('Generating Same Key BioHashing Data');
   
-  load(strcat(pwd(),'/Data/Scrolling/Original/User_Discre/User_1/trainingSet.mat'));
-  prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Discre/User_');
+  load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
+  prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
   
   %loading scrolling to know how many users there are
   load('scrolling data.mat','scrolling');
@@ -130,8 +132,8 @@ elseif option==2
   
   %% Generating Horizontal BioHashing Data by User
   
-  load(strcat(pwd(),'/Data/Horizontal/Original/User_Discre/User_1/trainingSet.mat'));
-  prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Discre/User_');
+  load(strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat'));
+  prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_');
   
   load('horizontal data.mat','horizontal');
   usersSize=length(unique(horizontal(:,1)));
@@ -153,8 +155,8 @@ elseif option==3
   %% Generating scrolling BioHashing Data by User
   disp('Generating Different Key BioHashing Data');
   
-  load(strcat(pwd(),'/Data/Scrolling/Original/User_Discre/User_1/trainingSet.mat'));
-  prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Discre/User_');
+  load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
+  prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
   
   load('scrolling data.mat','scrolling');
   usersSize=length(unique(scrolling(:,1)));
@@ -174,8 +176,8 @@ elseif option==3
   
   %% Generating Horizontal BioHashing Data by User
   
-  load(strcat(pwd(),'/Data/Horizontal/Original/User_Discre/User_1/trainingSet.mat'));
-  prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Discre/User_');
+  load(strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat'));
+  prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_');
   
   load('horizontal data.mat','horizontal');
   usersSize=length(unique(horizontal(:,1)));
@@ -198,8 +200,8 @@ elseif option==4
   %% Generating scrolling BioConvolving Data by User
   disp('Generating Same Key BioConvolving Data');
   
-  load(strcat(pwd(),'/Data/Scrolling/Original/User_Discre/User_1/trainingSet.mat'));
-  prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Discre/User_');
+  load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
+  prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
   
   %loading scrolling to know how many users there are
   load('scrolling data.mat','scrolling');
@@ -221,8 +223,8 @@ elseif option==4
   
   %% Generating Horizontal BioConvolving Data by User
   
-  load(strcat(pwd(),'/Data/Horizontal/Original/User_Discre/User_1/trainingSet.mat'));
-  prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Discre/User_');
+  load(strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat'));
+  prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_');
   
   load('horizontal data.mat','horizontal');
   usersSize=length(unique(horizontal(:,1)));
@@ -244,8 +246,8 @@ elseif option==5
   disp('Generating Different Key BioConvolving Data');
   
   %% Generating scrolling BioConvolving Data by User
-  load(strcat(pwd(),'/Data/Scrolling/Original/User_Discre/User_1/trainingSet.mat'));
-  prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Discre/User_');
+  load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
+  prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
   
   load('scrolling data.mat','scrolling');
   usersSize=length(unique(scrolling(:,1)));
@@ -265,8 +267,8 @@ elseif option==5
   
   %% Generating Horizontal BioConvolving Data by User
   
-  load(strcat(pwd(),'/Data/Horizontal/Original/User_Discre/User_1/trainingSet.mat'));
-  prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Discre/User_');
+  load(strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat'));
+  prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_');
   
   load('horizontal data.mat','horizontal');
   usersSize=length(unique(horizontal(:,1)));
@@ -288,8 +290,8 @@ elseif option==6
   disp('Generating Same Key Interpolation Data');
   %% Generating scrolling Interpolation Data by User
   
-  load(strcat(pwd(),'/Data/Scrolling/Original/User_Discre/User_1/trainingSet.mat'));
-  prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Discre/User_');
+  load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
+  prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
   
   %loading scrolling to know how many users there are
   load('scrolling data.mat','scrolling');
@@ -312,8 +314,8 @@ elseif option==6
   
   %% Generating Horizontal Interpolation Data by User
   
-  load(strcat(pwd(),'/Data/Horizontal/Original/User_Discre/User_1/trainingSet.mat'));
-  prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Discre/User_');
+  load(strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat'));
+  prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_');
   
   load('horizontal data.mat','horizontal');
   usersSize=length(unique(horizontal(:,1)));
@@ -336,8 +338,8 @@ elseif option==7
   disp('Generating Different Key Interpolation Data');
   %% Generating scrolling Interpolation Data by User
   
-  load(strcat(pwd(),'/Data/Scrolling/Original/User_Discre/User_1/trainingSet.mat'));
-  prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Discre/User_');
+  load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
+  prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
   
   load('scrolling data.mat','scrolling');
   
@@ -360,8 +362,8 @@ elseif option==7
   
   %% Generating Horizontal Interpolation Data by User
   
-  load(strcat(pwd(),'/Data/Horizontal/Original/User_Discre/User_1/trainingSet.mat'));
-  prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Discre/User_');
+  load(strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat'));
+  prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_');
   
   load('horizontal data.mat','horizontal');
   usersSize=length(unique(horizontal(:,1)));
@@ -383,8 +385,8 @@ elseif option==8
   disp('Generating Same Key DoubleSum Data');
   %% Generating scrolling DoubleSum Data by User
   
-  load(strcat(pwd(),'/Data/Scrolling/Original/User_Discre/User_1/trainingSet.mat'));
-  prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Discre/User_');
+  load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
+  prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
   
   %loading scrolling to know how many users there are
   load('scrolling data.mat','scrolling');
@@ -402,8 +404,8 @@ elseif option==8
   
   %% Generating Horizontal Double Sum Data by User
   
-  load(strcat(pwd(),'/Data/Horizontal/Original/User_Discre/User_1/trainingSet.mat'));
-  prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Discre/User_');
+  load(strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat'));
+  prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_');
   
   load('horizontal data.mat','horizontal');
   
@@ -429,10 +431,10 @@ elseif option==9
   %% Generating scrolling DoubleSum Data by User
   
   %loading training data
-  load(strcat(pwd(),'/Data/Scrolling/Original/User_Discre/User_1/trainingSet.mat'));
+  load(strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_1/trainingSet.mat'));
   
   %prefix of the file name
-  prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Discre/User_');
+  prefix=strcat(pwd(),'/Data/Scrolling/Original/User_Label/User_');
   
   %loading scrolling data
   load('scrolling data.mat','scrolling');
@@ -458,8 +460,8 @@ elseif option==9
   
   %% Generating Horizontal DoubleSum Data by User
   
-  load(strcat(pwd(),'/Data/Horizontal/Original/User_Discre/User_1/trainingSet.mat'));
-  prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Discre/User_');
+  load(strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_1/trainingSet.mat'));
+  prefix=strcat(pwd(),'/Data/Horizontal/Original/User_Label/User_');
   
   load('horizontal data.mat','horizontal');
   usersSize=length(unique(horizontal(:,1)));
