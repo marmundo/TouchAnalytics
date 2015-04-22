@@ -1,6 +1,9 @@
 function [clientScoreMatrix,impostorScoreMatrix]=prediction(classifierName,trainingDataSet,trainUserLabels,testDataSet,testUserLabels,saveFilePath,user)
 %classifierName=name of classifier. Can receive knn, svm or discriminant
 
+%cleaning datasets
+trainingDataSet=cleaningdataset(trainingDataSet);
+testDataSet=cleaningdataset(testDataSet);
 
 numFeatures=length(trainingDataSet(1,:));
 
