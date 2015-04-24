@@ -14,8 +14,7 @@ numFeatures=length(testSet(1,:))-1;
 
 %% Same key for all users
 if optionkey==1
-    key=1:2:numFeatures;
-    key=[key,2:2:numFeatures];
+    key=getFixedKey('DoubleSum',numFeatures*keySize);
     ds_test=doublesum(testSet(:,2:end),key);
 elseif optionkey==2
     %% Different Keys for each user
