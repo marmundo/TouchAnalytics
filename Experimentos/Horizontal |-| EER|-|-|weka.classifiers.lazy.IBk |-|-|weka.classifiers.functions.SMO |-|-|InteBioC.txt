@@ -1,2 +1,0 @@
-Mean= 9.795278675678326E-5
-Standard Desviation= 6.272038630064507E-4

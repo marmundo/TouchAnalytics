@@ -10,12 +10,11 @@ function [ds_test]=generatingDoubleSumTest(testSet,user,saveFilePath,optionkey,k
 ds_test=[];
 
 %number of features
-numFeatures=length(testSet(1,:));
+numFeatures=length(testSet(1,:))-1;
 
 %% Same key for all users
 if optionkey==1
-    key=1:2:numFeatures;
-    key=[key,2:2:numFeatures];
+    key=getFixedKey('DoubleSum',numFeatures*keySize);
     ds_test=doublesum(testSet(:,2:end),key);
 elseif optionkey==2
     %% Different Keys for each user
@@ -26,9 +25,9 @@ elseif optionkey==2
         userData=testSet(find(testSet(:,1) == users(currentUser)),:);
         
         % user data based on the size of keySize
-        userData=userData(:,1:numFeatures*keySize);
+        userData=userData(:,1:numFeatures+1*keySize);
         
-                
+        
         % Protecting the User data
         doublesumData=doublesum(userData(:,2:end),'');
         

@@ -9,13 +9,13 @@ function [bioH_train]=generatingBioHashingTraining(trainingSet,user,saveFilePath
 
 %starting variable
 bioH_train=[];
-
+numFeatures=length(trainingSet(1,:));
 if optionkey==1
     %% Same key for all users
-    bioH_train=biohashing(trainingSet(:,2:end),'');
+    key=getFixedKey('BioHashing',numFeatures-1*keySize);
+    bioH_train=biohashing(trainingSet(:,2:end),key);
 elseif optionkey==2
-    %% Different key for each user
-    numFeatures=length(trainingSet(1,:));
+    %% Different key for each user    
     users=unique(trainingSet(:,1));
     
     for currentUser=1:length(users)

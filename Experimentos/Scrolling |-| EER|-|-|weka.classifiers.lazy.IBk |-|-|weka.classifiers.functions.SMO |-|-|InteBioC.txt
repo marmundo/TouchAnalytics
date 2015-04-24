@@ -1,2 +1,0 @@
-Mean= 0.0
-Standard Desviation= 0.0

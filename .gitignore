@@ -37,4 +37,4 @@ hs_err_pid*
 /Matlab/workspace.mat
 /Matlab/main_marcelo.m
 /Matlab/Score*
-
+/Matlab/lib/Inpaint_nans/*

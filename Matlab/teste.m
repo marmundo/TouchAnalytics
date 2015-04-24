@@ -5,11 +5,11 @@
 %% This script loads the all the cancelable biometric data for all users using all the keys types in
 %% scrolling and horizontal stroke directions.
 
-cancelableFunctions=char('Interpolation','DoubleSum','BioHashing','BioConvolving');
 
-classifiers={'knn','svm','discriminant'};
+ cancelableFunctions={'Original','Interpolation','DoubleSum','BioHashing','BioConvolving'};
+ strokeOrientation={'Scrolling','Horizontal'};
+ classifiers={'knn','svm','libsvm','discriminant'};
 
-% strokeOrientation=char('Scrolling','Horizontal');
 % key=char('Same_Key','Different_Key');
 %
 %
@@ -68,4 +68,23 @@ classifiers={'knn','svm','discriminant'};
 
 %main(10,'svm',1,'BioConvolving','Different_Key','Horizontal')
 
-main(2)
+%main(2)
+
+%main(10,'svm',1,'Interpolation','Same_Key','Scrolling')
+
+%% Show a Norman's plot for all users using a all orientation, keytype and biometric data
+% for i=1:1
+%     for j=2:length(cancelableFunctions)        
+%         main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Scrolling')
+%         main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Horizontal')
+%         
+%         main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Scrolling')
+%         main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Horizontal')
+%     end
+% end
+
+%  for user=41:41
+%   main(10,'libsvm',user,'Interpolation','Different_Key','Scrolling')
+%  end
+
+%main(6)

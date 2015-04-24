@@ -1,119 +1,65 @@
-function [clientScoreMatrix,impostorScoreMatrix]=prediction(classifierName,trainingDataSet,trainUserLabels,testDataSet,testUserLabels)
+function [clientScoreMatrix,impostorScoreMatrix]=prediction(classifierName,trainingDataSet,trainUserLabels,testDataSet,testUserLabels,saveFilePath,user)
 %classifierName=name of classifier. Can receive knn, svm or discriminant
+
+%cleaning datasets
+trainingDataSet=cleaningdataset(trainingDataSet);
+testDataSet=cleaningdataset(testDataSet);
 
 numFeatures=length(trainingDataSet(1,:));
 
-%training dataset without user labels
-%trainingBioSamples=trainingDataSet(:,1:numFeatures-1);
-
-%test dataset without user labels
-%testDataSet=testingDataSet(:,1:numFeatures-1);
-
-%user training Labels
-%trainUserLabels=trainingBioSamples(:,1);
-
-%user testing Labels
-%testUserLabels=testDataSet(:,1);
-
-rightPredictions=0;
-
-wrongPredictions=0;
-
 if strcmp(classifierName,'knn')
-    %training knn
-    classifier = ClassificationKNN.fit(trainingDataSet,trainUserLabels,'NumNeighbors',5);
+  %training knn
+  classifier = ClassificationKNN.fit(trainingDataSet,trainUserLabels,'NumNeighbors',5);
 elseif strcmp(classifierName,'svm')
-    %classifier = fitcsvm(trainingDataSet,trainUserLabels,'KernelFunction','rbf');   
-    classifier = fitcsvm(trainingDataSet,trainUserLabels);   
+  
+  %% Using builtin svm  function of Matlab
+  weights=zeros(size(trainingDataSet,1),1);
+  clientProportion=size(trainUserLabels,1)/sum(strcmp(trainUserLabels,'client'));
+  impostorProportion=size(trainUserLabels,1)/sum(strcmp(trainUserLabels,'impostor'));
+  
+  indexClient = cellfun(@(x) strcmp(x,'client'), trainUserLabels);
+  weights(indexClient==1) = clientProportion;
+  weights(indexClient==0) = impostorProportion;
+  
+  classifier = fitcsvm(trainingDataSet,trainUserLabels,'KernelFunction','rbf','Standardize',true,'ClassNames',{'impostor','client'},'KernelScale','auto','Weights',weights);
+  classifier = fitSVMPosterior(classifier);
+elseif strcmp(classifierName,'libsvm')
+  %% Using libsvm function
+  addpath('lib/libsvm');
+  %% Changing the label of train and test sets. client to 0 and impsotor to 1
+  trainLabels(strcmp(trainUserLabels,'client'))=+1;
+  trainLabels(strcmp(trainUserLabels,'impostor'))=-1;
+  trainLabels=trainLabels';
+  trainUserLabels=trainLabels;
+  
+  testLabels(strcmp(testUserLabels,'client'))=+1;
+  testLabels(strcmp(testUserLabels,'impostor'))=-1;
+  testLabels=testLabels';
+  testUserLabels=testLabels;
+  
+  %% Training
+  clientProportion=num2str(sum(trainUserLabels==1)/size(trainUserLabels,1));
+  impostorProportion=num2str(sum(trainUserLabels==-1)/size(trainUserLabels,1));
+  
+minimums = min(trainingDataSet, [], 1);
+ranges = max(trainingDataSet, [], 1) - minimums;
+
+trainingDataSet = (trainingDataSet - repmat(minimums, size(trainingDataSet, 1), 1)) ./ repmat(ranges, size(trainingDataSet, 1), 1);
+
+testDataSet = (testDataSet - repmat(minimums, size(testDataSet, 1), 1)) ./ repmat(ranges, size(testDataSet, 1), 1);
+
+[c,g]=grid(trainUserLabels, trainingDataSet);
+c=num2str(c);
+g=num2str(g);
+classifier = svmtrain(trainUserLabels, trainingDataSet,['-h 0 -c ', c, ' -g ', g,' -b 1 -w-1 ',impostorProportion,' -w1 ',clientProportion]);
+  
 elseif strcmp(classifierName,'discriminant')
-    classifier=fitcdiscr(trainingDataSet,trainUserLabels);    
+  classifier=fitcdiscr(trainingDataSet,trainUserLabels);
 end
 
+%save classifier
+save(strcat(saveFilePath,'/Classifier_User_',num2str(user),'.mat'),'classifier');
 
-%% Score Production
-
-
-
-% Taking client samples
-%clientData=trainingDataSet(find(trainingDataSet(:,numFeatures) == 1),:);
-%numFeatures=length(clientData(1,:));
-
-clientIndexes=[];
-
-% storing the index of samples which belongs to the clients and impostors
-clientIndex=strfind(trainUserLabels,'client');
-
-for i=1:length(clientIndex)
-    if clientIndex{i}
-        clientIndexes(end+1)=i;   
-    end
-end
-
-%% Calculating score Matrix to the client samples
-
-for cIndex=1:length(clientIndexes)
-    [predictedClass,score] = predict(classifier,trainingDataSet(clientIndexes(cIndex),:));
-    %calculating the matrix score
-    %if done because knn and discriminant gives the posterior probabilities
-    %and svm gives the score
-    if strcmp('knn',classifierName) | strcmp(classifierName,'discriminant')
-        if score(1,1)==1
-            logScore=1;
-        else
-         logScore=real(log(score(1,1)/score(1,2)));
-        end
-    else
-        logScore=score(1,1);
-    end
-   
-    
-    %user label of this sample
-    %clientScoreMatrix(clientIndex,1)=clientData(clientIndex,numFeatures);
-    %storing the score of the classifier for this sample
-    clientScoreMatrix(clientIndexes,1)=logScore;
-    
-    %structure used to calculate the accuracy and error rate
-    if strcmp(trainUserLabels(clientIndexes),predictedClass)
-        rightPredictions=rightPredictions+1;
-    else
-        wrongPredictions=wrongPredictions+1;
-    end    
-end
-
-%% Calculating score Matrix of testSet
-
-
-%testing test dataset with the recent trained classifier
-numSamples=length(testDataSet(:,1));
-for impostorIndexes=1:numSamples
-    [predictedClass,score] = predict(classifier,testDataSet(impostorIndexes,:));
-    %calculating the matrix score
-     if strcmp('knn',classifierName) | strcmp(classifierName,'discriminant')
-        if score(1,2)==1
-            logScore=0;
-        else
-         logScore=real(log(score(1,1)/score(1,2)));
-        end
-    else
-        logScore=score(1,2);
-    end
-       
-    %user label of this sample
-    %impostorScoreMatrix(impostorIndex,1)=testUserLabels(impostorIndex);
-    %storing the score of the classifier for this sample
-    impostorScoreMatrix(impostorIndexes,1)=logScore;
-    if strcmp(testUserLabels(impostorIndexes),predictedClass)
-        rightPredictions=rightPredictions+1;
-    else
-        wrongPredictions=wrongPredictions+1;
-    end
-end
-disp('Right Predictions:');
-disp(rightPredictions);
-disp('Wrong Predictions:');
-disp(wrongPredictions);
-disp('Accuracy:');
-disp(rightPredictions/numSamples);
-disp('Error Rate:');
-disp(wrongPredictions/numSamples);
+%taking client and impostor score matrix
+[clientScoreMatrix,impostorScoreMatrix]=calculateScoreMatrix(classifier,trainingDataSet,trainUserLabels,testDataSet,testUserLabels,classifierName);
 end

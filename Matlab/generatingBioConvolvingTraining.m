@@ -9,15 +9,14 @@ function [bioC_train]=generatingBioConvolvingTraining(trainingSet,user,saveFileP
 
 %starting variable
 bioC_train=[];
-
+numFeatures=length(trainingSet(1,2:end));
 if optionkey==1
-    %% Same key for all users
-    nFeatures=length(trainingSet(1,2:end));
-    key=[0,round(nFeatures/2),nFeatures];
+    %% Same key for all users    
+    key=getFixedKey('BioConvolving',numFeatures*keySize);
     bioC_train=bioconvolving(trainingSet(:,2:end),key);
 elseif optionkey==2
     %% Different key for each user
-    numFeatures=length(trainingSet(1,2:end));
+    
     users=unique(trainingSet(:,1));
     
     for currentUser=1:length(users)

@@ -9,17 +9,19 @@ function [inter_train]=generatingInterpolationTraining(trainingSet,user,saveFile
 
 %starting variable
 inter_train=[];
+numFeatures=length(trainingSet(1,:));
 
 if optionkey==1
     %% Same key for all users
-    inter_train=interpolation(trainingSet(:,2:end),'');
+    key=getFixedKey('Interpolation',numFeatures-1*keySize);
+    inter_train=interpolation(trainingSet(:,2:end),key);
 elseif optionkey==2
     %% Different key for each user
-    numFeatures=length(trainingSet(1,:));
+    
     users=unique(trainingSet(:,1));
     
     for currentUser=1:length(users)
-        % data of user i
+        % data of user i      
         userData=trainingSet(find(trainingSet(:,1) == users(currentUser)),:);
       
         % taking the user data based on size of keySize

@@ -20,9 +20,9 @@ numFeatures=length(biometric_data(1,:));
 
 %check if the key is empty. If yes, create a key based in the number of
 %features of the biometric data
-if(isempty(key))
-    key=rand(numFeatures,1);
-end
+%if(isempty(key))
+%    key=rand(numFeatures,1);
+%end
 
 
 %protecting each biometric sample using interpolation method with the given

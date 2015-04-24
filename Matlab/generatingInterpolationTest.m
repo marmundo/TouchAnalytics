@@ -8,13 +8,14 @@ function [inter_test]=generatingInterpolationTest(testSet,user,saveFilePath,opti
 % keySize= size of key. maximum is 1
 
 inter_test=[];
-
+numFeatures=length(testSet(1,:));
 %% Same key for all users
 if optionkey==1
-    inter_test=interpolation(testSet(:,2:end),'');
+   key=getFixedKey('Interpolation',numFeatures-1*keySize);
+    inter_test=interpolation(testSet(:,2:end),key);
 elseif optionkey==2
     %% Different Keys for each user
-    numFeatures=length(testSet(1,:));
+   
     users=unique(testSet(:,1));
     for currentUser=1:length(users)
         % user data presented in testSet
