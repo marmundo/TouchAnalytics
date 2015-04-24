@@ -40,16 +40,16 @@ function main(option,classifierName,user, biometricDataName, keyType, orientatio
 %'Scrolling' and 'Horizontal'
 
 if option>9
-  scoreMatrixPath=['/media/SAMSUNG/Backup/workspace/TouchAnalytics/Matlab/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
+  scoreMatrixPath=[pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
   if ~exist(scoreMatrixPath,'dir')
     mkdir(scoreMatrixPath);
   end
-  scorePlotsFigPath=['/media/SAMSUNG/Backup/workspace/TouchAnalytics/Matlab/ScorePlots/fig/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
+  scorePlotsFigPath=[pwd(),'/ScorePlots/fig/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
   if ~exist(scorePlotsFigPath,'dir')
     mkdir(scorePlotsFigPath);
   end
   
-  scorePlotsJpgPath=['/media/SAMSUNG/Backup/workspace/TouchAnalytics/Matlab/ScorePlots/jpg/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
+  scorePlotsJpgPath=[pwd(),'/ScorePlots/jpg/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
   if ~exist(scorePlotsJpgPath,'dir')
     mkdir(scorePlotsJpgPath);
   end
