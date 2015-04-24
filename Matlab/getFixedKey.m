@@ -5,5 +5,7 @@ if strcmp(cancelableFunction,'Interpolation')
 elseif strcmp(cancelableFunction,'BioHashing')
     load('BioHashingKey.mat','key');
     key=key(1:keysize);
+elseif strcmp(cancelableFunction,'BioConvolving')
+    key=[0,round(keysize/2),keysize];
 end
 end
