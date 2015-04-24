@@ -12,7 +12,7 @@ bioH_train=[];
 numFeatures=length(trainingSet(1,:));
 if optionkey==1
     %% Same key for all users
-    key=getFixedKey('BioHashing',numFeatures-1*keySize);
+    key=getFixedKey('BioHashing',(numFeatures-1)*keySize);
     bioH_train=biohashing(trainingSet(:,2:end),key);
 elseif optionkey==2
     %% Different key for each user    
