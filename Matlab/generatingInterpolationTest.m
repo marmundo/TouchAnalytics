@@ -11,7 +11,7 @@ inter_test=[];
 numFeatures=length(testSet(1,:));
 %% Same key for all users
 if optionkey==1
-   key=getFixedKey('Interpolation',numFeatures);
+   key=getFixedKey('Interpolation',numFeatures-1);
     inter_test=interpolation(testSet(:,2:end),key);
 elseif optionkey==2
     %% Different Keys for each user
