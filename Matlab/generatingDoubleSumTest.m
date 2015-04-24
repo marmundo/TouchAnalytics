@@ -27,7 +27,7 @@ elseif optionkey==2
         % user data based on the size of keySize
         userData=userData(:,1:numFeatures+1*keySize);
         
-                
+        
         % Protecting the User data
         doublesumData=doublesum(userData(:,2:end),'');
         
