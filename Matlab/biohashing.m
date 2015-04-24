@@ -15,9 +15,9 @@ numFeatures=length(biometric_data(1,:));
 
 %check if the key is empty. If yes, create a key based in the number of
 %features of the biometric data
-if(isempty(key))
-    key=rand(numFeatures);
-end
+% if(isempty(key))
+%     key=rand(numFeatures);
+% end
 
 %protecting each biometric sample using bioghashing method with the given
 %key.
