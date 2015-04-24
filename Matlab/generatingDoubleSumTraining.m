@@ -15,8 +15,7 @@ numFeatures=length(trainingSet(1,:))-1;
 
 if optionkey==1
     %% Same key for all users
-    key=1:2:numFeatures;
-    key=[key,2:2:numFeatures];
+    key=getFixedKey('DoubleSum',numFeatures*keySize);
     ds_train=doublesum(trainingSet(:,2:end),key);
 elseif optionkey==2
     %% Different key for each user
