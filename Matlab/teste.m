@@ -38,21 +38,11 @@
 
 %main(10,'knn',1,'Interpolation','Same_Key','Scrolling')
 
-%% Show a Norman's plot for all user using a specific orientation, keytype and biometric data
 
-
-% for i=1:4
-%     for j=2:3
-%         main(11,classifiers(j),'',cancelableFunctions(i,:),'Different_Key','Scrolling')
-%         main(11,classifiers(j),'',cancelableFunctions(i,:),'Different_Key','Horizontal')
-%         main(11,classifiers(j),'',cancelableFunctions(i,:),'Same_Key','Scrolling')
-%         main(11,classifiers(j),'',cancelableFunctions(i,:),'Same_Key','Horizontal')
-%     end
-% end
 
 %main(11,'knn','','DoubleSum','Different_Key','Horizontal')
-%%main(11,'knn','','DoubleSum','Same_Key','Horizontal')
-
+%main(11,'knn','','BioHashing','Same_Key','Horizontal');
+%main(11,'knn','','BioHashing','Same_Key','Scrolling');
 %Ploting the scores of a user using a specific cancelable function,
 %orientation, key type and user
 %main(12,'knn',1,'BioHashing','Same_Key','Scrolling')
@@ -72,16 +62,16 @@
 
 %main(10,'svm',1,'Interpolation','Same_Key','Scrolling')
 
-%% Show a Norman's plot for all users using a all orientation, keytype and biometric data
-% for i=1:1
-%     for j=2:length(cancelableFunctions)        
-%         main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Scrolling')
-%         main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Horizontal')
-%         
-%         main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Scrolling')
-%         main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Horizontal')
-%     end
-% end
+% Show a Norman's plot for all users using a all orientation, keytype and biometric data
+for i=1:1
+    for j=2:length(cancelableFunctions)        
+        main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Scrolling')
+        main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Horizontal')
+        
+        main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Scrolling')
+        main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Horizontal')
+    end
+end
 
 %  for user=41:41
 %   main(10,'libsvm',user,'Interpolation','Different_Key','Scrolling')
