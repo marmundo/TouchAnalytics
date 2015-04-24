@@ -13,7 +13,7 @@ numFeatures=length(trainingSet(1,:));
 
 if optionkey==1
     %% Same key for all users
-    key=getFixedKey('Interpolation',numFeatures-1);
+    key=getFixedKey('Interpolation',numFeatures-1*keySize);
     inter_train=interpolation(trainingSet(:,2:end),key);
 elseif optionkey==2
     %% Different key for each user
