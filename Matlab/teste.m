@@ -68,4 +68,4 @@ classifiers={'knn','svm','discriminant'};
 
 %main(10,'svm',1,'BioConvolving','Different_Key','Horizontal')
 
-main(14,'knn',1,cancelableFunctions(i,:),'Different_Key','Scrolling')
+main(2)
