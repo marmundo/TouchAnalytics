@@ -7,7 +7,7 @@ function [transformed_data] = interpolation(biometric_data,key)
 %Turning off all warning because some biological samples has NaN.
 % When MatLab tries to interpolate has problems and show a warning.
 % I'm supressing to increase the velocity of this function.
-warning('off','all');
+%warning('off','all');
 
 %starting variable
 transformed_data=[];
@@ -27,17 +27,20 @@ numFeatures=length(biometric_data(1,:));
 
 %protecting each biometric sample using interpolation method with the given
 %key.
+
+
 for i=1:numSamples
     % getting biometric sample and normalizint it to 0 to 1
     sample=biometric_data(i,:);
     
     xCoordinates=[1:numFeatures];
-    xCoordinates=xCoordinates/norm(xCoordinates);
+    %Apply norm because the key has values in the [0,1] range
+    %xCoordinates=xCoordinates/norm(xCoordinates);
     
     %polynomial creation based on interpolation
     P = spline(xCoordinates,sample);
     
-    transformed_sample= ppval(P,key)';
+    transformed_sample= ppval(P,key);
     transformed_data=[transformed_data; transformed_sample];
 end
 
