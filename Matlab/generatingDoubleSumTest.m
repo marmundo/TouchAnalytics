@@ -18,18 +18,18 @@ if optionkey==1
     ds_test=doublesum(testSet(:,2:end),key);
 elseif optionkey==2
     %% Different Keys for each user
-    
+    keySize=round(numFeatures*keySize);
     users=unique(testSet(:,1));
+    
     for currentUser=1:length(users)
         % user data presented in testSet
         userData=testSet(find(testSet(:,1) == users(currentUser)),:);
         
         % user data based on the size of keySize
-        userData=userData(:,1:numFeatures+1*keySize);
+         key=round(sort((keySize-1).*rand(keySize,1) + 1))';
         
-        
-        % Protecting the User data
-        doublesumData=doublesum(userData(:,2:end),'');
+        % protecting the user data using the generated key
+        doublesumData=doublesum(userData(:,2:end),key);
         
         % Adding the doublesumData to the Protected doublesum test
         % dataset

@@ -19,7 +19,7 @@ if optionkey==1
     ds_train=doublesum(trainingSet(:,2:end),key);
 elseif optionkey==2
     %% Different key for each user
-    
+    keySize=round(numFeatures*keySize);
     users=unique(trainingSet(:,1));
     
     for currentUser=1:length(users)
@@ -27,11 +27,11 @@ elseif optionkey==2
         userData=trainingSet(find(trainingSet(:,1) == users(currentUser)),:);
       
         % taking the user data based on size of keySize
-        userData=userData(:,1:numFeatures+1*keySize);
-       
+        
+        key=round(sort((keySize-1).*rand(keySize,1) + 1))';
         
         % protecting the user data using the generated key
-        doublesumData=doublesum(userData(:,2:end),'');
+        doublesumData=doublesum(userData(:,2:end),key);
        
         % adding user protected data to the bioH_train variable
         ds_train=[ds_train; doublesumData];
