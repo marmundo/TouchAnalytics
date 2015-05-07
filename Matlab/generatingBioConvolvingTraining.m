@@ -10,10 +10,11 @@ function [bioC_train]=generatingBioConvolvingTraining(trainingSet,user,saveFileP
 %starting variable
 bioC_train=[];
 numFeatures=length(trainingSet(1,2:end));
+sizeFeatures=round(numFeatures*keySize);
 if optionkey==1
     %% Same key for all users    
-    key=getFixedKey('BioConvolving',numFeatures*keySize);
-    bioC_train=bioconvolving(trainingSet(:,2:end),key);
+    key=getFixedKey('BioConvolving',sizeFeatures);
+    bioC_train=bioconvolving(trainingSet(:,2:sizeFeatures),key);
 elseif optionkey==2
     %% Different key for each user
     

@@ -9,10 +9,11 @@ function [bioC_test]=generatingBioConvolvingTest(testSet,user,saveFilePath,optio
 
 bioC_test=[];
 numFeatures=length(testSet(1,2:end));
+sizeFeatures=round(numFeatures*keySize);
 %% Same key for all users
 if optionkey==1   
-    key=getFixedKey('BioConvolving',numFeatures*keySize);
-    bioC_test=bioconvolving(testSet(:,2:end),key);
+    key=getFixedKey('BioConvolving',sizeFeatures);
+    bioC_test=bioconvolving(testSet(:,2:sizeFeatures),key);
 elseif optionkey==2
     %% Different Keys for each user
     
