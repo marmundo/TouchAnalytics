@@ -1,5 +1,6 @@
-function main(option,classifierName,user, biometricDataName, keyType, orientation)
+function main(option,classifierName,user, biometricDataName, keyType, orientation,keySize)
 % option =
+% -1:Cleaning and normalize data
 % 0: Generating Unprotected data with original user label
 % 1: Generating Unprotected data with user label= (client) or (impostor)
 % 2: BioHashing, use the same key to all the users
@@ -40,16 +41,16 @@ function main(option,classifierName,user, biometricDataName, keyType, orientatio
 %'Scrolling' and 'Horizontal'
 
 if option>9
-  scoreMatrixPath=[pwd(),'/ScoreMatrix/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
+  scoreMatrixPath=[pwd(),'/ScoreMatrix/',num2str(keySize),'/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
   if ~exist(scoreMatrixPath,'dir')
     mkdir(scoreMatrixPath);
   end
-  scorePlotsFigPath=[pwd(),'/ScorePlots/fig/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
+  scorePlotsFigPath=[pwd(),'/ScorePlots/fig/',num2str(keySize),'/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
   if ~exist(scorePlotsFigPath,'dir')
     mkdir(scorePlotsFigPath);
   end
   
-  scorePlotsJpgPath=[pwd(),'/ScorePlots/jpg/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
+  scorePlotsJpgPath=[pwd(),'/ScorePlots/jpg/',num2str(keySize),'/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
   if ~exist(scorePlotsJpgPath,'dir')
     mkdir(scorePlotsJpgPath);
   end
@@ -58,7 +59,31 @@ end
 scrolling=[];
 horizontal=[];
 
-if option==0
+if option==-1
+    load('touch.mat');
+    
+    %Getting the index of scrolling strokes
+    sIndex=featMat(:,2)<=3|featMat(:,2)==6;
+    scrolling=featMat(sIndex,:); 
+    
+    %%Cleaning and Normaling data
+    disp('Cleaning and Normalizing Scrolling dataset');   
+    
+    scrolling=cleaningdataset(scrolling);
+    scrolling=zscore(scrolling);
+    save('scrolling data.mat','scrolling');
+    
+    %Getting the index of horizontal strokes
+    hIndex=featMat(:,2)==4|featMat(:,2)==5|featMat(:,2)==7;
+    horizontal=featMat(hIndex,:);    
+   
+    disp('Cleaning and Normalizing Horizontal dataset');
+   
+    horizontal=cleaningdataset(horizontal);
+    horizontal=zscore(horizontal);
+    save('horizontal data.mat','horizontal');
+    
+elseif option==0
   %% Generating scrolling Original Data by User Label
   disp('Generating User Label Original');
   
@@ -119,15 +144,15 @@ elseif option==2
   for user=1:usersSize
     disp(strcat('Processing User_ ',num2str(user)));
     userS=num2str(user);
-    filePath=strcat(strcat(pwd(),'/Data/Scrolling/BioHashing/Same_Key/User_'),userS);
+    filePath=strcat(pwd(),'/Data/',num2str(keySize),'/Scrolling/BioHashing/Same_Key/User_',userS);
     
     %loading and generating biohashing training data
     load(strcat(prefix,userS,'/trainingSet.mat'), 'trainingSet');
-    generatingBioHashingTraining(trainingSet,userS,filePath,1,1);
+    generatingBioHashingTraining(trainingSet,userS,filePath,1,keySize);
     
     %loading and generating biohashing test data
     load(strcat(prefix,userS,'/testSet.mat'),'testSet');
-    generatingBioHashingTest(testSet,userS,filePath,1,1);
+    generatingBioHashingTest(testSet,userS,filePath,1,keySize);
   end
   
   %% Generating Horizontal BioHashing Data by User
@@ -140,15 +165,15 @@ elseif option==2
   for user=1:usersSize
     disp(strcat('Processing User_ ',num2str(user)));
     userS=num2str(user);
-    filePath=strcat(strcat(pwd(),'/Data/Horizontal/BioHashing/Same_Key/User_',userS));
+    filePath=strcat(strcat(pwd(),'/Data/',num2str(keySize),'/Horizontal/BioHashing/Same_Key/User_',userS));
     
     %loading and generating biohashing training data
     load(strcat(prefix,userS,'/trainingSet.mat'), 'trainingSet');
-    generatingBioHashingTraining(trainingSet,userS,filePath,1,1);
+    generatingBioHashingTraining(trainingSet,userS,filePath,1,keySize);
     
     %loading and generating biohashing test data
     load(strcat(prefix,userS,'/testSet.mat'),'testSet');
-    generatingBioHashingTest(testSet,userS,'',1,1);
+    generatingBioHashingTest(testSet,userS,'',1,keySize);
   end
   
 elseif option==3
@@ -163,15 +188,15 @@ elseif option==3
   for user=1:usersSize
     disp(strcat('Processing User_ ',num2str(user)));
     userS=num2str(user);
-    filePath=strcat(strcat(pwd(),'/Data/Scrolling/BioHashing/Different_Key/User_',userS));
+    filePath=strcat(strcat(pwd(),'/Data/',num2str(keySize),'/Scrolling/BioHashing/Different_Key/User_',userS));
     
     %loading and generating biohashing training data
     load(strcat(prefix,userS,'/trainingSet.mat'), 'trainingSet');
-    generatingBioHashingTraining(trainingSet,userS,filePath,2,1);
+    generatingBioHashingTraining(trainingSet,userS,filePath,2,keySize);
     
     %loading and generating biohashing test data
     load(strcat(prefix,userS,'/testSet.mat'),'testSet');
-    generatingBioHashingTest(testSet,userS,filePath,2,1);
+    generatingBioHashingTest(testSet,userS,filePath,2,keySize);
   end
   
   %% Generating Horizontal BioHashing Data by User
@@ -184,15 +209,15 @@ elseif option==3
   for user=1:usersSize
     disp(strcat('Processing User_ ',num2str(user)));
     userS=num2str(user);
-    filePath=strcat(pwd(),'/Data/Horizontal/BioHashing/Different_Key/User_',userS);
+    filePath=strcat(pwd(),'/Data/',num2str(keySize),'/Horizontal/BioHashing/Different_Key/User_',userS);
     
     %loading and generating biohashing training data
     load(strcat(prefix,userS,'/trainingSet.mat'), 'trainingSet');
-    generatingBioHashingTraining(trainingSet,userS,filePath,2,1);
+    generatingBioHashingTraining(trainingSet,userS,filePath,2,keySize);
     
     %loading and generating biohashing test data
     load(strcat(prefix,userS,'/testSet.mat'),'testSet');
-    generatingBioHashingTest(testSet,userS,filePath,2,1);
+    generatingBioHashingTest(testSet,userS,filePath,2,keySize);
   end
   
 elseif option==4
@@ -210,15 +235,15 @@ elseif option==4
   for user=1:usersSize
     disp(strcat('Processing User_ ',num2str(user)));
     userS=num2str(user);
-    filePath=strcat(strcat(pwd(),'/Data/Scrolling/BioConvolving/Same_Key/User_'),userS);
+    filePath=strcat(strcat(pwd(),'/Data/',num2str(keySize),'/Scrolling/BioConvolving/Same_Key/User_'),userS);
     
     %loading and generating bioconvolving training data
     load(strcat(prefix,userS,'/trainingSet.mat'), 'trainingSet');
-    generatingBioConvolvingTraining(trainingSet,userS,filePath,1,1);
+    generatingBioConvolvingTraining(trainingSet,userS,filePath,1,keySize);
     
     %loading and generating bioconvolving test data
     load(strcat(prefix,userS,'/testSet.mat'),'testSet');
-    generatingBioConvolvingTest(testSet,userS,filePath,1,1);
+    generatingBioConvolvingTest(testSet,userS,filePath,1,keySize);
   end
   
   %% Generating Horizontal BioConvolving Data by User
@@ -231,15 +256,15 @@ elseif option==4
   for user=1:usersSize
     disp(strcat('Processing User_ ',num2str(user)));
     userS=num2str(user);
-    filePath=strcat(strcat(pwd(),'/Data/Horizontal/BioConvolving/Same_Key/User_',userS));
+    filePath=strcat(strcat(pwd(),'/Data/',num2str(keySize),'/Horizontal/BioConvolving/Same_Key/User_',userS));
     
     %loading and generating bioconvolving training data
     load(strcat(prefix,userS,'/trainingSet.mat'), 'trainingSet');
-    generatingBioConvolvingTraining(trainingSet,userS,filePath,1,1);
+    generatingBioConvolvingTraining(trainingSet,userS,filePath,1,keySize);
     
     %loading and generating bioconvolving test data
     load(strcat(prefix,userS,'/testSet.mat'),'testSet');
-    generatingBioConvolvingTest(testSet,userS,'',1,1);
+    generatingBioConvolvingTest(testSet,userS,'',1,keySize);
   end
   
 elseif option==5
@@ -254,15 +279,15 @@ elseif option==5
   for user=1:usersSize
     disp(strcat('Processing User_ ',num2str(user)));
     userS=num2str(user);
-    filePath=strcat(strcat(pwd(),'/Data/Scrolling/BioConvolving/Different_Key/User_',userS));
+    filePath=strcat(strcat(pwd(),'/Data/',num2str(keySize),'/Scrolling/BioConvolving/Different_Key/User_',userS));
     
     %loading and generating bioconvolving training data
     load(strcat(prefix,userS,'/trainingSet.mat'), 'trainingSet');
-    generatingBioConvolvingTraining(trainingSet,userS,filePath,2,1);
+    generatingBioConvolvingTraining(trainingSet,userS,filePath,2,keySize);
     
     %loading and generating bioconvolving test data
     load(strcat(prefix,userS,'/testSet.mat'),'testSet');
-    generatingBioConvolvingTest(testSet,userS,filePath,2,1);
+    generatingBioConvolvingTest(testSet,userS,filePath,2,keySize);
   end
   
   %% Generating Horizontal BioConvolving Data by User
@@ -275,15 +300,15 @@ elseif option==5
   for user=1:usersSize
     disp(strcat('Processing User_ ',num2str(user)));
     userS=num2str(user);
-    filePath=strcat(pwd(),'/Data/Horizontal/BioConvolving/Different_Key/User_',userS);
+    filePath=strcat(pwd(),'/Data/',num2str(keySize),'/Horizontal/BioConvolving/Different_Key/User_',userS);
     
     %loading and generating bioconvolving training data
     load(strcat(prefix,userS,'/trainingSet.mat'), 'trainingSet');
-    generatingBioConvolvingTraining(trainingSet,userS,filePath,2,1);
+    generatingBioConvolvingTraining(trainingSet,userS,filePath,2,keySize);
     
     %loading and generating bioconvolving test data
     load(strcat(prefix,userS,'/testSet.mat'),'testSet');
-    generatingBioConvolvingTest(testSet,userS,filePath,2,1);
+    generatingBioConvolvingTest(testSet,userS,filePath,2,keySize);
   end
   
 elseif option==6
@@ -300,15 +325,15 @@ elseif option==6
   for user=1:usersSize
     disp(strcat('Processing User_ ',num2str(user)));
     userS=num2str(user);
-    filePath=strcat(strcat(pwd(),'/Data/Scrolling/Interpolation/Same_Key/User_'),userS);
+    filePath=strcat(strcat(pwd(),'/Data/',num2str(keySize),'/Scrolling/Interpolation/Same_Key/User_'),userS);
     
     %loading and generating interpolation training data
     load(strcat(prefix,userS,'/trainingSet.mat'), 'trainingSet');
-    generatingInterpolationTraining(trainingSet,userS,filePath,1,1);
+    generatingInterpolationTraining(trainingSet,userS,filePath,1,keySize);
     
     %loading and generating interpolation test data
     load(strcat(prefix,userS,'/testSet.mat'),'testSet');
-    generatingInterpolationTest(testSet,userS,filePath,1,1);
+    generatingInterpolationTest(testSet,userS,filePath,1,keySize);
   end
   
   
@@ -323,15 +348,15 @@ elseif option==6
   for user=1:usersSize
     disp(strcat('Processing User_ ',num2str(user)));
     userS=num2str(user);
-    filePath=strcat(strcat(pwd(),'/Data/Horizontal/Interpolation/Same_Key/User_',userS));
+    filePath=strcat(strcat(pwd(),'/Data/',num2str(keySize),'/Horizontal/Interpolation/Same_Key/User_',userS));
     
     %loading and generating interpolation training data
     load(strcat(prefix,userS,'/trainingSet.mat'), 'trainingSet');
-    generatingInterpolationTraining(trainingSet,userS,filePath,1,1);
+    generatingInterpolationTraining(trainingSet,userS,filePath,1,keySize);
     
     %loading and generating interpolation test data
     load(strcat(prefix,userS,'/testSet.mat'),'testSet');
-    generatingInterpolationTest(testSet,userS,filePath,1,1);
+    generatingInterpolationTest(testSet,userS,filePath,1,keySize);
   end
   
 elseif option==7
@@ -349,15 +374,15 @@ elseif option==7
     disp(strcat('Processing User_ ',num2str(user)));
     
     userS=num2str(user);
-    filePath=strcat(strcat(pwd(),'/Data/Scrolling/Interpolation/Different_Key/User_',userS));
+    filePath=strcat(strcat(pwd(),'/Data/',num2str(keySize),'/Scrolling/Interpolation/Different_Key/User_',userS));
     
     %loading and generating interpolation training data
     load(strcat(prefix,userS,'/trainingSet.mat'), 'trainingSet');
-    generatingInterpolationTraining(trainingSet,userS,filePath,2,1);
+    generatingInterpolationTraining(trainingSet,userS,filePath,2,keySize);
     
     %loading and generating interpolation test data
     load(strcat(prefix,userS,'/testSet.mat'),'testSet');
-    generatingInterpolationTest(testSet,userS,filePath,2,1);
+    generatingInterpolationTest(testSet,userS,filePath,2,keySize);
   end
   
   %% Generating Horizontal Interpolation Data by User
@@ -370,15 +395,15 @@ elseif option==7
   for user=1:usersSize
     disp(strcat('Processing User_ ',num2str(user)));
     userS=num2str(user);
-    filePath=strcat(pwd(),'/Data/Horizontal/Interpolation/Different_Key/User_',userS);
+    filePath=strcat(pwd(),'/Data/',num2str(keySize),'/Horizontal/Interpolation/Different_Key/User_',userS);
     
     %loading and generating interpolation training data
     load(strcat(prefix,userS,'/trainingSet.mat'), 'trainingSet');
-    generatingInterpolationTraining(trainingSet,userS,filePath,2,1);
+    generatingInterpolationTraining(trainingSet,userS,filePath,2,keySize);
     
     %loading and generating interpolation test data
     load(strcat(prefix,userS,'/testSet.mat'),'testSet');
-    generatingInterpolationTest(testSet,userS,filePath,2,1);
+    generatingInterpolationTest(testSet,userS,filePath,2,keySize);
   end
   
 elseif option==8
@@ -395,11 +420,11 @@ elseif option==8
   for user=1:usersSize
     disp(strcat('Processing User_ ',num2str(user)));
     userS=num2str(user);
-    filePath=strcat(strcat(pwd(),'/Data/Scrolling/DoubleSum/Same_Key/User_'),userS);
+    filePath=strcat(strcat(pwd(),'/Data/',num2str(keySize),'/Scrolling/DoubleSum/Same_Key/User_'),userS);
     load(strcat(prefix,userS,'/trainingSet.mat'), 'trainingSet');
-    generatingDoubleSumTraining(trainingSet,userS,filePath,1,1);
+    generatingDoubleSumTraining(trainingSet,userS,filePath,1,keySize);
     load(strcat(prefix,userS,'/testSet.mat'),'testSet');
-    generatingDoubleSumTest(testSet,userS,filePath,1,1);
+    generatingDoubleSumTest(testSet,userS,filePath,1,keySize);
   end
   
   %% Generating Horizontal Double Sum Data by User
@@ -416,15 +441,15 @@ elseif option==8
     userS=num2str(user);
     
     %Full path of file
-    filePath=strcat(strcat(pwd(),'/Data/Horizontal/DoubleSum/Same_Key/User_',userS));
+    filePath=strcat(strcat(pwd(),'/Data/',num2str(keySize),'/Horizontal/DoubleSum/Same_Key/User_',userS));
     
     %loading and generating double sum training data
     load(strcat(prefix,userS,'/trainingSet.mat'), 'trainingSet');
-    generatingDoubleSumTraining(trainingSet,userS,filePath,1,1);
+    generatingDoubleSumTraining(trainingSet,userS,filePath,1,keySize);
     
     %loading and generating double sum test data
     load(strcat(prefix,userS,'/testSet.mat'),'testSet');
-    generatingDoubleSumTest(testSet,userS,filePath,1,1);
+    generatingDoubleSumTest(testSet,userS,filePath,1,keySize);
   end
 elseif option==9
   disp('Generating Different Key DoubleSum Data');
@@ -447,15 +472,15 @@ elseif option==9
     userS=num2str(user);
     
     %Full path of file
-    filePath=strcat(strcat(pwd(),'/Data/Scrolling/DoubleSum/Different_Key/User_',userS));
+    filePath=strcat(strcat(pwd(),'/Data/',num2str(keySize),'/Scrolling/DoubleSum/Different_Key/User_',userS));
     
     %loading and generating double sum training data
     load(strcat(prefix,userS,'/trainingSet.mat'), 'trainingSet');
-    generatingDoubleSumTraining(trainingSet,userS,filePath,2,1);
+    generatingDoubleSumTraining(trainingSet,userS,filePath,2,keySize);
     
     %loading and generating double sum test data
     load(strcat(prefix,userS,'/testSet.mat'),'testSet');
-    generatingDoubleSumTest(testSet,userS,filePath,2,1);
+    generatingDoubleSumTest(testSet,userS,filePath,2,keySize);
   end
   
   %% Generating Horizontal DoubleSum Data by User
@@ -468,11 +493,11 @@ elseif option==9
   for user=1:usersSize
     disp(strcat('Processing User_ ',num2str(user)));
     userS=num2str(user);
-    filePath=strcat(pwd(),'/Data/Horizontal/DoubleSum/Different_Key/User_',userS);
+    filePath=strcat(pwd(),'/Data/',num2str(keySize),'/Horizontal/DoubleSum/Different_Key/User_',userS);
     load(strcat(prefix,userS,'/trainingSet.mat'));
-    generatingDoubleSumTraining(trainingSet,userS,filePath,2,1);
+    generatingDoubleSumTraining(trainingSet,userS,filePath,2,keySize);
     load(strcat(prefix,userS,'/testSet.mat'));
-    generatingDoubleSumTest(testSet,userS,filePath,2,1);
+    generatingDoubleSumTest(testSet,userS,filePath,2,keySize);
   end
   
 elseif option==10
@@ -487,14 +512,14 @@ elseif option==10
   
   if strcmp(biometricDataName,'Original')
     % Loading training data
-    load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/User_Discre/User_',num2str(user),'/trainingSet.mat'));
-    % Loading testData
-    load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/User_Discre/User_',num2str(user),'/testSet.mat'));
+    load(strcat(pwd(),'/Data/',num2str(keySize)',orientation,'/',biometricDataName,'/User_Discre/User_',num2str(user),'/trainingSet.mat'));
+    % Loading testData'
+    load(strcat(pwd(),'/Data/',num2str(keySize)',orientation,'/',biometricDataName,'/User_Discre/User_',num2str(user),'/testSet.mat'));
   else
     % Loading training data
-    load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
+    load(strcat(pwd(),'/Data/',num2str(keySize)',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
     % Loading testData
-    load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/testSet.mat'));
+    load(strcat(pwd(),'/Data/',num2str(keySize)',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/testSet.mat'));
   end
   
   
@@ -527,9 +552,9 @@ elseif option==11
       load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/User_Discre/User_',num2str(user),'/testSet.mat'));
     else
       % Loading training data
-      load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
+      load(strcat(pwd(),'/Data/',num2str(keySize)',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
       % Loading testData
-      load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/testSet.mat'));
+      load(strcat(pwd(),'/Data/',num2str(keySize)',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/testSet.mat'));
     end
     
     %getting the scores
@@ -610,9 +635,9 @@ elseif option==14
     load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/User_Discre/User_',num2str(user),'/testSet.mat'));
   else
     % Loading training data
-    load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
+    load(strcat(pwd(),'/Data/',num2str(keySize)',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
     % Loading testData
-    load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/testSet.mat'));
+    load(strcat(pwd(),'/Data/',num2str(keySize)',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/testSet.mat'));
   end
   
   %calculating the score
@@ -642,9 +667,9 @@ elseif option==15
       load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/User_Discre/User_',num2str(user),'/testSet.mat'));
     else
       % Loading training data
-      load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
+      load(strcat(pwd(),'/Data/',num2str(keySize)',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
       % Loading testData
-      load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/testSet.mat'));
+      load(strcat(pwd(),'/Data/',num2str(keySize)',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/testSet.mat'));
     end
     %calculating the score
     [clientScore,impostorScore] = calculateScoreMatrix(classifier,trainingSet,trainUserLabels,testSet,testUserLabels);
