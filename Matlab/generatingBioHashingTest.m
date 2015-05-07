@@ -9,10 +9,12 @@ function [bioH_test]=generatingBioHashingTest(testSet,user,saveFilePath,optionke
 
 bioH_test=[];
 numFeatures=length(testSet(1,:));
+featureSize=round((numFeatures-1)*keySize);
 %% Same key for all users
 if optionkey==1
-    key=getFixedKey('BioHashing',(numFeatures-1)*keySize);
-    bioH_test=biohashing(testSet(:,2:end),key);
+    
+    key=getFixedKey('BioHashing',featureSize);
+    bioH_test=biohashing(testSet(:,2:featureSize+1),key);
 elseif optionkey==2
     %% Different Keys for each user
    
@@ -22,10 +24,10 @@ elseif optionkey==2
         userData=testSet(find(testSet(:,1) == users(currentUser)),:);
         
         % user data based on the size of keySize
-        userData=userData(:,1:numFeatures*keySize);
+        userData=userData(:,1:round(numFeatures*keySize));
         
         % Generating a key to that user
-        key=rand(numFeatures-1*keySize);
+       key=rand(featureSize);
         
         % Protecting the User data
         bioHashingData=biohashing(userData(:,2:end),key);

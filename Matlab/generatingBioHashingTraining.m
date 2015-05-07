@@ -10,10 +10,11 @@ function [bioH_train]=generatingBioHashingTraining(trainingSet,user,saveFilePath
 %starting variable
 bioH_train=[];
 numFeatures=length(trainingSet(1,:));
+featureSize=round((numFeatures-1)*keySize);
 if optionkey==1
     %% Same key for all users
-    key=getFixedKey('BioHashing',(numFeatures-1)*keySize);
-    bioH_train=biohashing(trainingSet(:,2:end),key);
+    key=getFixedKey('BioHashing',featureSize);
+    bioH_train=biohashing(trainingSet(:,2:featureSize+1),key);
 elseif optionkey==2
     %% Different key for each user    
     users=unique(trainingSet(:,1));
@@ -23,10 +24,10 @@ elseif optionkey==2
         userData=trainingSet(find(trainingSet(:,1) == users(currentUser)),:);
       
         % taking the user data based on size of keySize
-        userData=userData(:,1:numFeatures*keySize);
+        userData=userData(:,1:round(numFeatures*keySize));
        
         % creating the key for the currentUser
-        key=rand(numFeatures-1*keySize);
+        key=rand(featureSize);
        
         % protecting the user data using the generated key
         bioHashingData=biohashing(userData(:,2:end),key);
