@@ -56,6 +56,7 @@ end
 if option==1
     %discretize the user to 1, and the remaining users to 0
     [trainingSet, trainUserLabels]=discretizeUser(user,1,trainingSet);
+    trainingSet(:,1)=[];
 end
 
 %% Creating testset File
@@ -76,6 +77,7 @@ if option==1
     %%Changing the label of the testSet users to impostor
     testSet(:,1)=0;
     [testSet,testUserLabels]=discretizeUser(user,1,testSet);
+    testSet(:,1)=[];
 end
 
 %% Saving training
