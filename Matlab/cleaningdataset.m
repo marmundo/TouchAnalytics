@@ -4,6 +4,6 @@ dataset(isnan(dataset)) = 0 ;
 dataset(isinf(dataset)) = 0 ;
 
 %removing phoneId,docId
-dataset(:,[13,2])=[];
+dataset(:,[2,13])=[];
 
 end
