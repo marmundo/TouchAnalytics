@@ -1,9 +1,5 @@
 function [clientScoreMatrix,impostorScoreMatrix]=prediction(classifierName,trainingDataSet,trainUserLabels,testDataSet,testUserLabels,saveFilePath,user)
-%classifierName=name of classifier. Can receive knn, svm or discriminant
-
-%cleaning datasets
-trainingDataSet=cleaningdataset(trainingDataSet);
-testDataSet=cleaningdataset(testDataSet);
+%% classifierName=name of classifier. Can receive knn, svm or discriminant
 
 numFeatures=length(trainingDataSet(1,:));
 
@@ -40,18 +36,12 @@ elseif strcmp(classifierName,'libsvm')
   %% Training
   clientProportion=num2str(sum(trainUserLabels==1)/size(trainUserLabels,1));
   impostorProportion=num2str(sum(trainUserLabels==-1)/size(trainUserLabels,1));
-  
-minimums = min(trainingDataSet, [], 1);
-ranges = max(trainingDataSet, [], 1) - minimums;
 
-trainingDataSet = (trainingDataSet - repmat(minimums, size(trainingDataSet, 1), 1)) ./ repmat(ranges, size(trainingDataSet, 1), 1);
-
-testDataSet = (testDataSet - repmat(minimums, size(testDataSet, 1), 1)) ./ repmat(ranges, size(testDataSet, 1), 1);
 
 [c,g]=grid(trainUserLabels, trainingDataSet);
 c=num2str(c);
 g=num2str(g);
-classifier = svmtrain(trainUserLabels, trainingDataSet,['-h 0 -c ', c, ' -g ', g,' -b 1 -w-1 ',impostorProportion,' -w1 ',clientProportion]);
+classifier = svmtrain(trainUserLabels,trainingDataSet,['-h 0 -c ', c, ' -g ', g,' -b 1 -w-1 ',impostorProportion,' -w1 ',clientProportion]);
   
 elseif strcmp(classifierName,'discriminant')
   classifier=fitcdiscr(trainingDataSet,trainUserLabels);
