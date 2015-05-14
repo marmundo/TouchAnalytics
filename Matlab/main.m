@@ -70,7 +70,13 @@ if option==-1
     disp('Cleaning and Normalizing Scrolling dataset');   
     
     scrolling=cleaningdataset(scrolling);
+    
+    %removing userid before normalize
+    users=scrolling(:,1);
+    scrolling(:,1)=[];
+    
     scrolling=zscore(scrolling);
+    scrolling=[users,scrolling];
     save('scrolling data.mat','scrolling');
     
     %Getting the index of horizontal strokes
@@ -80,7 +86,13 @@ if option==-1
     disp('Cleaning and Normalizing Horizontal dataset');
    
     horizontal=cleaningdataset(horizontal);
+    
+    %removing userid before normalize
+    users=horizontal(:,1);
+    horizontal(:,1)=[];
+    
     horizontal=zscore(horizontal);
+    horizontal=[users,horizontal];
     save('horizontal data.mat','horizontal');
     
 elseif option==0
@@ -91,7 +103,7 @@ elseif option==0
   usersSize=length(unique(scrolling(:,1)));
   for user=1:usersSize
     disp(strcat('Processing User_ ',num2str(user)));
-    generatingTrainingAndTest(scrolling,user,strcat(pwd(),'/Data/Scrolling/Original/User_Discre/'),option);
+    generatingTrainingAndTest(scrolling,user,strcat(pwd(),'/Data/Scrolling/Original/User_Label/'),option);
   end
   
   %% Generating Horizontal Original Data by User Label
@@ -102,7 +114,7 @@ elseif option==0
     disp(strcat('Processing User_ ',num2str(user)));
     
     %generating training and testing data
-    generatingTrainingAndTest(horizontal,user,strcat(pwd(),'/Data/Horizontal/Original/User_Discre/'),option);
+    generatingTrainingAndTest(horizontal,user,strcat(pwd(),'/Data/Horizontal/Original/User_Label/'),option);
   end
   
 elseif option==1
@@ -146,11 +158,11 @@ elseif option==2
     userS=num2str(user);
     filePath=strcat(pwd(),'/Data/',num2str(keySize),'/Scrolling/BioHashing/Same_Key/User_',userS);
     
-    %loading and generating biohashing training data
+%   loading and generating biohashing training data
     load(strcat(prefix,userS,'/trainingSet.mat'), 'trainingSet');
     generatingBioHashingTraining(trainingSet,userS,filePath,1,keySize);
     
-    %loading and generating biohashing test data
+%     loading and generating biohashing test data
     load(strcat(prefix,userS,'/testSet.mat'),'testSet');
     generatingBioHashingTest(testSet,userS,filePath,1,keySize);
   end
@@ -173,7 +185,7 @@ elseif option==2
     
     %loading and generating biohashing test data
     load(strcat(prefix,userS,'/testSet.mat'),'testSet');
-    generatingBioHashingTest(testSet,userS,'',1,keySize);
+    generatingBioHashingTest(testSet,userS,filePath,1,keySize);
   end
   
 elseif option==3
@@ -264,7 +276,7 @@ elseif option==4
     
     %loading and generating bioconvolving test data
     load(strcat(prefix,userS,'/testSet.mat'),'testSet');
-    generatingBioConvolvingTest(testSet,userS,'',1,keySize);
+    generatingBioConvolvingTest(testSet,userS,filePath,1,keySize);
   end
   
 elseif option==5
@@ -552,9 +564,9 @@ elseif option==11
       load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/User_Discre/User_',num2str(user),'/testSet.mat'));
     else
       % Loading training data
-      load(strcat(pwd(),'/Data/',num2str(keySize)',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
+      load(strcat(pwd(),'/Data/',num2str(keySize)','/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
       % Loading testData
-      load(strcat(pwd(),'/Data/',num2str(keySize)',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/testSet.mat'));
+      load(strcat(pwd(),'/Data/',num2str(keySize)','/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/testSet.mat'));
     end
     
     %getting the scores
