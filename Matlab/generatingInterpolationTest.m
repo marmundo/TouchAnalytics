@@ -15,17 +15,17 @@ if optionkey==1
     inter_test=interpolation(testSet(:,2:end),key);
 elseif optionkey==2
     %% Different Keys for each user
-   
+   keySize=numFeatures-1*keySize;
     users=unique(testSet(:,1));
     for currentUser=1:length(users)
         % user data presented in testSet
         userData=testSet(find(testSet(:,1) == users(currentUser)),:);
         
         % user data based on the size of keySize
-        userData=userData(:,1:numFeatures*keySize);
+        userData=userData(:,1:keySize);
         
         % Generating a key to that user
-        key=rand(numFeatures-1*keySize,1);
+        key=((keySize-1).*rand(keySize,1) + 1)';
         
         % Protecting the User data
         interpolationData=interpolation(userData(:,2:end),key);

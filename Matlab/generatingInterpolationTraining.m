@@ -19,17 +19,17 @@ elseif optionkey==2
     %% Different key for each user
     
     users=unique(trainingSet(:,1));
-    
+    keySize=numFeatures-1*keySize;
     for currentUser=1:length(users)
         % data of user i      
         userData=trainingSet(find(trainingSet(:,1) == users(currentUser)),:);
       
         % taking the user data based on size of keySize
-        userData=userData(:,1:numFeatures*keySize);
+        userData=userData(:,1:keySize);
        
-        % creating the key for the currentUser
-        key=rand(numFeatures-1*keySize,1);
-       
+        % creating the key for the currentUser        
+        key=((keySize-1).*rand(keySize,1) + 1)';
+        
         % protecting the user data using the generated key
         interpolationData=interpolation(userData(:,2:end),key);
        
