@@ -63,16 +63,16 @@
 %main(10,'svm',1,'Interpolation','Same_Key','Scrolling')
 
 % Show a Norman's plot for all users using a all orientation, keytype and biometric data
-for i=5:5%length(classifiers)
-    for j=1:length(cancelableFunctions)        
-        main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Scrolling',1)
-        main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Horizontal',1)
-        
-        main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Scrolling',1)
-        main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Horizontal',1)
-    end
-end
-
+% for i=5:5%length(classifiers)
+%     for j=1:length(cancelableFunctions)        
+%         main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Scrolling',1)
+%         main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Horizontal',1)
+%         
+%         main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Scrolling',1)
+%         main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Horizontal',1)
+%     end
+% end
+main(16,'knn','','Interpolation','','Scrolling',1)
 % for k=1:length(keySize)
 % for i=1:1
 %     for j=1:length(cancelableFunctions)        
