@@ -56,6 +56,15 @@ if option>9
         mkdir(scorePlotsJpgPath);
     end
     
+    detPlotsFigPath=[pwd(),'/DETPlots/fig/',num2str(keySize),'/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
+    if ~exist(detPlotsFigPath,'dir')
+        mkdir(detPlotsFigPath);
+    end
+    
+    detPlotsJpgPath=[pwd(),'/DETPlots/jpg/',num2str(keySize),'/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType];
+    if ~exist(detPlotsJpgPath,'dir')
+        mkdir(detPlotsJpgPath);
+    end
 end
 scrolling=[];
 horizontal=[];
@@ -746,6 +755,11 @@ elseif option==16
         allImpostorScore=[];
     end
     printDETCurve(wolves,sheeps,3);
+    title({['DET - Key Size:',num2str(keySize),' Classifier:',upper(classifierName)],[' using ',upper(biometricDataName),'-', upper(orientation)]});
+    
+    savefig(strcat(detPlotsFigPath,'/DET_Total'));
+    fig=openfig(strcat(detPlotsFigPath,'/DET_Total.fig'),'invisible');
+    saveas(fig,[detPlotsJpgPath,'/DET_Total.jpg']);
 end
 end
 
