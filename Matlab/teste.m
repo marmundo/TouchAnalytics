@@ -8,8 +8,8 @@
 
  cancelableFunctions={'Original','Interpolation','DoubleSum','BioHashing','BioConvolving'};
  strokeOrientation={'Scrolling','Horizontal'};
- classifiers={'knn','svm','libsvm','discriminant'};
-
+ classifiers={'knn','svm','libsvm','discriminant','regression'};
+ keySize=[0.25,0.5,0.75,1];
 % key=char('Same_Key','Different_Key');
 %
 %
@@ -30,9 +30,9 @@
 
 %% Creates all the cancelable data
 
-%for i=2:9
-%    main(i)
-%end
+% for i=7:9
+%    main(i,'','','','','',1)
+% end
 
 %% Show a Norman's plot for a specific user using a specific orientation, keytype and biometric data
 
@@ -63,18 +63,29 @@
 %main(10,'svm',1,'Interpolation','Same_Key','Scrolling')
 
 % Show a Norman's plot for all users using a all orientation, keytype and biometric data
-for i=1:1
-    for j=2:length(cancelableFunctions)        
-        main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Scrolling')
-        main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Horizontal')
+for i=5:5%length(classifiers)
+    for j=1:length(cancelableFunctions)        
+        main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Scrolling',1)
+        main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Horizontal',1)
         
-        main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Scrolling')
-        main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Horizontal')
+        main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Scrolling',1)
+        main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Horizontal',1)
     end
 end
+
+% for k=1:length(keySize)
+% for i=1:1
+%     for j=1:length(cancelableFunctions)        
+%         main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Scrolling',keySize(k));
+%         main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Horizontal',keySize(k));
+%         
+%         main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Scrolling',keySize(k));
+%         main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Horizontal',keySize(k));
+%     end
+% end
+% end
 
 %  for user=41:41
 %   main(10,'libsvm',user,'Interpolation','Different_Key','Scrolling')
 %  end
 
-%main(6)

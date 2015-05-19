@@ -2,7 +2,9 @@ function [clientScoreMatrix,impostorScoreMatrix]=prediction(classifierName,train
 %% classifierName=name of classifier. Can receive knn, svm or discriminant
 
 numFeatures=length(trainingDataSet(1,:));
-
+clientProportion=size(trainUserLabels,1)/sum(strcmp(trainUserLabels,'client'));
+impostorProportion=size(trainUserLabels,1)/sum(strcmp(trainUserLabels,'impostor'));
+  
 if strcmp(classifierName,'knn')
   %training knn
   classifier = ClassificationKNN.fit(trainingDataSet,trainUserLabels,'NumNeighbors',5);
@@ -10,8 +12,6 @@ elseif strcmp(classifierName,'svm')
   
   %% Using builtin svm  function of Matlab
   weights=zeros(size(trainingDataSet,1),1);
-  clientProportion=size(trainUserLabels,1)/sum(strcmp(trainUserLabels,'client'));
-  impostorProportion=size(trainUserLabels,1)/sum(strcmp(trainUserLabels,'impostor'));
   
   indexClient = cellfun(@(x) strcmp(x,'client'), trainUserLabels);
   weights(indexClient==1) = clientProportion;
@@ -22,7 +22,7 @@ elseif strcmp(classifierName,'svm')
 elseif strcmp(classifierName,'libsvm')
   %% Using libsvm function
   addpath('lib/libsvm');
-  %% Changing the label of train and test sets. client to 0 and impsotor to 1
+  %% Changing the label of train and test sets. client to 1 and impostor to -1
   trainLabels(strcmp(trainUserLabels,'client'))=+1;
   trainLabels(strcmp(trainUserLabels,'impostor'))=-1;
   trainLabels=trainLabels';
@@ -45,6 +45,25 @@ classifier = svmtrain(trainUserLabels,trainingDataSet,['-h 0 -c ', c, ' -g ', g,
   
 elseif strcmp(classifierName,'discriminant')
   classifier=fitcdiscr(trainingDataSet,trainUserLabels);
+  
+elseif strcmp(classifierName,'regression')
+     %% Changing the label of train and test sets. client to 1 and impostor to 0
+  trainLabels(strcmp(trainUserLabels,'client'))=1;
+  trainLabels(strcmp(trainUserLabels,'impostor'))=0;
+  trainLabels=trainLabels';
+  trainUserLabels=trainLabels;
+  
+  testLabels(strcmp(testUserLabels,'client'))=1;
+  testLabels(strcmp(testUserLabels,'impostor'))=0;
+  testLabels=testLabels';
+  testUserLabels=testLabels;
+  
+  %creating the vector of weights
+  w_vector(trainUserLabels==1)=clientProportion;
+  w_vector(trainUserLabels==0)=impostorProportion;
+    %Training
+    classifier = glmfit(trainingDataSet,trainUserLabels,'binomial','link','logit', 'weights', w_vector); 
+    
 end
 
 %save classifier
