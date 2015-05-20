@@ -754,7 +754,7 @@ elseif option==16
         allClientScore=[];
         allImpostorScore=[];
     end
-    printDETCurve(wolves,sheeps,3);
+        printDETCurve(wolves,sheeps,3,{'Original','Same_Key','Different_Key'});
     title({['DET - Key Size:',num2str(keySize),' Classifier:',upper(classifierName)],[' using ',upper(biometricDataName),'-', upper(orientation)]});
     
     savefig(strcat(detPlotsFigPath,'/DET_Total'));
