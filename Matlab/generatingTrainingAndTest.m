@@ -80,6 +80,17 @@ if option==1
     testSet(:,1)=[];
 end
 
+%% Putting only 70% genuine user data in training and 30% in testdata
+numberOfGenuineStrokes=length(trainingSet(:,1));
+seventy=round(0.7*numberOfGenuineStrokes);
+
+testSet=[testSet;trainingSet(seventy+1:numberOfGenuineStrokes,:)];
+trainingSet=trainingSet(1:seventy,:);
+
+if option==1
+    testUserLabels=[testUserLabels;trainUserLabels(seventy+1:numberOfGenuineStrokes,:)];
+    trainUserLabels=trainUserLabels(1:seventy,:);
+end
 %% Saving training
 if ~exist(filePath,'dir')
     mkdir(filePath);
