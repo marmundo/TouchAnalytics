@@ -39,3 +39,4 @@ hs_err_pid*
 /Matlab/Score*
 /Matlab/lib/Inpaint_nans/*
 /Matlab/images/*
+/Matlab/DETPlots/*
