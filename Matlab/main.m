@@ -717,21 +717,9 @@ elseif option==15
     saveas(fig,[scorePlotsJpgPath,'/ScoreTotal.jpg']);
 elseif option==16
     disp(['Printing the DET Curves of Original, Same and Different Key Experiments to keySize ',num2str(keySize),' using classifier ',classifierName,' for ',orientation,' Strokes']);
-    allClientScore=[];
-    allImpostorScore=[];
+    
     %% Loading Original Scores
-    scoreMatrixPath=[pwd(),'/ScoreMatrix/',num2str(keySize),'/',classifierName,'/',orientation,'/Original/Same_Key'];
-    for user=1:41
-        % Loading score matrix
-        saveFilePath=scoreMatrixPath;
-        load(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
-        
-        %storing the score to plot
-        allClientScore=[allClientScore;clientScore];
-        allImpostorScore=[allImpostorScore;impostorScore];
-    end
-    sheeps=allClientScore;
-    wolves=allImpostorScore;
+    [sheeps,wolves]=loadOriginalScore(keySize,classifierName,orientation);
     
     allClientScore=[];
     allImpostorScore=[];
