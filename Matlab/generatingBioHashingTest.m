@@ -1,4 +1,4 @@
-function [bioH_test]=generatingBioHashingTest(testSet,user,saveFilePath,optionkey,keySize)
+function [bioH_test]=generatingBioHashingTest(testSet,client,saveFilePath,optionkey,keySize)
 % testSet= test dataset used in data protection
 % user= user label of testSet
 % saveFilePath= Full Path where the biohashing test set will be saved
@@ -10,14 +10,16 @@ function [bioH_test]=generatingBioHashingTest(testSet,user,saveFilePath,optionke
 bioH_test=[];
 numFeatures=length(testSet(1,:));
 featureSize=round((numFeatures-1)*keySize);
-%% Same key for all users
+
+%% Heterogenous Know Key
 if optionkey==1
     
-    key=getFixedKey('BioHashing',featureSize);
-    bioH_test=biohashing(testSet(:,2:featureSize+1),key);
+    
+    
 elseif optionkey==2
-    %% Different Keys for each user
-   
+    %% Heteronegeneous Unknown Key
+    % Different Keys for each user
+    
     users=unique(testSet(:,1));
     for currentUser=1:length(users)
         % user data presented in testSet
@@ -27,7 +29,7 @@ elseif optionkey==2
         userData=userData(:,1:round(numFeatures*keySize));
         
         % Generating a key to that user
-       key=rand(featureSize);
+        key=rand(featureSize);
         
         % Protecting the User data
         bioHashingData=biohashing(userData(:,2:end),key);
@@ -36,19 +38,57 @@ elseif optionkey==2
         % dataset
         bioH_test=[bioH_test; bioHashingData];
     end
+elseif optionkey==3
+    %% Homogenous Know Key
+    key=getFixedKey('BioHashing',featureSize);
+    bioH_test=biohashing(testSet(:,2:featureSize+1),key);
+    
+elseif optionkey==4
+    %% Homogenous UnKnow Key
+    
+    clientKey=getFixedKey('BioHashing',featureSize);
+    
+    % encoding genuine user with the system key
+    clientData=testSet(find(testSet(:,1) == client),:);
+    clientData=clientData(:,1:round(numFeatures*keySize));
+    bioHashingClientData=biohashing(clientData(:,2:end),clientKey);
+    
+    bioH_test=bioHashingClientData;
+    
+    %% Different key for each impostor
+    users=unique(testSet(:,1));
+    
+    for currentUser=1:length(users)
+        if users(currentUser) ~= client
+            % data of user i
+            impostorData=testSet(find(testSet(:,1) == users(currentUser)),:);
+            
+            % taking the user data based on size of keySize
+            impostorData=impostorData(:,1:round(numFeatures*keySize));
+            
+            % creating the key for the currentUser
+            impostorKey=rand(featureSize);
+            
+            % protecting the user data using the generated key
+            bioHashingImpostorData=biohashing(impostorData(:,2:end),impostorKey);
+            
+            % adding user protected data to the bioH_train variable
+            bioH_test=[bioH_test; bioHashingImpostorData];
+        end
+    end
 end
 
 % Adding the user label to the biohashing data
 bioH_test=[bioH_test testSet(:,1)];
 
 % Discretizing the user. 1, for user, and 0 for remaining users
-[bioH_test,testUserLabels]=discretizeUser(str2num(user),length(bioH_test(1,:)),bioH_test);
+[bioH_test,testUserLabels]=discretizeUser(str2double(client),length(bioH_test(1,:)),bioH_test);
 
 
 %% Folder used to save the biohashing data
 % If empty create the variable
 if(isempty(saveFilePath))
-    saveFilePath=strcat(pwd(),'/Data/Horizontal/BioHashing/Same_Key/User_',user);
+    saveFilePath=strcat(pwd(),'/Data/Horizontal/BioHashing/Homo_Un_Key/User_',client);
 end
 % If the folder doesn't exist create it
 if ~exist(saveFilePath,'dir')

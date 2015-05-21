@@ -6,7 +6,7 @@ elseif strcmp(cancelableFunction,'BioHashing')
     load('BioHashingKey.mat','key');
     key=key(1:keySize,1:keySize);
 elseif strcmp(cancelableFunction,'BioConvolving')
-    key=[0,round(keySize/2),keySize-1];
+    key=[0,round(keySize/2),keySize];
 elseif strcmp(cancelableFunction,'DoubleSum')
     key=1:2:keySize;
     key=[key,2:2:keySize];

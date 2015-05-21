@@ -30,9 +30,11 @@
 
 %% Creates all the cancelable data
 
-% for i=7:9
+% for i=2:9
 %    main(i,'','','','','',1)
 % end
+
+ main(9,'','','','','',1)
 
 %% Show a Norman's plot for a specific user using a specific orientation, keytype and biometric data
 
@@ -63,16 +65,16 @@
 %main(10,'svm',1,'Interpolation','Same_Key','Scrolling')
 
 % Show a Norman's plot for all users using a all orientation, keytype and biometric data
-for i=5:5%length(classifiers)
-    for j=1:length(cancelableFunctions)        
-        main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Scrolling',1)
-        main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Horizontal',1)
-        
-        main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Scrolling',1)
-        main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Horizontal',1)
-    end
-end
-% for i=4:4%length(classifiers)
+% for i=5:5%length(classifiers)
+%     for j=1:length(cancelableFunctions)        
+%         main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Scrolling',1)
+%         main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Horizontal',1)
+%         
+%         main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Scrolling',1)
+%         main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Horizontal',1)
+%     end
+% end
+% for i=3:3%length(classifiers)
 %      for j=2:length(cancelableFunctions) 
 %         main(16,classifiers{i},'',cancelableFunctions{j},'','Scrolling',keySize(4))
 %         main(16,classifiers{i},'',cancelableFunctions{j},'','Horizontal',keySize(4))
@@ -93,4 +95,5 @@ end
 %  for user=41:41
 %   main(10,'libsvm',user,'Interpolation','Different_Key','Scrolling')
 %  end
+
 

@@ -39,19 +39,25 @@ maxSize=length(users)+1;
 
 %% Creating training file
 for i=1:training_users
-    if currentUser==maxSize
-        currentUser=1;
+    if currentUser~=user
+        if currentUser==maxSize
+            currentUser=1;
+        end
+
+        %biometric samples from the current user
+        userSamples=find(data(:,1)==currentUser);
+
+        %adding user samples to trainingSet variable
+        trainingSet=[trainingSet;data(userSamples,:)];
     end
-    
-    %biometric samples from the current user
-    userSamples=find(data(:,1)==currentUser);
-    
-    %adding user samples to trainingSet variable
-    trainingSet=[trainingSet;data(userSamples,:)];
-    
-    %updating the current user
+     %updating the current user
     currentUser=currentUser+1;
 end
+%% Putting only 70% genuine user data in training
+genuineData=data(data(:,1) == user,:);
+numberOfGenuineStrokes=length(genuineData(:,1));
+seventy=round(0.7*numberOfGenuineStrokes);
+trainingSet=[trainingSet;genuineData(1:seventy,:)];
 
 if option==1
     %discretize the user to 1, and the remaining users to 0
@@ -72,25 +78,17 @@ for i=training_users+1:size
     %updating current User
     currentUser=currentUser+1;
 end
+%% Putting only 30% genuine user data in testdata
+testSet=[testSet;genuineData(seventy+1:numberOfGenuineStrokes,:)];
 
 if option==1
     %%Changing the label of the testSet users to impostor
-    testSet(:,1)=0;
+    %testSet(:,1)=0;
     [testSet,testUserLabels]=discretizeUser(user,1,testSet);
     testSet(:,1)=[];
 end
 
-%% Putting only 70% genuine user data in training and 30% in testdata
-numberOfGenuineStrokes=length(trainingSet(:,1));
-seventy=round(0.7*numberOfGenuineStrokes);
 
-testSet=[testSet;trainingSet(seventy+1:numberOfGenuineStrokes,:)];
-trainingSet=trainingSet(1:seventy,:);
-
-if option==1
-    testUserLabels=[testUserLabels;trainUserLabels(seventy+1:numberOfGenuineStrokes,:)];
-    trainUserLabels=trainUserLabels(1:seventy,:);
-end
 %% Saving training
 if ~exist(filePath,'dir')
     mkdir(filePath);
