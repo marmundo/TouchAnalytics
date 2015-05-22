@@ -51,13 +51,13 @@ elseif optionkey==2
 elseif optionkey==3
     %% Homogenous Know Key
     %% Same key for all users
-    key=getFixedKey('BioConvolving',sizeFeatures);
+    key=getFixedKey('BioConvolving',sizeFeatures-1);
     bioC_train=bioconvolving(trainingSet(:,2:sizeFeatures),key);
     
 elseif optionkey==4
     %% Homogenous UnKnow Key
     users=unique(trainingSet(:,1));
-    clientKey=getFixedKey('BioConvolving',sizeFeatures);
+    clientKey=getFixedKey('BioConvolving',sizeFeatures-1);
     
     % encoding genuine user with the system key
     clientData=trainingSet(find(trainingSet(:,1) == client),:);

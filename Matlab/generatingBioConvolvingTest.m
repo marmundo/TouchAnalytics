@@ -49,7 +49,7 @@ elseif optionkey==2
 elseif optionkey==3
     %% Homogenous Know Key
     %% Same key for all users
-    key=getFixedKey('BioConvolving',sizeFeatures);
+    key=getFixedKey('BioConvolving',sizeFeatures-1);
     bioC_test=bioconvolving(testSet(:,2:sizeFeatures),key);
 elseif optionkey==4
     %% Homogenous UnKnow Key
