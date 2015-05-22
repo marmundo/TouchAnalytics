@@ -523,9 +523,35 @@ elseif option==18
     
 elseif option==19
     
-    %% Generating and Plot the Scores by cancelable function, stroke orientation and key type
+    %% Generating and Ploting the Scores, FAR and FRR by cancelable function, stroke orientation and key type
     addpath('lib')
     saveFilePath=scoreMatrixPath;
+    
+    %% Loading or Creating Maps
+    if exist('impostorScoreMap.mat')
+        load('impostorScoreMap');
+    else
+        impostorScoreMap=containers.Map();
+    end
+    
+    if exist('clientScoreMap.mat')
+        load('clientScoreMap');
+    else
+        clientScoreMap=containers.Map();
+    end
+    
+    if exist('farMap.mat')
+       load('farMap');
+    else
+        farMap=containers.Map();
+    end
+    
+    if exist('frrMap.mat')
+        load('frrMap');
+    else
+        frrMap=containers.Map();
+    end
+    
     
     disp(strcat('Generating and Ploting All Users Score Plot_',classifierName,'_',orientation,'_',biometricDataName,'_',keyType));
     
@@ -548,7 +574,15 @@ elseif option==19
         %getting the scores
         [clientScore,impostorScore] = prediction(classifierName,trainingSet,trainUserLabels,testSet,testUserLabels,saveFilePath,user);
         
-        wer(impostorScore,clientScore, [],1,[],1);
+        %%Saving the scores in the maps
+        clientScoreMap([biometricDataName,classifierName,num2str(user)])=clientScore;
+        impostorScoreMap([biometricDataName,classifierName,num2str(user)])=impostorScore;
+        
+        [~, ~, ~, FAR, FRR]=wer(impostorScore,clientScore, [],1,[],1);
+        
+        %%Saving the far and frr in the maps
+        farMap([biometricDataName,classifierName,num2str(user)])=FAR;
+        frrMap([biometricDataName,classifierName,num2str(user)])=FRR;
         
         %saving the scores in a file
         savefig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user)));
@@ -574,6 +608,11 @@ elseif option==19
     impostorScore=uimpostorScore;
     save(strcat(saveFilePath,'/Score_Total.mat'),'clientScore','impostorScore');
     
+    %%Saving the maps
+    save('clientScoreMap','clientScoreMap');
+    save('impostorScoreMap','impostorScoreMap');
+    save('farMap','farMap');
+    save('frrMap','frrMap');
 elseif option==20
     addpath('lib')
     % Loading score matrix

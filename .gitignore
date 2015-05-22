@@ -40,3 +40,7 @@ hs_err_pid*
 /Matlab/lib/Inpaint_nans/*
 /Matlab/images/*
 /Matlab/DETPlots/*
+/Matlab/clientScoreMap.mat
+/Matlab/farMap.mat
+/Matlab/frrMap.mat
+/Matlab/impostorScoreMap.mat
