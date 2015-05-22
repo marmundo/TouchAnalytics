@@ -30,15 +30,15 @@
 
 %% Creates all the cancelable data
 
- for i=5:4:16
-    main(i,'','','','','',1)
- end
+%  for i=17:4:17
+%     main(i,'','','','','',1)
+%  end
 
 
 
 %% Show a Norman's plot for a specific user using a specific orientation, keytype and biometric data
 
-%main(10,'knn',1,'Interpolation','Same_Key','Scrolling')
+main(19,'knn',1,'Interpolation','Same_Key','Scrolling',1)
 
 
 
