@@ -11,9 +11,10 @@ bioC_test=[];
 numFeatures=length(testSet(1,2:end));
 sizeFeatures=round(numFeatures*keySize);
 %% Same key for all users
-if optionkey==1
-    %% Heterogenous Know Key
-    
+if optionkey==1 || optionkey==3
+    %% Heterogenous Know Key or Homogenous Know Key
+    key=getFixedKey('BioConvolving',sizeFeatures-1);
+    bioC_test=bioconvolving(testSet(:,2:sizeFeatures),key);
 elseif optionkey==2
     %% Heteronegeneous Unknown Key
     %% Different key for each user
@@ -46,11 +47,6 @@ elseif optionkey==2
         % dataset
         bioC_test=[bioC_test; bioConvolvingData];
     end
-elseif optionkey==3
-    %% Homogenous Know Key
-    %% Same key for all users
-    key=getFixedKey('BioConvolving',sizeFeatures-1);
-    bioC_test=bioconvolving(testSet(:,2:sizeFeatures),key);
 elseif optionkey==4
     %% Homogenous UnKnow Key
     users=unique(testSet(:,1));
@@ -88,6 +84,9 @@ elseif optionkey==4
             bioConvolvingImpostorData=bioconvolving(userData(:,2:end),impostorKey);
             
             % adding user protected data to the bioH_train variable
+            if length(bioC_test(1,:))~=length(bioConvolvingImpostorData(1,:))
+                disp('OK');
+            end
             bioC_test=[bioC_test; bioConvolvingImpostorData];
         end
     end

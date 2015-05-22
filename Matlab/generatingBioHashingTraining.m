@@ -12,10 +12,11 @@ bioH_train=[];
 numFeatures=length(trainingSet(1,:));
 featureSize=round((numFeatures-1)*keySize);
 
-%% Heterogenous Know Key
-if optionkey==1
-    
-    
+
+if optionkey==1 || optionkey==3
+    %% Heterogenous Know Key or Homogenous Know Key
+    key=getFixedKey('BioHashing',featureSize);
+    bioH_train=biohashing(trainingSet(:,2:featureSize+1),key);
     
 elseif optionkey==2
     %% Heteronegeneous Unknown Key
@@ -38,14 +39,6 @@ elseif optionkey==2
         % adding user protected data to the bioH_train variable
         bioH_train=[bioH_train; bioHashingData];
     end
-    
-elseif optionkey==3
-    %% Homogenous Know Key
-    % Same key for all users
-    key=getFixedKey('BioHashing',featureSize);
-    bioH_train=biohashing(trainingSet(:,2:featureSize+1),key);
-    
-    
 elseif optionkey==4
     %% Homogenous UnKnow Key
     

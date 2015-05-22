@@ -14,7 +14,7 @@ numFeatures=length(testSet(1,:))-1;
 
 %% Heterogenous Know Key
 if optionkey==1
-    
+    optionKey=3;
 elseif optionkey==2
     %% Heteronegeneous Unknown Key
     %% Different key for each user

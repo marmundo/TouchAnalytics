@@ -11,11 +11,11 @@ bioH_test=[];
 numFeatures=length(testSet(1,:));
 featureSize=round((numFeatures-1)*keySize);
 
-%% Heterogenous Know Key
-if optionkey==1
-    
-    
-    
+if optionkey==1 || optionkey==3
+    %% Heterogenous Know Key or Homogenous Know Key
+    key=getFixedKey('BioHashing',featureSize);
+    bioH_test=biohashing(testSet(:,2:featureSize+1),key);
+   
 elseif optionkey==2
     %% Heteronegeneous Unknown Key
     % Different Keys for each user
@@ -38,11 +38,6 @@ elseif optionkey==2
         % dataset
         bioH_test=[bioH_test; bioHashingData];
     end
-elseif optionkey==3
-    %% Homogenous Know Key
-    key=getFixedKey('BioHashing',featureSize);
-    bioH_test=biohashing(testSet(:,2:featureSize+1),key);
-    
 elseif optionkey==4
     %% Homogenous UnKnow Key
     

@@ -11,9 +11,12 @@ function [inter_train]=generatingInterpolationTraining(trainingSet,client,saveFi
 inter_train=[];
 numFeatures=length(trainingSet(1,:));
 
-%% Heterogenous Know Key
-if optionkey==1
-    
+if optionkey==1 || optionkey==3
+    %% Heterogenous Know Key or Homogenous Know Key
+    key=getFixedKey('Interpolation',numFeatures-1*keySize);
+    % taking the user data based on size of keySize
+    userData=trainingSet(:,1:round(numFeatures-1*keySize));
+    inter_train=interpolation(userData(:,2:end),key);
 elseif optionkey==2
     %% Heteronegeneous Unknown Key
     %% Different key for each user
@@ -36,13 +39,6 @@ elseif optionkey==2
         % adding user protected data to the bioH_train variable
         inter_train=[inter_train; interpolationData];
     end
-elseif optionkey==3
-    %% Homogenous Know Key
-    %% Same key for all users
-    key=getFixedKey('Interpolation',numFeatures-1*keySize);
-    % taking the user data based on size of keySize
-    userData=trainingSet(:,1:round(numFeatures-1*keySize));
-    inter_train=interpolation(userData(:,2:end),key);
 elseif optionkey==4
     %% Homogenous UnKnow Key
     users=unique(trainingSet(:,1));
