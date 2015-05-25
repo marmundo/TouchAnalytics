@@ -70,5 +70,5 @@ end
 save(strcat(saveFilePath,'/Classifier_User_',num2str(user),'.mat'),'classifier');
 
 %taking client and impostor score matrix
-[clientScoreMatrix,impostorScoreMatrix]=calculateScoreMatrix(classifier,trainingDataSet,trainUserLabels,testDataSet,testUserLabels,classifierName);
+[clientScoreMatrix,impostorScoreMatrix]=calculateScoreMatrix(classifier,testDataSet,testUserLabels,classifierName);
 end
