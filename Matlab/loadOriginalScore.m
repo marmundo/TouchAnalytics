@@ -1,7 +1,7 @@
 function [ allClientScore,allImpostorScore]=loadOriginalScore(keySize,classifierName,orientation)
 allClientScore=[];
 allImpostorScore=[];
-scoreMatrixPath=[pwd(),'/ScoreMatrix/',num2str(keySize),'/',classifierName,'/',orientation,'/Original/Same_Key'];
+scoreMatrixPath=[pwd(),'/ScoreMatrix/',num2str(keySize),'/',classifierName,'/',orientation,'/Original/Homo_Key'];
 for user=1:41
     % Loading score matrix
     saveFilePath=scoreMatrixPath;

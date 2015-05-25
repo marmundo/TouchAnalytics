@@ -575,14 +575,14 @@ elseif option==19
         [clientScore,impostorScore] = prediction(classifierName,trainingSet,trainUserLabels,testSet,testUserLabels,saveFilePath,user);
         
         %%Saving the scores in the maps
-        clientScoreMap([biometricDataName,classifierName,num2str(user)])=clientScore;
-        impostorScoreMap([biometricDataName,classifierName,num2str(user)])=impostorScore;
+        clientScoreMap([biometricDataName,classifierName,orientation,keyType,num2str(user)])=clientScore;
+        impostorScoreMap([biometricDataName,classifierName,orientation,keyType,num2str(user)])=impostorScore;
         
         [~, ~, ~, FAR, FRR]=wer(impostorScore,clientScore, [],1,[],1);
         
         %%Saving the far and frr in the maps
-        farMap([biometricDataName,classifierName,num2str(user)])=FAR;
-        frrMap([biometricDataName,classifierName,num2str(user)])=FRR;
+        farMap([biometricDataName,classifierName,orientation,keyType,num2str(user)])=FAR;
+        frrMap([biometricDataName,classifierName,orientation,keyType,num2str(user)])=FRR;
         
         %saving the scores in a file
         savefig(strcat(scorePlotsFigPath,'/Score_User_',num2str(user)));
