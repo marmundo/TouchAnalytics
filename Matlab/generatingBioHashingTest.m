@@ -77,7 +77,7 @@ end
 bioH_test=[bioH_test testSet(:,1)];
 
 % Discretizing the user. 1, for user, and 0 for remaining users
-[bioH_test,testUserLabels]=discretizeUser(str2double(client),length(bioH_test(1,:)),bioH_test);
+[bioH_test,testUserLabels]=discretizeUser(client,length(bioH_test(1,:)),bioH_test);
 
 
 %% Folder used to save the biohashing data

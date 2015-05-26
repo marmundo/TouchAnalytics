@@ -78,7 +78,7 @@ end
 bioH_train=[bioH_train trainingSet(:,1)];
 
 % discretizing protected dataset
-[bioH_train, trainUserLabels]=discretizeUser(str2double(client),length(bioH_train(1,:)),bioH_train);
+[bioH_train, trainUserLabels]=discretizeUser(client,length(bioH_train(1,:)),bioH_train);
 
 %% Saving protected data
 
