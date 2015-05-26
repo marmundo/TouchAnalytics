@@ -38,11 +38,11 @@ elseif strcmp(classifierName,'libsvm')
   impostorProportion=num2str(sum(trainUserLabels==-1)/size(trainUserLabels,1));
 
 
-[c,g]=grid(trainUserLabels, trainingDataSet);
-c=num2str(c);
-g=num2str(g);
-classifier = svmtrain(trainUserLabels,trainingDataSet,['-h 0 -c ', c, ' -g ', g,' -b 1 -w-1 ',impostorProportion,' -w1 ',clientProportion]);
-  
+%[c,g]=grid(trainUserLabels, trainingDataSet);
+%c=num2str(c);
+%g=num2str(g);
+%classifier = svmtrain(trainUserLabels,trainingDataSet,['-h 0 -c ', c, ' -g ', g,' -b 1 -w-1 ',impostorProportion,' -w1 ',clientProportion]);
+classifier = svmtrain(trainUserLabels,trainingDataSet,['-h 0 -c 1 -g 0.0625 -b 1 -w-1 ',impostorProportion,' -w1 ',clientProportion]);  
 elseif strcmp(classifierName,'discriminant')
   classifier=fitcdiscr(trainingDataSet,trainUserLabels);
   
