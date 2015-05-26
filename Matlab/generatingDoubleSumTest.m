@@ -13,8 +13,11 @@ ds_test=[];
 numFeatures=length(testSet(1,:))-1;
 
 %% Heterogenous Know Key
-if optionkey==1
-    optionKey=3;
+if optionkey==1 || optionkey==3
+    %% Homogenous Know Key or Heterogenous Know Key
+    %% Same key for all users
+    key=getFixedKey('DoubleSum',numFeatures*keySize);
+    ds_test=doublesum(testSet(:,2:end),key);
 elseif optionkey==2
     %% Heteronegeneous Unknown Key
     %% Different key for each user
@@ -36,11 +39,6 @@ elseif optionkey==2
         % adding user protected data to the bioH_train variable
         ds_test=[ds_test; doublesumData];
     end
-elseif optionkey==3
-    %% Homogenous Know Key
-    %% Same key for all users
-    key=getFixedKey('DoubleSum',numFeatures*keySize);
-    ds_test=doublesum(testSet(:,2:end),key);
 elseif optionkey==4
     %% Homogenous UnKnow Key
     
