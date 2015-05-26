@@ -39,6 +39,10 @@ function main(option,classifierName,user, biometricDataName, keyType, orientatio
 % @keyType
 % 24: Print the DET Curve to Original, Same Key and Different Key
 % Experiments
+% 25: Print the DET Curve of a specific cancelable function and orientation in all
+% scenarios experiments
+% 26: Print the DET Curve to a specific scenario and orientation to all
+% cancelable function
 % classifier= classifier name will be used to analyse the biometric data
 % user= user name which the classifier will analyse the biometric data
 % biometricDataName= name of the biometric data. biometricDataName accepts
@@ -403,7 +407,6 @@ elseif option==10 || option==11 || option==12 || option==13
     
     
 elseif option==14 || option==15 || option==16 || option==17
-    disp('Generating Heterogeneous - Unknown key Double Data');
     %% Generating scrolling DoubleSum Data by User
     
     %loading training data
@@ -747,12 +750,81 @@ elseif option==24
         allClientScore=[];
         allImpostorScore=[];
     end
-    printDETCurve(wolves,sheeps,3,{'Original','Homo_Un_Key','Hete_Un_Key'});
+    printDETCurve(wolves,sheeps,3,{'Original','Homo\_Un\_Key','Hete\_Un\_Key'});
     title({['DET - Key Size:',num2str(keySize),' Classifier:',upper(classifierName)],[' using ',upper(biometricDataName),'-', upper(orientation)]});
     
     savefig(strcat(detPlotsFigPath,'/DET_Total'));
     fig=openfig(strcat(detPlotsFigPath,'/DET_Total.fig'),'invisible');
     saveas(fig,[detPlotsJpgPath,'/DET_Total.jpg']);
+elseif option==25
+ disp(['Print the DET Curve of scenarios experiments using a key size ',num2str(keySize),' using classifier ',classifierName,'and cancelable function ',biometricDataName,' for ',orientation,' Strokes']);
+    
+    %% Loading Original Scores
+    [sheeps,wolves]=loadOriginalScore(keySize,classifierName,orientation);
+    
+    allClientScore=[];
+    allImpostorScore=[];
+    %% Loading Template Protection Scores for all scenarios
+     keyType={'Hete_Key','Hete_Un_Key','Homo_Key','Homo_Un_Key'};
+    for i=1:length(keyType)
+        scoreMatrixPath=[pwd(),'/ScoreMatrix/',num2str(keySize),'/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType{i}];
+        for user=1:41
+            % Loading score matrix
+            saveFilePath=scoreMatrixPath;
+            load(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
+            
+            %storing the score to plot
+            allClientScore=[allClientScore;clientScore];
+            allImpostorScore=[allImpostorScore;impostorScore];
+        end
+        
+        sheeps=[sheeps,allClientScore];
+        wolves=[wolves,allImpostorScore];
+        allClientScore=[];
+        allImpostorScore=[];
+    end
+    printDETCurve(wolves,sheeps,5,{'Original','Hete\_Key','Hete\_Un\_Key','Homo\_Key','Homo\_Un\_Key'});
+    title({['DET - Key Size:',num2str(keySize),' Classifier:',upper(classifierName)],[' using ',upper(biometricDataName),'-', upper(orientation)]});
+    
+    savefig(strcat(detPlotsFigPath,'/DET_Total_Scenarios'));
+    fig=openfig(strcat(detPlotsFigPath,'/DET_Total_Scenarios.fig'),'invisible');
+    saveas(fig,[detPlotsJpgPath,'/DET_Total_Scenarios.jpg']);
+elseif option==26
+% 26: Print the DET Curve to a specific scenario and orientation to all
+% cancelable function
+disp(['Print the DET Curve of all cancelable function using a key size ',num2str(keySize),' using classifier ',classifierName,' for ',orientation,' Strokes']);
+    
+    %% Loading Original Scores
+    [sheeps,wolves]=loadOriginalScore(keySize,classifierName,orientation);
+    
+    allClientScore=[];
+    allImpostorScore=[];
+    %% Loading Template Protection Scores for all scenarios
+     biometricDataName={'BioConvolving','BioHashing','DoubleSum','Interpolation'};
+    for i=1:length(biometricDataName)
+        scoreMatrixPath=[pwd(),'/ScoreMatrix/',num2str(keySize),'/',classifierName,'/',orientation,'/',biometricDataName{i},'/',keyType];
+        for user=1:41
+            % Loading score matrix
+            saveFilePath=scoreMatrixPath;
+            load(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
+            
+            %storing the score to plot
+            allClientScore=[allClientScore;clientScore];
+            allImpostorScore=[allImpostorScore;impostorScore];
+        end
+        
+        sheeps=[sheeps,allClientScore];
+        wolves=[wolves,allImpostorScore];
+        allClientScore=[];
+        allImpostorScore=[];
+    end
+    printDETCurve(wolves,sheeps,5,{'Original','BioConvolving','BioHashing','DoubleSum','Interpolation'});
+    keyType=strrep(keyType, '_', '\_');
+    title({['DET - Key Size:',num2str(keySize),' Classifier:',upper(classifierName)],[' using ',upper(keyType),'-', upper(orientation)]});
+    
+    savefig(strcat(detPlotsFigPath,'/DET_Total_Scenarios'));
+    fig=openfig(strcat(detPlotsFigPath,'/DET_Total_Scenarios.fig'),'invisible');
+    saveas(fig,[detPlotsJpgPath,'/DET_Total_Scenarios.jpg']);
 end
 end
 
