@@ -8,7 +8,7 @@
 
  cancelableFunctions={'Original','Interpolation','DoubleSum','BioHashing','BioConvolving'};
  strokeOrientation={'Scrolling','Horizontal'};
- classifiers={'knn','svm','libsvm','discriminant','regression'};
+ classifiers={'knn','libsvm','svm','discriminant','regression'};
  keySize=[0.25,0.5,0.75,1];
 % key=char('Same_Key','Different_Key');
 %
@@ -30,18 +30,42 @@
 
 %% Creates all the cancelable data
 
-%  for i=17:4:17
-%     main(i,'','','','','',1)
-%  end
+%   for i=2:5
+%      main(i,'','','','','',1)
+%   end
 
 
 
 %% Show a Norman's plot for a specific user using a specific orientation, keytype and biometric data
 
-main(19,'knn',1,'Interpolation','Same_Key','Scrolling',1)
-
-
-
+% for i=2:2%length(classifiers)
+%     for j=2:length(cancelableFunctions)
+%         main(24,classifiers{i},'',cancelableFunctions{j},'Homo_Key','Scrolling',1)
+%         main(24,classifiers{i},'',cancelableFunctions{j},'Homo_Un_Key','Scrolling',1)
+%         main(24,classifiers{i},'',cancelableFunctions{j},'Hete_Key','Scrolling',1)
+%         main(24,classifiers{i},'',cancelableFunctions{j},'Hete_Un_Key','Scrolling',1)
+%         
+%         main(24,classifiers{i},'',cancelableFunctions{j},'Homo_Key','Horizontal',1)
+%         main(24,classifiers{i},'',cancelableFunctions{j},'Homo_Un_Key','Horizontal',1)
+%         main(24,classifiers{i},'',cancelableFunctions{j},'Hete_Key','Horizontal',1)
+%         main(24,classifiers{i},'',cancelableFunctions{j},'Hete_Un_Key','Horizontal',1)
+%     end
+% end
+% 
+% 
+for i=1:1%length(classifiers)
+    for j=1:length(cancelableFunctions)
+        main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Key','Scrolling',1)
+        main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Un_Key','Scrolling',1)
+        main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Key','Scrolling',1)
+        main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Un_Key','Scrolling',1)
+        
+        main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Key','Horizontal',1)
+        main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Un_Key','Horizontal',1)
+        main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Key','Horizontal',1)
+        main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Un_Key','Horizontal',1)
+    end
+end
 %main(11,'knn','','DoubleSum','Different_Key','Horizontal')
 %main(11,'knn','','BioHashing','Same_Key','Horizontal');
 %main(11,'knn','','BioHashing','Same_Key','Scrolling');
