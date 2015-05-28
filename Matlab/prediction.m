@@ -59,10 +59,10 @@ elseif strcmp(classifierName,'regression')
   testUserLabels=testLabels;
   
   %creating the vector of weights
-  w_vector(trainUserLabels==1)=clientProportion;
-  w_vector(trainUserLabels==0)=impostorProportion;
+ % w_vector(trainUserLabels==1)=clientProportion;
+  %w_vector(trainUserLabels==0)=impostorProportion;
     %Training
-    classifier = glmfit(trainingDataSet,trainUserLabels,'binomial','link','logit', 'weights', w_vector); 
+    classifier = glmfit(trainingDataSet,trainUserLabels,'binomial','link','logit');% 'weights', w_vector); 
     
 end
 
