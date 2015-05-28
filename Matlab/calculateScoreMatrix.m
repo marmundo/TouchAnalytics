@@ -4,10 +4,12 @@ function [clientScoreMatrix,impostorScoreMatrix]=calculateScoreMatrix(classifier
 %% Score Production
 
 % Takes the index of impostor
-if strcmp(classifierName,'libsvm') || strcmp(classifierName,'regression')
+if strcmp(classifierName,'libsvm')
     testIndexClient = testUserLabels==1;
     testIndexImpostor = testUserLabels==-1;
-
+elseif strcmp(classifierName,'regression')
+    testIndexClient = testUserLabels==1;
+    testIndexImpostor = testUserLabels==0;
 else
     testIndexClient = cellfun(@(x) strcmp(x,'client'), testUserLabels);
     testIndexImpostor = cellfun(@(x) strcmp(x,'impostor'), testUserLabels);
@@ -42,7 +44,7 @@ if strcmp('libsvm',classifierName)
 elseif strcmp(classifierName,'regression')
     %prediction
     %returns the log likelihood
-    predictedClass = glmval(classifier,testDataSet(testIndexImpostor,:),'logit');
+    %predictedClass = glmval(classifier,testDataSet(testIndexImpostor,:),'logit');
     impostorScore = glmval(classifier,testDataSet(testIndexImpostor,:),'identity');
 else
     [predictedClass,impostorScore] =predict(classifier,testDataSet(testIndexImpostor,:));
