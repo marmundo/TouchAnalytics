@@ -3,20 +3,20 @@ function main(option,classifierName,user, biometricDataName, keyType, orientatio
 % -1:Cleaning and normalize data
 % 0: Generating Unprotected data with original user label
 % 1: Generating Unprotected data with user label= (client) or (impostor)
-% 2: BioHashing, Homogeneous - Unknown key
-% 3: BioHashing, Heterogeneous - Unknown key
+% 2: BioHashing, Heterogeneous - Unknown key
+% 3: BioHashing, Homogeneous - Unknown key
 % 4: BioHashing, Homogenous Know Key
 % 5: BioHashing, Heterogeneous - know key
-% 6: BioConvolving, Homogeneous - Unknown key
-% 7: BioConvolving, Heterogeneous - Unknown key
+% 6: BioConvolving, Heterogeneous - Unknown key
+% 7: BioConvolving, Homogeneous - Unknown key
 % 8: BioConvolving, Homogenous Know Key
 % 9: BioConvolving, Heterogeneous Know Key
-% 10: Interpolation, Homogeneous - Unknown key
-% 11: Interpolation, Heterogeneous - Unknown key
+% 10: Interpolation, Heterogeneous - Unknown key
+% 11: Interpolation,  Homogeneous- Unknown key
 % 12: Interpolation, Homogeneous - know key
 % 13: Interpolation, Heterogeneous - know key
-% 14: Double Sum, Homogeneous - Unknown key
-% 15: Double Sum, Heterogeneous - Unknown key
+% 14: Double Sum, Heterogeneous - Unknown key
+% 15: Double Sum, Homogeneous - Unknown key
 % 16: Double Sum, Homogeneous - know key
 % 17: Double Sum, Heterogeneous - know key
 % 18: Generate and Test Score Matrix Production to the user @user using the classifier
@@ -125,7 +125,7 @@ elseif option==0
     usersSize=length(unique(scrolling(:,1)));
     for user=1:usersSize
         disp(strcat('Processing User_ ',num2str(user)));
-        generatingTrainingAndTest(scrolling,user,strcat(pwd(),'/Data/Scrolling/Original/User_Label/'),option);
+        generatingTrainingAndTest(scrolling,user,strcat(pwd(),'/Data/Scrolling/Original/User_Label/'),option,1);
     end
     
     %% Generating Horizontal Original Data by User Label
@@ -136,7 +136,7 @@ elseif option==0
         disp(strcat('Processing User_ ',num2str(user)));
         
         %generating training and testing data
-        generatingTrainingAndTest(horizontal,user,strcat(pwd(),'/Data/Horizontal/Original/User_Label/'),option);
+        generatingTrainingAndTest(horizontal,user,strcat(pwd(),'/Data/Horizontal/Original/User_Label/'),option,1);
     end
     
 elseif option==1
@@ -149,7 +149,7 @@ elseif option==1
         disp(strcat('Processing User_ ',num2str(user)));
         
         %generating training and testing data
-        generatingTrainingAndTest(scrolling,user,strcat(pwd(),'/Data/Scrolling/Original/User_Discre/'),option);
+        generatingTrainingAndTest(scrolling,user,strcat(pwd(),'/Data/Scrolling/Original/User_Discre/'),option,1);
     end
     
     %% Generating Horizontal Original Data by Discretized User
@@ -160,7 +160,7 @@ elseif option==1
         disp(strcat('Processing User_ ',num2str(user)));
         
         %generating training and testing data
-        generatingTrainingAndTest(horizontal,user,strcat(pwd(),'/Data/Horizontal/Original/User_Discre/'),option);
+        generatingTrainingAndTest(horizontal,user,strcat(pwd(),'/Data/Horizontal/Original/User_Discre/'),option,1);
     end
 elseif option==2 || option==3 || option==4 || option==5
     %% Generating scrolling BioHashing Data by User
@@ -261,10 +261,10 @@ elseif option==6 || option==7 || option==8 || option==9
         
         %generating bioconvolving training and test data
         if option==6
-            disp('Generating Heterogeneous - Unknown key BioConvolving Data');
-            filePath=strcat(strcat(pwd(),'/Data/',num2str(keySize),'/Scrolling/BioConvolving/Hete_Un_Key/User_',userS));
-            generatingBioConvolvingTraining(trainingSet,userS,filePath,2,keySize);
-            generatingBioConvolvingTest(testSet,userS,filePath,2,keySize);
+%             disp('Generating Heterogeneous - Unknown key BioConvolving Data');
+%             filePath=strcat(strcat(pwd(),'/Data/',num2str(keySize),'/Scrolling/BioConvolving/Hete_Un_Key/User_',userS));
+%             generatingBioConvolvingTraining(trainingSet,userS,filePath,2,keySize);
+%             generatingBioConvolvingTest(testSet,userS,filePath,2,keySize);
         elseif option==7
             disp('Generating Homogeneous - Unknown key BioConvolving Data');
             filePath=strcat(strcat(pwd(),'/Data/',num2str(keySize),'/Scrolling/BioConvolving/Homo_Un_Key/User_',userS));
