@@ -1,4 +1,4 @@
-function [trainingSet,testSet] = generatingTrainingAndTest(data,user,filePath,option)
+function [trainingSet,testSet] = generatingTrainingAndTest(data,user,filePath,option,balanced)
 %data= biometric data
 %user= user used to create the training set. case option==1, the user label
 %will be 1, because he will be the original user, the remaining users will
@@ -37,6 +37,10 @@ currentUser=user;
 %number of users +1
 maxSize=length(users)+1;
 
+genuineData=data(data(:,1) == user,:);
+numberOfGenuineStrokes=length(genuineData(:,1));
+impostorProportion=round(numberOfGenuineStrokes/(training_users-1));
+
 %% Creating training file
 for i=1:training_users
     if currentUser~=user
@@ -46,6 +50,11 @@ for i=1:training_users
 
         %biometric samples from the current user
         userSamples=find(data(:,1)==currentUser);
+        
+        %balancing the data
+        if balanced
+            userSamples=userSamples(1:impostorProportion);
+        end
 
         %adding user samples to trainingSet variable
         trainingSet=[trainingSet;data(userSamples,:)];
@@ -54,8 +63,7 @@ for i=1:training_users
     currentUser=currentUser+1;
 end
 %% Putting only 70% genuine user data in training
-genuineData=data(data(:,1) == user,:);
-numberOfGenuineStrokes=length(genuineData(:,1));
+
 seventy=round(0.7*numberOfGenuineStrokes);
 trainingSet=[trainingSet;genuineData(1:seventy,:)];
 
@@ -87,6 +95,7 @@ if option==1
     [testSet,testUserLabels]=discretizeUser(user,1,testSet);
     testSet(:,1)=[];
 end
+
 
 
 %% Saving training
