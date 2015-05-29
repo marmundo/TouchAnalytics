@@ -544,7 +544,7 @@ elseif option==19
     end
     
     if exist('farMap.mat')
-       load('farMap');
+        load('farMap');
     else
         farMap=containers.Map();
     end
@@ -567,6 +567,7 @@ elseif option==19
             load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/User_Discre/User_',num2str(user),'/trainingSet.mat'));
             % Loading testData
             load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/User_Discre/User_',num2str(user),'/testSet.mat'));
+            [clientScore,impostorScore] = prediction(classifierName,trainingSet,trainUserLabels,testSet,testUserLabels,saveFilePath,user);
         else
             if strcmp(keyType,'Homo_Un_Key') || strcmp(keyType,'Hete_Un_Key')
                 % Loading training data
@@ -579,9 +580,16 @@ elseif option==19
                 % Loading testData
                 load(strcat(pwd(),'/Data/',num2str(keySize)','/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/testSet.mat'));
                 %load Un_Key classifier
-                load(strcat(saveFilePath,'/Classifier_User_',num2str(user),'.mat'));
+                if strcmp(keyType,'Homo_Key')
+                    classifierFolder=[pwd(),'/ScoreMatrix/',num2str(keySize),'/',classifierName,'/',orientation,'/',biometricDataName,'/Homo_Un_Key'];
+                else
+                    classifierFolder=[pwd(),'/ScoreMatrix/',num2str(keySize),'/',classifierName,'/',orientation,'/',biometricDataName,'/Hete_Un_Key'];
+                end
+                
+                load(strcat(classifierFolder,'/Classifier_User_',num2str(user),'.mat'));
                 [~,testUserLabels]=discretizeUserLabels([],testUserLabels,classifierName);
                 [clientScore,impostorScore]=calculateScoreMatrix(classifier,testSet,testUserLabels,classifierName);
+                
             end
         end
         
@@ -733,6 +741,7 @@ elseif option==23
     fig=openfig(strcat(scorePlotsFigPath,'/ScoreTotal.fig'),'invisible');
     saveas(fig,[scorePlotsJpgPath,'/ScoreTotal.jpg']);
 elseif option==24
+    close all;
     disp(['Printing the DET Curves of Original, Same and Different Key Experiments to keySize ',num2str(keySize),' using classifier ',classifierName,' for ',orientation,' Strokes']);
     
     %% Loading Original Scores
@@ -766,7 +775,8 @@ elseif option==24
     fig=openfig(strcat(detPlotsFigPath,'/DET_Total.fig'),'invisible');
     saveas(fig,[detPlotsJpgPath,'/DET_Total.jpg']);
 elseif option==25
- disp(['Print the DET Curve of scenarios experiments using a key size ',num2str(keySize),' using classifier ',classifierName,'and cancelable function ',biometricDataName,' for ',orientation,' Strokes']);
+    close all;
+    disp(['Print the DET Curve of scenarios experiments using a key size ',num2str(keySize),' using classifier ',classifierName,'and cancelable function ',biometricDataName,' for ',orientation,' Strokes']);
     
     %% Loading Original Scores
     [sheeps,wolves]=loadOriginalScore(keySize,classifierName,orientation);
@@ -774,7 +784,7 @@ elseif option==25
     allClientScore=[];
     allImpostorScore=[];
     %% Loading Template Protection Scores for all scenarios
-     keyType={'Hete_Key','Hete_Un_Key','Homo_Key','Homo_Un_Key'};
+    keyType={'Hete_Key','Hete_Un_Key','Homo_Key','Homo_Un_Key'};
     for i=1:length(keyType)
         scoreMatrixPath=[pwd(),'/ScoreMatrix/',num2str(keySize),'/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType{i}];
         for user=1:41
@@ -799,9 +809,10 @@ elseif option==25
     fig=openfig(strcat(detPlotsFigPath,'/DET_Total_Scenarios.fig'),'invisible');
     saveas(fig,[detPlotsJpgPath,'/DET_Total_Scenarios.jpg']);
 elseif option==26
-% 26: Print the DET Curve to a specific scenario and orientation to all
-% cancelable function
-disp(['Print the DET Curve of all cancelable function using a key size ',num2str(keySize),' using classifier ',classifierName,' for ',orientation,' Strokes']);
+    close all;
+    % 26: Print the DET Curve to a specific scenario and orientation to all
+    % cancelable function
+    disp(['Print the DET Curve of all cancelable function using a key size ',num2str(keySize),' using classifier ',classifierName,' for ',orientation,' Strokes']);
     
     %% Loading Original Scores
     [sheeps,wolves]=loadOriginalScore(keySize,classifierName,orientation);
@@ -809,7 +820,7 @@ disp(['Print the DET Curve of all cancelable function using a key size ',num2str
     allClientScore=[];
     allImpostorScore=[];
     %% Loading Template Protection Scores for all scenarios
-     biometricDataName={'BioConvolving','BioHashing','DoubleSum','Interpolation'};
+    biometricDataName={'BioConvolving','BioHashing','DoubleSum','Interpolation'};
     for i=1:length(biometricDataName)
         scoreMatrixPath=[pwd(),'/ScoreMatrix/',num2str(keySize),'/',classifierName,'/',orientation,'/',biometricDataName{i},'/',keyType];
         for user=1:41
