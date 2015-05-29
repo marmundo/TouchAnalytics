@@ -13,5 +13,5 @@ addpath('lib')
 for hold=1:quantLines
     wer(wolves(:,hold),sheep(:,hold), [],2,[],hold);
 end
-legend(legenda)
+legend(legenda,'Location','southwest');
 end
