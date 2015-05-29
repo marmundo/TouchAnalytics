@@ -30,7 +30,7 @@
 
 %% Creates all the cancelable data
 
-%   for i=17:17
+%   for i=6:17
 %      main(i,'','','','','',1)
 %   end
 
@@ -53,19 +53,20 @@
 % end
 % 
 % 
-% for i=1:1%length(classifiers)
-%     for j=4:length(cancelableFunctions)
-%        main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Key','Scrolling',1)
-%        main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Un_Key','Scrolling',1)
-%         main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Key','Scrolling',1)
-%         main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Un_Key','Scrolling',1)
-%         
-%         main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Key','Horizontal',1)
-%         main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Un_Key','Horizontal',1)
-%         main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Key','Horizontal',1)
-%         main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Un_Key','Horizontal',1)
-%     end
-% end
+for i=2:2%length(classifiers)
+    for j=3:3%length(cancelableFunctions)
+        main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Un_Key','Scrolling',1)
+        main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Key','Scrolling',1)
+        main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Un_Key','Scrolling',1)
+        main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Key','Scrolling',1)
+        
+        main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Un_Key','Horizontal',1)
+        main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Key','Horizontal',1)
+        main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Un_Key','Horizontal',1)
+        main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Key','Horizontal',1)
+        
+    end
+end
 %main(11,'knn','','DoubleSum','Different_Key','Horizontal')
 %main(11,'knn','','BioHashing','Same_Key','Horizontal');
 %main(11,'knn','','BioHashing','Same_Key','Scrolling');
@@ -104,17 +105,7 @@
 %         main(16,classifiers{i},'',cancelableFunctions{j},'','Horizontal',keySize(4))
 %      end
 % end
-% for k=1:length(keySize)
-% for i=1:1
-%     for j=1:length(cancelableFunctions)        
-%         main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Scrolling',keySize(k));
-%         main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Horizontal',keySize(k));
-%         
-%         main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Scrolling',keySize(k));
-%         main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Horizontal',keySize(k));
-%     end
-% end
-% end
+
 
 % for i=2:length(cancelableFunctions)  
 % main(24,'libsvm','',cancelableFunctions{i},'','Scrolling',1)
@@ -123,11 +114,11 @@
 
 % for i=2:length(cancelableFunctions)  
 % main(25,'libsvm','',cancelableFunctions{i},'','Scrolling',1)
-% main(25,'libsvm','',cancelableFunctions{i},'','Horizontal',1)
+% main(25,'knn','',cancelableFunctions{i},'','Horizontal',1)
 % end
-
-keyType={'Hete_Key','Hete_Un_Key','Homo_Key','Homo_Un_Key'};
-for i=1:length(keyType)  
-main(26,'libsvm','','',keyType{i},'Scrolling',1)
-main(26,'libsvm','','',keyType{i},'Horizontal',1)
-end
+% 
+% keyType={'Hete_Key','Hete_Un_Key','Homo_Key','Homo_Un_Key'};
+% for i=1:length(keyType)  
+% main(26,'knn','','',keyType{i},'Scrolling',1)
+% main(26,'knn','','',keyType{i},'Horizontal',1)
+% end

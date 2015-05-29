@@ -261,10 +261,10 @@ elseif option==6 || option==7 || option==8 || option==9
         
         %generating bioconvolving training and test data
         if option==6
-%             disp('Generating Heterogeneous - Unknown key BioConvolving Data');
-%             filePath=strcat(strcat(pwd(),'/Data/',num2str(keySize),'/Scrolling/BioConvolving/Hete_Un_Key/User_',userS));
-%             generatingBioConvolvingTraining(trainingSet,userS,filePath,2,keySize);
-%             generatingBioConvolvingTest(testSet,userS,filePath,2,keySize);
+            disp('Generating Heterogeneous - Unknown key BioConvolving Data');
+            filePath=strcat(strcat(pwd(),'/Data/',num2str(keySize),'/Scrolling/BioConvolving/Hete_Un_Key/User_',userS));
+            generatingBioConvolvingTraining(trainingSet,userS,filePath,2,keySize);
+            generatingBioConvolvingTest(testSet,userS,filePath,2,keySize);
         elseif option==7
             disp('Generating Homogeneous - Unknown key BioConvolving Data');
             filePath=strcat(strcat(pwd(),'/Data/',num2str(keySize),'/Scrolling/BioConvolving/Homo_Un_Key/User_',userS));
@@ -568,14 +568,23 @@ elseif option==19
             % Loading testData
             load(strcat(pwd(),'/Data/',orientation,'/',biometricDataName,'/User_Discre/User_',num2str(user),'/testSet.mat'));
         else
-            % Loading training data
-            load(strcat(pwd(),'/Data/',num2str(keySize)','/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
-            % Loading testData
-            load(strcat(pwd(),'/Data/',num2str(keySize)','/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/testSet.mat'));
+            if strcmp(keyType,'Homo_Un_Key') || strcmp(keyType,'Hete_Un_Key')
+                % Loading training data
+                load(strcat(pwd(),'/Data/',num2str(keySize)','/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/trainingSet.mat'));
+                % Loading testData
+                load(strcat(pwd(),'/Data/',num2str(keySize)','/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/testSet.mat'));
+                %getting the scores
+                [clientScore,impostorScore] = prediction(classifierName,trainingSet,trainUserLabels,testSet,testUserLabels,saveFilePath,user);
+            else
+                % Loading testData
+                load(strcat(pwd(),'/Data/',num2str(keySize)','/',orientation,'/',biometricDataName,'/',keyType,'/User_',num2str(user),'/testSet.mat'));
+                %load Un_Key classifier
+                load(strcat(saveFilePath,'/Classifier_User_',num2str(user),'.mat'));
+                [~,testUserLabels]=discretizeUserLabels([],testUserLabels,classifierName);
+                [clientScore,impostorScore]=calculateScoreMatrix(classifier,testSet,testUserLabels,classifierName);
+            end
         end
         
-        %getting the scores
-        [clientScore,impostorScore] = prediction(classifierName,trainingSet,trainUserLabels,testSet,testUserLabels,saveFilePath,user);
         
         %%Saving the scores in the maps
         clientScoreMap([biometricDataName,classifierName,orientation,keyType,num2str(user)])=clientScore;
