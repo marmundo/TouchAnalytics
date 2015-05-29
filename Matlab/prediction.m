@@ -36,7 +36,7 @@ elseif strcmp(classifierName,'libsvm')
 %c=num2str(c);
 %g=num2str(g);
 %classifier = svmtrain(trainUserLabels,trainingDataSet,['-h 0 -c ', c, ' -g ', g,' -b 1 -w-1 ',impostorProportion,' -w1 ',clientProportion]);
-classifier = svmtrain(trainUserLabels,trainingDataSet,['-h 0 -c 1 -g 0.0625 -b 1 -w-1 ',impostorProportion,' -w1 ',clientProportion]);  
+classifier = svmtrain(trainUserLabels,trainingDataSet,['-h 0 -b 1']);  
 elseif strcmp(classifierName,'discriminant')
   classifier=fitcdiscr(trainingDataSet,trainUserLabels);
   
