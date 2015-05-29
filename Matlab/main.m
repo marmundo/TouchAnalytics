@@ -612,8 +612,8 @@ elseif option==19
         % I cant put [clientScore,uclientScore], i.e, organize by columns
         %because the dimensions of clientScore some times is different of uclientScore
         %Thus, the scores are organized by line, i.e, a giant column 1.
-        uclientScore=[clientScore;clientScore];
-        uimpostorScore=[impostorScore;impostorScore];
+        uclientScore=vertcat(uclientScore,clientScore);
+        uimpostorScore=vertcat(uimpostorScore,impostorScore);
         
         
         save(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
@@ -786,21 +786,14 @@ elseif option==25
     %% Loading Template Protection Scores for all scenarios
     keyType={'Hete_Key','Hete_Un_Key','Homo_Key','Homo_Un_Key'};
     for i=1:length(keyType)
-        scoreMatrixPath=[pwd(),'/ScoreMatrix/',num2str(keySize),'/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType{i}];
-        for user=1:41
-            % Loading score matrix
-            saveFilePath=scoreMatrixPath;
-            load(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
-            
-            %storing the score to plot
-            allClientScore=[allClientScore;clientScore];
-            allImpostorScore=[allImpostorScore;impostorScore];
-        end
+        saveFilePath=[pwd(),'/ScoreMatrix/',num2str(keySize),'/',classifierName,'/',orientation,'/',biometricDataName,'/',keyType{i}];
         
-        sheeps=[sheeps,allClientScore];
-        wolves=[wolves,allImpostorScore];
-        allClientScore=[];
-        allImpostorScore=[];
+        % Loading score matrix
+        load(strcat(saveFilePath,'/Score_Total.mat'),'clientScore','impostorScore');
+        
+        %storing the score to plot
+        sheeps=[sheeps;clientScore];
+        wolves=[wolves;impostorScore];
     end
     printDETCurve(wolves,sheeps,5,{'Original','Hete\_Key','Hete\_Un\_Key','Homo\_Key','Homo\_Un\_Key'});
     title({['DET - Key Size:',num2str(keySize),' Classifier:',upper(classifierName)],[' using ',upper(biometricDataName),'-', upper(orientation)]});
@@ -822,21 +815,14 @@ elseif option==26
     %% Loading Template Protection Scores for all scenarios
     biometricDataName={'BioConvolving','BioHashing','DoubleSum','Interpolation'};
     for i=1:length(biometricDataName)
-        scoreMatrixPath=[pwd(),'/ScoreMatrix/',num2str(keySize),'/',classifierName,'/',orientation,'/',biometricDataName{i},'/',keyType];
-        for user=1:41
-            % Loading score matrix
-            saveFilePath=scoreMatrixPath;
-            load(strcat(saveFilePath,'/Score_User_',num2str(user),'.mat'),'clientScore','impostorScore');
-            
-            %storing the score to plot
-            allClientScore=[allClientScore;clientScore];
-            allImpostorScore=[allImpostorScore;impostorScore];
-        end
+        scoreFilePath=[pwd(),'/ScoreMatrix/',num2str(keySize),'/',classifierName,'/',orientation,'/',biometricDataName{i},'/',keyType];
         
-        sheeps=[sheeps,allClientScore];
-        wolves=[wolves,allImpostorScore];
-        allClientScore=[];
-        allImpostorScore=[];
+        % Loading score matrix
+        load(strcat(saveFilePath,'/Score_Total.mat'),'clientScore','impostorScore');
+        
+        %storing the score to plot
+        sheeps=[sheeps;clientScore];
+        wolves=[wolves;impostorScore];
     end
     printDETCurve(wolves,sheeps,5,{'Original','BioConvolving','BioHashing','DoubleSum','Interpolation'});
     keyType=strrep(keyType, '_', '\_');
