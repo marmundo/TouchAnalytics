@@ -30,43 +30,28 @@
 
 %% Creates all the cancelable data
 
-%   for i=6:17
+%   for i=9:9
 %      main(i,'','','','','',1)
 %   end
 
 
 
 %% Show a Norman's plot for a specific user using a specific orientation, keytype and biometric data
-
+ 
 % for i=2:2%length(classifiers)
-%     for j=2:length(cancelableFunctions)
-%         main(24,classifiers{i},'',cancelableFunctions{j},'Homo_Key','Scrolling',1)
-%         main(24,classifiers{i},'',cancelableFunctions{j},'Homo_Un_Key','Scrolling',1)
-%         main(24,classifiers{i},'',cancelableFunctions{j},'Hete_Key','Scrolling',1)
-%         main(24,classifiers{i},'',cancelableFunctions{j},'Hete_Un_Key','Scrolling',1)
+%     for j=2:2%length(cancelableFunctions)
+%       %main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Un_Key','Scrolling',1)
+%       %main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Key','Scrolling',1)
+%       % main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Un_Key','Scrolling',1)
+%        main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Key','Scrolling',1)
 %         
-%         main(24,classifiers{i},'',cancelableFunctions{j},'Homo_Key','Horizontal',1)
-%         main(24,classifiers{i},'',cancelableFunctions{j},'Homo_Un_Key','Horizontal',1)
-%         main(24,classifiers{i},'',cancelableFunctions{j},'Hete_Key','Horizontal',1)
-%         main(24,classifiers{i},'',cancelableFunctions{j},'Hete_Un_Key','Horizontal',1)
+%       % main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Un_Key','Horizontal',1)
+%       % main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Key','Horizontal',1)
+%       % main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Un_Key','Horizontal',1)
+%       % main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Key','Horizontal',1)
+%         
 %     end
 % end
-% 
-% 
-for i=2:2%length(classifiers)
-    for j=3:3%length(cancelableFunctions)
-        main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Un_Key','Scrolling',1)
-        main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Key','Scrolling',1)
-        main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Un_Key','Scrolling',1)
-        main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Key','Scrolling',1)
-        
-        main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Un_Key','Horizontal',1)
-        main(19,classifiers{i},'',cancelableFunctions{j},'Homo_Key','Horizontal',1)
-        main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Un_Key','Horizontal',1)
-        main(19,classifiers{i},'',cancelableFunctions{j},'Hete_Key','Horizontal',1)
-        
-    end
-end
 %main(11,'knn','','DoubleSum','Different_Key','Horizontal')
 %main(11,'knn','','BioHashing','Same_Key','Horizontal');
 %main(11,'knn','','BioHashing','Same_Key','Scrolling');
@@ -83,28 +68,8 @@ end
 %main(13,'knn','','BioHashing','Different_Key','Scrolling')
 %main(13,'knn','','BioHashing','Same_Key','Scrolling')
 
-%main(10,'svm',1,'BioConvolving','Different_Key','Horizontal')
 
-%main(2)
 
-%main(10,'svm',1,'Interpolation','Same_Key','Scrolling')
-
-% Show a Norman's plot for all users using a all orientation, keytype and biometric data
-% for i=5:5%length(classifiers)
-%     for j=1:length(cancelableFunctions)        
-%         main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Scrolling',1)
-%         main(11,classifiers{i},'',cancelableFunctions{j},'Same_Key','Horizontal',1)
-%         
-%         main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Scrolling',1)
-%         main(11,classifiers{i},'',cancelableFunctions{j},'Different_Key','Horizontal',1)
-%     end
-% end
-% for i=3:3%length(classifiers)
-%      for j=2:length(cancelableFunctions) 
-%         main(16,classifiers{i},'',cancelableFunctions{j},'','Scrolling',keySize(4))
-%         main(16,classifiers{i},'',cancelableFunctions{j},'','Horizontal',keySize(4))
-%      end
-% end
 
 
 % for i=2:length(cancelableFunctions)  
@@ -112,11 +77,11 @@ end
 % main(24,'libsvm','',cancelableFunctions{i},'','Horizontal',1)
 % end
 
-% for i=2:length(cancelableFunctions)  
-% main(25,'libsvm','',cancelableFunctions{i},'','Scrolling',1)
-% main(25,'knn','',cancelableFunctions{i},'','Horizontal',1)
-% end
-% 
+for i=2:length(cancelableFunctions)  
+main(25,'libsvm','',cancelableFunctions{i},'','Scrolling',1)
+main(25,'libsvm','',cancelableFunctions{i},'','Horizontal',1)
+end
+
 % keyType={'Hete_Key','Hete_Un_Key','Homo_Key','Homo_Un_Key'};
 % for i=1:length(keyType)  
 % main(26,'knn','','',keyType{i},'Scrolling',1)
