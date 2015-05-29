@@ -14,8 +14,8 @@ sizeFeatures=round(numFeatures*keySize);
 
 if optionkey==1 || optionkey==3
     %% Heterogenous Know Key or Homogenous Know Key
-    key=getFixedKey('BioConvolving',sizeFeatures-1);
-    bioC_train=bioconvolving(trainingSet(:,2:sizeFeatures),key);
+    key=getFixedKey('BioConvolving',sizeFeatures);
+    bioC_train=bioconvolving(trainingSet(:,2:sizeFeatures+1),key);
 elseif optionkey==2
     %% Heteronegeneous Unknown Key
     %% Different key for each user
@@ -42,7 +42,7 @@ elseif optionkey==2
         end
         
         % protecting the user data using the generated key
-        bioConvolvingImpostorData=bioconvolving(userData(:,2:end),key);
+        bioConvolvingImpostorData=bioconvolving(userData(:,2:sizeFeatures+1),key);
         
         % adding user protected data to the bioH_train variable
         bioC_train=[bioC_train; bioConvolvingImpostorData];

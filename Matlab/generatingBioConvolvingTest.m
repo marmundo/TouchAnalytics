@@ -13,8 +13,8 @@ sizeFeatures=round(numFeatures*keySize);
 %% Same key for all users
 if optionkey==1 || optionkey==3
     %% Heterogenous Know Key or Homogenous Know Key
-    key=getFixedKey('BioConvolving',sizeFeatures-1);
-    bioC_test=bioconvolving(testSet(:,2:sizeFeatures),key);
+    key=getFixedKey('BioConvolving',sizeFeatures);
+    bioC_test=bioconvolving(testSet(:,2:sizeFeatures+1),key);
 elseif optionkey==2
     %% Heteronegeneous Unknown Key
     %% Different key for each user
@@ -41,7 +41,7 @@ elseif optionkey==2
         end
         
         % Protecting the User data
-        bioConvolvingData=bioconvolving(userData(:,2:end),key);
+        bioConvolvingData=bioconvolving(userData(:,2:sizeFeatures+1),key);
         
         % Adding the biohashingData to the Protected BioHashing test
         % dataset
