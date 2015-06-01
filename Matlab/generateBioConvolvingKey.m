@@ -13,5 +13,8 @@ function [key]=generateBioConvolvingKey(w,n)
     d(end+1)=100;
     
     key=round((d/100)*n);
-    
+
+    if key(w)==n ||key(w)==0
+        key=generateBioConvolvingKey(w,n);
+    end
 end
