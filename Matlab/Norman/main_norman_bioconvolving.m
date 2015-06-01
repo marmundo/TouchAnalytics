@@ -28,11 +28,6 @@ clear scrolling
 %%
 ID_list = unique(ID)';
 
-%% Aplying BioConvolving protection method
-key=getFixedKey('BioConvolving',length(selected_));
-data=bioconvolving(data,key);
-
-
 %% 3-fold; 
 % fold 1 is for training the classifier
 % fold 2 for validation
@@ -65,4 +60,44 @@ TRAIN_IMP=1:20; %impostor used for training
 VALID_IMP=21:40;%impostor used for validation
 TEST_IMP =21:40;%impostor used for validation
 
-runExperiments(data,selected_user,ID_list,TRAIN,TRAIN_IMP,VALID,VALID_IMP,TEST,TEST_IMP);
+scenario='Hete_UK'
+keySize=1;
+keySize=round(length(selected_)*keySize);
+
+
+%% Aplying BioConvolving protection method
+if strcmp(scenario,'Homo_K') || strcmp(scenario,'Hete_K')
+    %% Aplying Interpolation protection method
+    key=getFixedKey('BioConvolving',length(selected_));
+    transformed_data=bioconvolving(data,key);
+
+elseif strcmp(scenario,'Homo_UK') || strcmp(scenario,'Hete_UK')
+    for i=1:numel(ID_list),
+        %% Take the client sample
+        %positive training samples
+        index_template = selected_user{TRAIN}{i}; %use all the available samples for training
+        
+        %% Encode the client sample with a key
+        if strcmp(scenario,'Homo_UK')
+            key=getFixedKey('BioConvolving',length(selected_));
+            transformed_data(index_template,:)=bioconvolving(data(index_template,:),key);
+        else
+            key=generateBioConvolvingKey(2,keySize);
+            transformed_data(index_template,:)=bioconvolving(data(index_template,:),key);
+        end
+        
+        %negative training samples
+        userlist = find(ID_list ~= i);
+        userlist = userlist(TRAIN_IMP);
+        %% For all impostors take the samples of each impostor user
+        for iUser=1:numel(userlist)
+            index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( iUser ), 'UniformOutput', false));
+            key=generateBioConvolvingKey(2,keySize);
+          %% Encode the impostor user, encode its data with a key
+            temp=bioconvolving(data(index_template_neg,:),key);       
+            transformed_data(index_template_neg,:)=temp;
+        end
+    end;
+end
+
+runExperiments(transformed_data,selected_user,ID_list,TRAIN,TRAIN_IMP,VALID,VALID_IMP,TEST,TEST_IMP);
