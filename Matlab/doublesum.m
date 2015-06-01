@@ -24,16 +24,16 @@ end
 
 %protecting each biometric sample using doublesum method with the given
 %key.
-for n=1:numSamples
+%for n=1:numSamples
     
     % getting biometric sample
-    sample=biometric_data(n,:);
+    %sample=biometric_data(n,:);
     
     %alocating variable
     B=zeros(1,length(key));
     
     for i=1:length(key)
-        B(i)=sample(key(i));
+        B(i)=biometric_data(key(i));
     end
     
     C1=round((length(key)-1).*rand(length(key),1) + 1);
@@ -44,11 +44,11 @@ for n=1:numSamples
 
     for i=1:numFeatures
         if(i>length(key))
-            transformed_sample(i)=sample(i);
+            transformed_data(:,i)=biometric_data(:,i);
         else
-       transformed_sample(i)=B(i)+sample(C1(i))+sample(C2(i));
+       transformed_data(:,i)=B(i)+biometric_data(:,C1(i))+biometric_data(:,C2(i));
         end
     end    
-    transformed_data= [transformed_data; transformed_sample];
-end
+    %transformed_data= [transformed_data; transformed_sample];
+%end
 end

@@ -21,9 +21,9 @@ numFeatures=length(biometric_data(1,:));
 
 %protecting each biometric sample using bioghashing method with the given
 %key.
-for i=1:numSamples
+%for i=1:numSamples
     %biometric sample
-    sample=biometric_data(i,:);
+    %sample=biometric_data(i,:);
     
     % Q is a orthonormal vector
     [Q, R] = qr(key);
@@ -32,20 +32,20 @@ for i=1:numSamples
     Q=Q/norm(Q);
     
     %inner product
-    t=sample*Q;
+    t=biometric_data*Q;
     
     %threshold
-    [h,p]=hist(t);
-    [k,i]=max(h);
+    %[h,p]=hist(t);
+   % [k,i]=max(h);
     
     %More frequent value get from the histogram
-    threshold=p(i);
+    %threshold=p(i);
     
     %transformed biometric sample
-    transformed_biometricSample=t>threshold;
+    transformed_data=t>0;
     
     %transformed_biometricSample has added to the transformed data
-    transformed_data=[transformed_data;transformed_biometricSample];
-end
+    %transformed_data=[transformed_data;transformed_biometricSample];
+%end
 
 end

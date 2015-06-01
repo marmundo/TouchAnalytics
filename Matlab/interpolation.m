@@ -29,20 +29,20 @@ numFeatures=length(biometric_data(1,:));
 %key.
 
 
-for i=1:numSamples
+%for i=1:numSamples
     % getting biometric sample and normalizint it to 0 to 1
-    sample=biometric_data(i,:);
+    %sample=biometric_data(i,:);
     
     xCoordinates=[1:numFeatures];
     %Apply norm because the key has values in the [0,1] range
     %xCoordinates=xCoordinates/norm(xCoordinates);
     
     %polynomial creation based on interpolation
-    P = spline(xCoordinates,sample);
+    P = spline(xCoordinates,biometric_data);
     
-    transformed_sample= ppval(P,key);
-    transformed_data=[transformed_data; transformed_sample];
-end
+    transformed_data= ppval(P,key);
+    %transformed_data=[transformed_data; transformed_sample];
+%end
 
 
 end
