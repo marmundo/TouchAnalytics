@@ -76,14 +76,16 @@ elseif strcmp(scenario,'Homo_UK') || strcmp(scenario,'Hete_UK')
         %% Take the client sample
         %positive training samples
         index_template = selected_user{TRAIN}{i}; %use all the available samples for training
-        
+        index_template_valid = selected_user{VALID}{i}; %use all the available samples for training
         %% Encode the client sample with a key
         if strcmp(scenario,'Homo_UK')
             key=getFixedKey('BioHashing',length(selected_));
             data(index_template,:)=biohashing(data(index_template,:),key);
+            data(index_template_valid,:)=biohashing(data(index_template_valid,:),key);
         else
             key=rand(keySize);
             data(index_template,:)=biohashing(data(index_template,:),key);
+            data(index_template_valid,:)=biohashing(data(index_template_valid,:),key);
         end
         
         %negative training samples
@@ -92,9 +94,11 @@ elseif strcmp(scenario,'Homo_UK') || strcmp(scenario,'Hete_UK')
         %% For all impostors take the samples of each impostor user
         for iUser=1:numel(userlist)
             index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( iUser ), 'UniformOutput', false));
+            index_template_neg_valid = cell2mat(cellfun(@(x) x(1:10), selected_user{VALID}( iUser ), 'UniformOutput', false));
             key=rand(keySize);
             %% Encode the impostor user, encode its data with a key
             data(index_template_neg,:)=biohashing(data(index_template_neg,:),key);
+            data(index_template_neg_valid,:)=biohashing(data(index_template_neg_valid,:),key);
         end
     end;
 end
