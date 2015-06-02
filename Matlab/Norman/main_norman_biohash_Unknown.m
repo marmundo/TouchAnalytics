@@ -53,6 +53,7 @@ TEST_IMP =21:40;%impostor used for test
 load('BioHashingKey.mat','key');
 dim = size(data,2);
 
+
 key = key(1:dim, 1:dim);
 %% train classifiers in the biohashing domain 
 for i=1:numel(ID_list),
@@ -63,15 +64,22 @@ for i=1:numel(ID_list),
   %negative training samples
   userlist = find(ID_list ~= i);
   userlist = userlist(TRAIN_IMP);
-  index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false));  
+  %index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false));  
 
   %for each user, the template is encrypted using one common key; and the attacker
   %uses another key for nonmatch
+  X_imp=[];
+   for iUser=1:numel(userlist)
+       index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( iUser ), 'UniformOutput', false));  
+       key_imp = rand(dim);
+       % Encode the impostor user, encode its data with a key
+       X_imp = [X_imp;double(biohashing(data(index_template_neg,:),key_imp))];
+   end
+  %key_imp = rand(dim);  
+  X_gen = double(biohashing(data(index_template,:),key));
+  %X_imp = double(biohashing(data(index_template_neg,:),key_imp));
   
-  key_imp = rand(dim);  
-  X_gen = double(biohashing_norman(data(index_template,:),key));
-  X_imp = double(biohashing_norman(data(index_template_neg,:),key_imp));
-  
+  index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false)); 
   %logistic regression
   Y = [ones(1, numel(index_template)) zeros(1, numel(index_template_neg))];
   W = [ones(1, numel(index_template)) / numel(index_template) ones(1, numel(index_template_neg)) /numel(index_template_neg) ];
@@ -92,6 +100,7 @@ for k=1:2,
   end;
 end;
 
+%% Testing
 for i=1:numel(ID_list),
 
   %positive training samples
@@ -100,14 +109,19 @@ for i=1:numel(ID_list),
   %impostor scores -- select only 10 samples from the VALIDATION set
   userlist = find(ID_list ~= i);
   userlist = userlist(VALID_IMP);
-  index_imp = cell2mat(cellfun(@(x) x(1:10), selected_user{VALID}( userlist ), 'UniformOutput', false));
-  
+  %index_imp = cell2mat(cellfun(@(x) x(1:10), selected_user{VALID}( userlist ), 'UniformOutput', false));
+  X_imp=[];
   %for each user, the template is encrypted using one common key; and the attacker
-  %uses another key for nonmatch
-  
-  key_imp = rand(dim);  
-  X_gen = double(biohashing_norman(data(index_gen,:),key));
-  X_imp = double(biohashing_norman(data(index_imp,:),key_imp));
+   %   uses another key for nonmatch
+   for iUser=1:numel(userlist)
+       index_imp  = cell2mat(cellfun(@(x) x(1:10), selected_user{VALID}( iUser ), 'UniformOutput', false));
+       key_imp = rand(dim);
+       % Encode the impostor user, encode its data with a key
+       X_imp = [X_imp;double(biohashing(data(index_imp,:),key_imp))];
+   end
+  %key_imp = rand(dim);  
+  X_gen = double(biohashing(data(index_gen,:),key));
+  %X_imp = double(biohashing(data(index_imp,:),key_imp));
   
   
   %METHOD 2: logistic regression
@@ -156,6 +170,7 @@ print('-dpng','Pictures/main_norman_biohash_Unknown__DET_Euc_LR_kNN.png');
 bline = load('main_norman.mat');
 bhash = load('main_norman_biohash.mat');
 %%
+figure(3);
 m=4;
 wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
 wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
@@ -164,5 +179,6 @@ legend('baseline','biohash Known','biohash Unknown');
 print('-dpng','Pictures/main_norman_biohash_Unknown__DET_kNN_bline_vs_biohash.png');
 
 %%
+figure(4);
 wer(bhash.scores{1,m}, bhash.scores{2,m}, [],4,[],1);
 wer(scores{1,m}, scores{2,m}, [],4,[],2);
