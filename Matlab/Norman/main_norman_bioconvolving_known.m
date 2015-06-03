@@ -72,9 +72,10 @@ VALID_IMP=21:40;%impostor used for validation
 TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
-key=getFixedKey('Interpolation',length(data(1,:)));
+keySize=length(data(1,:));
+key=getFixedKey('BioConvolving',keySize);
 
-%% train classifiers in the interpolation domain 
+%% train classifiers in the bioconvolving domain 
 for i=1:numel(ID_list),
 
   %positive training samples
@@ -88,8 +89,8 @@ for i=1:numel(ID_list),
   %for each user, the template is encrypted using one common key; and the attacker
   %uses another key for nonmatch
 
-  X_gen = interpolation(data(index_template,:),key);
-  X_imp = interpolation(data(index_template_neg,:),key);
+  X_gen = bioconvolving(data(index_template,:),key);
+  X_imp = bioconvolving(data(index_template_neg,:),key);
   
   index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false)); 
   %logistic regression
@@ -128,8 +129,8 @@ for i=1:numel(ID_list),
   
   %key_imp = rand(dim);
   
-  X_gen = interpolation(data(index_gen,:),key);
-  X_imp = interpolation(data(index_imp,:),key);
+  X_gen = bioconvolving(data(index_gen,:),key);
+  X_imp = bioconvolving(data(index_imp,:),key);
   
   
   %METHOD 2: logistic regression
@@ -167,7 +168,7 @@ fprintf(1,'\n');
 extension='.mat';
 scenario={'homo','hete'};
 for i=1:2
-    fileName=['main_norman_interpolation_',scenario{i},'_known'];
+    fileName=['main_norman_bioconvolving_',scenario{i},'_known'];
     save([fileName,extension],'scores');
 end
 
@@ -181,7 +182,7 @@ eer_system
 legend('LR user-specific','LR common', 'kNN (8)','location', 'Southwest');
 
 for i=1:2
-    fileName=['main_norman_interpolation_',scenario{i},'_known'];
+    fileName=['main_norman_bioconvolving_',scenario{i},'_known'];
     file=['Pictures/',fileName,'__DET_Euc_LR_kNN.png'];
     print('-dpng',file);
 end
@@ -189,16 +190,16 @@ end
 for i=1:2
     %% compare with main_norman
     bline = load('main_norman.mat');
-    bhash = load(['main_norman_interpolation_',scenario{i},'_Unknown']);
+    bhash = load(['main_norman_bioconvolving_',scenario{i},'_Unknown']);
     %%
     figure(3);
     m=4;
     wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
     wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
     wer(scores{1,m}, scores{2,m}, [],2,[],3);
-    legend('baseline','interpolation Unknown','interpolation known');
+    legend('baseline','bioconvolving Unknown','bioconvolving known');
     fileName=['main_norman_biohash_',scenario{i},'_known'];
-    file=['Pictures/',fileName,'__DET_kNN_bline_vs_interpolation.png'];
+    file=['Pictures/',fileName,'__DET_kNN_bline_vs_bioconvolving.png'];
     print('-dpng',file);
     close;
 end

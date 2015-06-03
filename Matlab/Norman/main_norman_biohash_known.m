@@ -5,15 +5,26 @@ addpath C:\Users\Poh\Dropbox\LivDet\program\lib\VR-EER
 
 %% load the data
 clear
-load('scrolling data.mat');
+%orientation='Scrolling';
+orientation='Horizontal';
 
-scrolling=cleaningdataset(scrolling);
-zero_ = find(sum(scrolling)==0);
-scrolling(:,zero_)=[];
+if strcmp(orientation,'Scrolling')
+    load('scrolling data.mat');
+    data=scrolling;
+    clear scrolling;
+else
+    load('horizontal data.mat');
+    data=horizontal;
+    clear horizontal;
+end
+
+data=cleaningdataset(data);
+zero_ = find(sum(data)==0);
+data(:,zero_)=[];
 
 % check the numbers
-for i=1:size(scrolling,2),
-  unique_count(i) = numel(unique(scrolling(:,i)));
+for i=1:size(data,2),
+  unique_count(i) = numel(unique(data(:,i)));
 end;
 
 bar(unique_count);
@@ -23,15 +34,27 @@ xlabel('Feature index');
 
 % normalise
 selected_ = find(unique_count>50)
-ID=scrolling(:,1);
-data=(scrolling(:,selected_));
-%data=zscore(scrolling(:,[2:end]));
-clear scrolling
+ID=data(:,1);
+data=(data(:,selected_));
 
 ID_list = unique(ID)'
 
 %% analyse the test folds (should be 1/3)
-c = cvpartition(ID,'KFold',3);
+if strcmp(orientation,'Horizontal')
+    if exist('c_horizontal.mat', 'file'),
+        load c_horizontal.mat
+    else
+        c = cvpartition(ID,'KFold',3);
+        save c_horizontal.mat c
+    end;
+else
+    if exist('c_scrolling.mat', 'file'),
+        load c_scrolling.mat
+    else
+        c = cvpartition(ID,'KFold',3);
+        save c_scrolling.mat c
+    end;
+end
 
 clear selected_user;
 for p=1:3,

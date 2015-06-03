@@ -5,15 +5,26 @@ addpath C:\Users\Poh\Dropbox\LivDet\program\lib\VR-EER
 
 %% load the data
 clear
-load('scrolling data.mat');
+orientation='Scrolling';
+%orientation='Horizontal';
 
-scrolling=cleaningdataset(scrolling);
-zero_ = find(sum(scrolling)==0);
-scrolling(:,zero_)=[];
+if strcmp(orientation,'Scrolling')
+    load('scrolling data.mat');
+    data=scrolling;
+    clear scrolling;
+else
+    load('horizontal data.mat');
+    data=horizontal;
+    clear horizontal;
+end
+
+data=cleaningdataset(data);
+zero_ = find(sum(data)==0);
+data(:,zero_)=[];
 
 % check the numbers
-for i=1:size(scrolling,2),
-    unique_count(i) = numel(unique(scrolling(:,i)));
+for i=1:size(data,2),
+    unique_count(i) = numel(unique(data(:,i)));
 end;
 
 bar(unique_count);
@@ -23,20 +34,27 @@ xlabel('Feature index');
 
 % normalise
 selected_ = find(unique_count>50)
-ID=scrolling(:,1);
-data=(scrolling(:,selected_));
-%data=zscore(scrolling(:,[2:end]));
-clear scrolling
+ID=data(:,1);
+data=(data(:,selected_));
 
 ID_list = unique(ID)'
 
 %% analyse the test folds (should be 1/3)
-if exist('c.mat', 'file'),
-  load c.mat 
+if strcmp(orientation,'Horizontal')
+    if exist('c_horizontal.mat', 'file'),
+        load c_horizontal.mat
+    else
+        c = cvpartition(ID,'KFold',3);
+        save c_horizontal.mat c
+    end;
 else
-  c = cvpartition(ID,'KFold',3);
-  save c.mat c
-end;
+    if exist('c_scrolling.mat', 'file'),
+        load c_scrolling.mat
+    else
+        c = cvpartition(ID,'KFold',3);
+        save c_scrolling.mat c
+    end;
+end
 
 clear selected_user;
 for p=1:3,
@@ -214,8 +232,10 @@ wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
 wer(bhash_known.scores{1,m}, bhash_known.scores{2,m}, [],2,[],2);
 wer(bhash_unknown_homo.scores{1,m}, bhash_unknown_homo.scores{2,m}, [],2,[],3);
 wer(bhash_unknown_hetero.scores{1,m}, bhash_unknown_hetero.scores{2,m}, [],2,[],4);
+title({['DET - Classifier: Knn using BioHashing-',orientation]});
 legend('baseline','Known','biohash Unknown (homo)', 'biohash Unknown (hetero)');
-
+file=['Pictures/DET_kNN_bline_vs_biohashing(homo vs hete)-',orientation,'.png'];
+print('-dpng',file);
 
 %%
 figure(4);

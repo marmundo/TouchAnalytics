@@ -17,6 +17,10 @@ else
     clear horizontal;
 end
 
+data=cleaningdataset(data);
+zero_ = find(sum(data)==0);
+data(:,zero_)=[];
+
 % check the numbers
 for i=1:size(data,2),
     unique_count(i) = numel(unique(data(:,i)));
@@ -31,7 +35,6 @@ xlabel('Feature index');
 selected_ = find(unique_count>50);
 ID=data(:,1);
 data=(data(:,selected_));
-
 
 ID_list = unique(ID)';
 
@@ -51,7 +54,6 @@ else
         save c_scrolling.mat c
     end;
 end
-
 clear selected_user;
 for p=1:3,
     selected_user{p}=cell(1,41);
@@ -70,11 +72,11 @@ TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
 keySize=length(data(1,:));
-key=getFixedKey('Interpolation',keySize);
+key=getFixedKey('DoubleSum',keySize);
 
 scenario={'homo','hete'};
 for s=1:2
-    %% train classifiers in the interpolation domain
+    %% train classifiers in the doublesum domain
     for i=1:numel(ID_list),
         
         %positive training samples
@@ -90,18 +92,18 @@ for s=1:2
         X_imp=[];
         for iUser=1:numel(userlist)
             index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( iUser ), 'UniformOutput', false));
-            key_imp =((keySize-1).*rand(keySize,1) + 1)';
+            key_imp =randperm(keySize);
             % Encode the impostor user, encode its data with a key
-            X_imp = [X_imp;interpolation(data(index_template_neg,:),key_imp)];
+            X_imp = [X_imp;doublesum(data(index_template_neg,:),key_imp)];
         end
         %key_imp = rand(dim);
         if strcmp(scenario{s},'homo')
-            X_gen =interpolation(data(index_template,:),key);
+            X_gen =doublesum(data(index_template,:),key);
         else
-            com.user.key{i} = ((keySize-1).*rand(keySize,1) + 1)';
-            X_gen =interpolation(data(index_template,:),com.user.key{i});
+            com.user.key{i} = round(sort((keySize-1).*rand(keySize,1) + 1))';
+            X_gen =doublesum(data(index_template,:),com.user.key{i});
         end
-        %X_imp = double(interpolation(data(index_template_neg,:),key_imp));
+        %X_imp = double(doublesum(data(index_template_neg,:),key_imp));
         
         index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false));
         %logistic regression
@@ -139,17 +141,17 @@ for s=1:2
         %   uses another key for nonmatch
         for iUser=1:numel(userlist)
             index_imp  = cell2mat(cellfun(@(x) x(1:10), selected_user{VALID}( iUser ), 'UniformOutput', false));
-            key_imp = ((keySize-1).*rand(keySize,1) + 1)';
+            key_imp = randperm(keySize);
             % Encode the impostor user, encode its data with a key
-            X_imp = [X_imp;interpolation(data(index_imp,:),key_imp)];
+            X_imp = [X_imp;doublesum(data(index_imp,:),key_imp)];
         end
         %key_imp = rand(dim);
         if strcmp(scenario{s},'homo')
-            X_gen = interpolation(data(index_gen,:),key);
+            X_gen = doublesum(data(index_gen,:),key);
         else
-            X_gen = interpolation(data(index_gen,:),com.user.key{i});
+            X_gen = doublesum(data(index_gen,:),com.user.key{i});
         end
-        %X_imp = double(interpolation(data(index_imp,:),key_imp));
+        %X_imp = double(doublesum(data(index_imp,:),key_imp));
         
         
         %METHOD 2: logistic regression
@@ -184,7 +186,7 @@ for s=1:2
         fprintf(1,'.');
     end;
     fprintf(1,'\n');
-    fileName=['main_norman_interpolation_',scenario{s},'_Unknown'];
+    fileName=['main_norman_doublesum_',scenario{s},'_Unknown'];
     extension='.mat';
     save([fileName,extension],'scores');
 
@@ -200,34 +202,35 @@ for s=1:2
 
     %% compare with main_norman
     bline = load('main_norman.mat');
-    bhash = load(['main_norman_interpolation_',scenario{s},'_known']);
+    bhash = load(['main_norman_doublesum_',scenario{s},'_known']);
     %%
     figure(3);
     m=4;
     wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
     wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
     wer(scores{1,m}, scores{2,m}, [],2,[],3);
-    legend('baseline','interpolation Known','interpolation Unknown');
-    file=['Pictures/',fileName,'__DET_kNN_bline_vs_interpolation.png'];
+    legend('baseline','doublesum Known','doublesum Unknown');
+    file=['Pictures/',fileName,'__DET_kNN_bline_vs_doublesum.png'];
     print('-dpng',file);
 end
 
-%% main_norman_interpolation_
-interpolation_known=load('main_norman_interpolation_homo_known.mat');
-interpolation_unknown_homo = load('main_norman_interpolation_homo_Unknown.mat');
-interpolation_unknown_hetero = load('main_norman_interpolation_hete_Unknown.mat');
+%% main_norman_doublesum_
+bline = load('main_norman.mat');
+doublesum_known=load('main_norman_doublesum_homo_known.mat');
+doublesum_unknown_homo = load('main_norman_doublesum_homo_Unknown.mat');
+doublesum_unknown_hetero = load('main_norman_doublesum_hete_Unknown.mat');
 %%
 close all;
 figure(3);
 m=4;
 wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
 %wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
-wer(interpolation_known.scores{1,m}, interpolation_known.scores{2,m}, [],2,[],2);
-wer(interpolation_unknown_homo.scores{1,m}, interpolation_unknown_homo.scores{2,m}, [],2,[],3);
-wer(interpolation_unknown_hetero.scores{1,m}, interpolation_unknown_hetero.scores{2,m}, [],2,[],4);
-title({['DET - Classifier: Knn using Interpolation-',orientation]});
-legend('baseline','Known','interpolation Unknown (homo)', 'interpolation Unknown (hetero)');
-file=['Pictures/DET_kNN_bline_vs_interpolation(homo vs hete)-',orientation,'.png'];
+wer(doublesum_known.scores{1,m}, doublesum_known.scores{2,m}, [],2,[],2);
+wer(doublesum_unknown_homo.scores{1,m}, doublesum_unknown_homo.scores{2,m}, [],2,[],3);
+wer(doublesum_unknown_hetero.scores{1,m}, doublesum_unknown_hetero.scores{2,m}, [],2,[],4);
+title({['DET - Classifier: Knn using DoubleSum-',orientation]});
+legend('baseline','Known','doublesum Unknown (homo)', 'doublesum Unknown (hetero)');
+file=['Pictures/DET_kNN_bline_vs_doublesum(homo vs hete)-',orientation,'.png'];
 print('-dpng',file);
 
 %%
