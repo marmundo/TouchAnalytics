@@ -46,3 +46,6 @@ hs_err_pid*
 /Matlab/impostorScoreMap.mat
 /Matlab/Norman/Pictures/*
 
+c_scrolling.mat
+c_horizontal.mat
+*.mat
