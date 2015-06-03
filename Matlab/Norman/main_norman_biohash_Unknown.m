@@ -31,7 +31,12 @@ clear scrolling
 ID_list = unique(ID)'
 
 %% analyse the test folds (should be 1/3)
-c = cvpartition(ID,'KFold',3);
+if exist('c.mat', 'file'),
+  load c.mat 
+else
+  c = cvpartition(ID,'KFold',3);
+  save c.mat c
+end;
 
 clear selected_user;
 for p=1:3,
@@ -172,28 +177,45 @@ for s=1:2
     extension='.mat';
     save([fileName,extension],'scores');
 
+    %%
+    figure(2);
+    for m=2:4,
+      eer_system(m) = wer(scores{1,m}, scores{2,m}, [],2,[],m);
+    end;
+    eer_system
+    legend('LR user-specific','LR common', 'kNN (8)','location', 'Southwest');
+    file=['Pictures/',fileName,'__DET_Euc_LR_kNN.png'];
+    print('-dpng',file);
+
+    %% compare with main_norman
+    bline = load('main_norman.mat');
+    bhash = load(['main_norman_biohash_',scenario{s},'_known']);
+    %%
+    figure(3);
+    m=4;
+    wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+    wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
+    wer(scores{1,m}, scores{2,m}, [],2,[],3);
+    legend('baseline','biohash Known','biohash Unknown');
+    file=['Pictures/',fileName,'__DET_kNN_bline_vs_biohash.png'];
+    print('-dpng',file);
+end
+
+%% main_norman_biohash_
+bhash_unknown_homo = load('main_norman_biohash_homo_Unkown.mat');
+bhash_unknown_hetero = load('main_norman_biohash_hete_Unkown.mat');
 %%
-figure(2);
-for m=2:4,
-    eer_system(m) = wer(scores{1,m}, scores{2,m}, [],2,[],m);
-end;
-eer_system
-legend('LR user-specific','LR common', 'kNN (8)','location', 'Southwest');
-file=['Pictures/',fileName,'__DET_Euc_LR_kNN.png'];
-print('-dpng',file);
-%% compare with main_norman
-bline = load('main_norman.mat');
-bhash = load(['main_norman_biohash_',scenario{s},'_known']);
-%%
+close all;
 figure(3);
 m=4;
 wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
-wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
-wer(scores{1,m}, scores{2,m}, [],2,[],3);
-legend('baseline','biohash Known','biohash Unknown');
-file=['Pictures/',fileName,'__DET_kNN_bline_vs_biohash.png'];
-print('-dpng',file);
-end
+%wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
+wer(bhash_known.scores{1,m}, bhash_known.scores{2,m}, [],2,[],2);
+wer(bhash_unknown_homo.scores{1,m}, bhash_unknown_homo.scores{2,m}, [],2,[],3);
+wer(bhash_unknown_hetero.scores{1,m}, bhash_unknown_hetero.scores{2,m}, [],2,[],4);
+legend('baseline','Known','biohash Unknown (homo)', 'biohash Unknown (hetero)');
+
+
 %%
 figure(4);
 wer(bhash.scores{1,m}, bhash.scores{2,m}, [],4,[],1);
