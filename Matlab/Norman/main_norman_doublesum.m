@@ -1,18 +1,17 @@
+function scores=main_norman_doublesum(biometricData,scenario)
 %%
 addpath ..
 addpath ../lib
 %%
-clear
-load('scrolling data.mat');
 
 %% cleaning
-scrolling=cleaningdataset(scrolling);
-zero_ = find(sum(scrolling)==0);
-scrolling(:,zero_)=[];
+biometricData=cleaningdataset(biometricData);
+zero_ = find(sum(biometricData)==0);
+biometricData(:,zero_)=[];
 
 %% check the numbers
-for i=1:size(scrolling,2),
-    unique_count(i) = numel(unique(scrolling(:,i)));
+for i=1:size(biometricData,2),
+    unique_count(i) = numel(unique(biometricData(:,i)));
 end;
 % %%
 % bar(unique_count);
@@ -21,8 +20,8 @@ end;
 % print('-dpng','Pictures/main_norman__unique_value_feature_count.png');
 %% normalise
 selected_ = find(unique_count>50); %selected_features
-ID=scrolling(:,1);
-data=(scrolling(:,selected_)); %Why have you take only the features with more than 50 unique values?
+ID=biometricData(:,1);
+data=(biometricData(:,selected_)); %Why have you take only the features with more than 50 unique values?
 %data=zscore(scrolling(:,[2:end]));
 clear scrolling
 %%
@@ -77,14 +76,16 @@ elseif strcmp(scenario,'Homo_UK') || strcmp(scenario,'Hete_UK')
         %% Take the client sample
         %positive training samples
         index_template = selected_user{TRAIN}{i}; %use all the available samples for training
-        
+        index_template_valid = selected_user{VALID}{i}; %use all the available samples for training
         %% Encode the client sample with a key
         if strcmp(scenario,'Homo_UK')
             key=getFixedKey('DoubleSum',length(selected_));
             data(index_template,:)=doublesum(data(index_template,:),key);
+            data(index_template_valid,:)=doublesum(data(index_template_valid,:),key);
         else
             key=round(sort((keySize-1).*rand(keySize,1) + 1))';
             data(index_template,:)=doublesum(data(index_template,:),key);
+            data(index_template_valid,:)=doublesum(data(index_template_valid,:),key);
         end
         
         %negative training samples
@@ -93,11 +94,15 @@ elseif strcmp(scenario,'Homo_UK') || strcmp(scenario,'Hete_UK')
         %% For all impostors take the samples of each impostor user
         for iUser=1:numel(userlist)
             index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( iUser ), 'UniformOutput', false));
+            index_template_neg_valid = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( iUser ), 'UniformOutput', false));
             key=round(sort((keySize-1).*rand(keySize,1) + 1))';
             %% Encode the impostor user, encode its data with a key
             data(index_template_neg,:)=doublesum(data(index_template_neg,:),key);
+            data(index_template_neg_valid,:)=doublesum(data(index_template_neg_valid,:),key);
         end
     end;
 end
 
-runExperiments(data,selected_user,ID_list,TRAIN,TRAIN_IMP,VALID,VALID_IMP,TEST,TEST_IMP);
+scores=runExperiments(data,selected_user,ID_list,TRAIN,TRAIN_IMP,VALID,VALID_IMP,TEST,TEST_IMP);
+return
+end
