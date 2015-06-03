@@ -5,8 +5,8 @@ addpath C:\Users\Poh\Dropbox\LivDet\program\lib\VR-EER
 
 %% load the data
 clear
-%orientation='Scrolling';
-orientation='Horizontal';
+orientation='Scrolling';
+%orientation='Horizontal';
 
 if strcmp(orientation,'Scrolling')
     load('scrolling data.mat');
@@ -172,7 +172,7 @@ fprintf(1,'\n');
 extension='.mat';
 scenario={'homo','hete'};
 for i=1:2
-    fileName=['main_norman_biohash_',scenario{i},'_known'];
+    fileName=['main_norman_biohash_',scenario{i},'_known-',orientation];
     save([fileName,extension],'scores');
 end
 
@@ -194,7 +194,7 @@ end
 for i=1:2
     %% compare with main_norman
     bline = load('main_norman.mat');
-    bhash = load(['main_norman_biohash_',scenario{i},'_Unknown']);
+    bhash = load(['main_norman_biohash_',scenario{i},'_Unknown-',orientation]);
     %%
     figure(3);
     m=4;
@@ -202,8 +202,7 @@ for i=1:2
     wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
     wer(scores{1,m}, scores{2,m}, [],2,[],3);
     legend('baseline','biohash Unknown','biohash known');
-    fileName=['main_norman_biohash_',scenario{i},'_known'];
-    file=['Pictures/',fileName,'__DET_kNN_bline_vs_biohash.png'];
+    file=['Pictures/DET_kNN_bline_vs_biohash-',orientation,'-',scenario{i},'_known.png'];
     print('-dpng',file);
     close;
 end

@@ -191,7 +191,7 @@ for s=1:2
         fprintf(1,'.');
     end;
     fprintf(1,'\n');
-    fileName=['main_norman_biohash_',scenario{s},'_Unknown'];
+    fileName=['main_norman_biohash_',scenario{s},'_Unknown-',orientation];
     extension='.mat';
     save([fileName,extension],'scores');
 
@@ -207,7 +207,7 @@ for s=1:2
 
     %% compare with main_norman
     bline = load('main_norman.mat');
-    bhash = load(['main_norman_biohash_',scenario{s},'_known']);
+    bhash = load(['main_norman_biohash_',scenario{s},'_known-',orientation]);
     %%
     figure(3);
     m=4;
@@ -215,14 +215,14 @@ for s=1:2
     wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
     wer(scores{1,m}, scores{2,m}, [],2,[],3);
     legend('baseline','biohash Known','biohash Unknown');
-    file=['Pictures/',fileName,'__DET_kNN_bline_vs_biohash.png'];
+    file=['Pictures/DET_kNN_bline_vs_biohash-',orientation,'-',scenario{s},'_Unknown.png'];
     print('-dpng',file);
 end
 
 %% main_norman_biohash_
-bhash_known=load('main_norman_biohash_homo_known.mat');
-bhash_unknown_homo = load('main_norman_biohash_homo_Unknown.mat');
-bhash_unknown_hetero = load('main_norman_biohash_hete_Unknown.mat');
+bhash_known=load(['main_norman_biohash_homo_known-',orientation,'.mat']);
+bhash_unknown_homo = load(['main_norman_biohash_homo_Unknown-',orientation,'.mat']);
+bhash_unknown_hetero = load(['main_norman_biohash_hete_Unknown-',orientation,'.mat']);
 %%
 close all;
 figure(3);

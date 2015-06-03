@@ -3,8 +3,8 @@ addpath ..
 addpath ../lib
 
 %% load the data
-orientation='Scrolling';
-%orientation='Horizontal';
+%orientation='Scrolling';
+orientation='Horizontal';
 
 if strcmp(orientation,'Scrolling')
     load('scrolling data.mat');
@@ -186,7 +186,7 @@ for s=1:2
         fprintf(1,'.');
     end;
     fprintf(1,'\n');
-    fileName=['main_norman_bioconvolving_',scenario{s},'_Unknown'];
+    fileName=['main_norman_bioconvolving_',scenario{s},'_Unknown-',orientation];
     extension='.mat';
     save([fileName,extension],'scores');
 
@@ -202,7 +202,7 @@ for s=1:2
 
     %% compare with main_norman
     bline = load('main_norman.mat');
-    bhash = load(['main_norman_bioconvolving_',scenario{s},'_known']);
+    bhash = load(['main_norman_bioconvolving_',scenario{s},'_known-',orientation]);
     %%
     figure(3);
     m=4;
@@ -210,15 +210,15 @@ for s=1:2
     wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
     wer(scores{1,m}, scores{2,m}, [],2,[],3);
     legend('baseline','bioconvolving Known','bioconvolving Unknown');
-    file=['Pictures/',fileName,'__DET_kNN_bline_vs_bioconvolving.png'];
+    file=['Pictures/DET_kNN_bline_vs_biohash-',orientation,'-',scenario{s},'_Unknown.png'];
     print('-dpng',file);
 end
 
 %% main_norman_bioconvolving_
 bline = load('main_norman.mat');
-bioconvolving_known=load('main_norman_bioconvolving_homo_known.mat');
-bioconvolving_unknown_homo = load('main_norman_bioconvolving_homo_Unknown.mat');
-bioconvolving_unknown_hetero = load('main_norman_bioconvolving_hete_Unknown.mat');
+bioconvolving_known=load(['main_norman_bioconvolving_homo_known-',orientation,'.mat']);
+bioconvolving_unknown_homo = load(['main_norman_bioconvolving_homo_Unknown-',orientation,'.mat']);
+bioconvolving_unknown_hetero = load(['main_norman_bioconvolving_hete_Unknown-',orientation,'.mat']);
 %%
 close all;
 figure(3);
