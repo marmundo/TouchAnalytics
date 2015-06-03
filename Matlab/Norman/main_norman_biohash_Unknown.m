@@ -82,8 +82,8 @@ for s=1:2
         if strcmp(scenario{s},'homo')
             X_gen = double(biohashing(data(index_template,:),key));
         else
-            key = rand(dim);
-            X_gen = double(biohashing(data(index_template,:),key));
+            com.user.key{i} = rand(dim);
+            X_gen = double(biohashing(data(index_template,:),com.user.key{i}));
         end
         %X_imp = double(biohashing(data(index_template_neg,:),key_imp));
         
@@ -131,8 +131,7 @@ for s=1:2
         if strcmp(scenario{s},'homo')
             X_gen = double(biohashing(data(index_gen,:),key));
         else
-            key = rand(dim);
-            X_gen = double(biohashing(data(index_gen,:),key));
+            X_gen = double(biohashing(data(index_gen,:),com.user.key{i}));
         end
         %X_imp = double(biohashing(data(index_imp,:),key_imp));
         
