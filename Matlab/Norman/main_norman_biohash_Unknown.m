@@ -173,7 +173,7 @@ for s=1:2
         fprintf(1,'.');
     end;
     fprintf(1,'\n');
-    fileName=['main_norman_biohash_',scenario{s},'_Unkown'];
+    fileName=['main_norman_biohash_',scenario{s},'_Unknown'];
     extension='.mat';
     save([fileName,extension],'scores');
 
@@ -202,8 +202,9 @@ for s=1:2
 end
 
 %% main_norman_biohash_
-bhash_unknown_homo = load('main_norman_biohash_homo_Unkown.mat');
-bhash_unknown_hetero = load('main_norman_biohash_hete_Unkown.mat');
+bhash_known=load('main_norman_biohash_homo_known.mat');
+bhash_unknown_homo = load('main_norman_biohash_homo_Unknown.mat');
+bhash_unknown_hetero = load('main_norman_biohash_hete_Unknown.mat');
 %%
 close all;
 figure(3);

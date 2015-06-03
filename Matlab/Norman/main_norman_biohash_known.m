@@ -171,7 +171,7 @@ end
 for i=1:2
     %% compare with main_norman
     bline = load('main_norman.mat');
-    bhash = load(['main_norman_biohash_',scenario{i},'_Unkown']);
+    bhash = load(['main_norman_biohash_',scenario{i},'_Unknown']);
     %%
     figure(3);
     m=4;
