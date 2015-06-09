@@ -5,8 +5,8 @@ addpath C:\Users\Poh\Dropbox\LivDet\program\lib\VR-EER
 
 %% load the data
 clear
-orientation='Scrolling';
-%orientation='Horizontal';
+%orientation='Scrolling';
+orientation='Horizontal';
 
 if strcmp(orientation,'Scrolling')
     load('scrolling data.mat');
@@ -234,7 +234,7 @@ wer(bhash_unknown_homo.scores{1,m}, bhash_unknown_homo.scores{2,m}, [],2,[],3);
 wer(bhash_unknown_hetero.scores{1,m}, bhash_unknown_hetero.scores{2,m}, [],2,[],4);
 title({['DET - Classifier: Knn using BioHashing-',orientation]});
 legend('baseline','Known','biohash Unknown (homo)', 'biohash Unknown (hetero)');
-file=['Pictures/DET_kNN_bline_vs_biohashing(homo vs hete)-',orientation,'.png'];
+file=['Pictures/DET_Comparative/DET_kNN_bline_vs_biohashing(homo vs hete)-',orientation,'.png'];
 print('-dpng',file);
 
 %%

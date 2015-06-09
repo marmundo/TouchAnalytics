@@ -5,7 +5,7 @@ addpath ../lib
 %% load the data
 clear
 %orientation='Scrolling';
- orientation='Horizontal';
+orientation='Horizontal';
 
 if strcmp(orientation,'Scrolling')
     load('scrolling data.mat');
@@ -198,7 +198,7 @@ for i=1:2
     wer(scores{1,m}, scores{2,m}, [],2,[],3);
     legend('baseline','interpolation Unknown','interpolation known');
     fileName=['main_norman_interpolation_',scenario{i},'_known'];
-    file=['Pictures/DET_kNN_bline_vs_interpolation-',orientation,'-',scenario{i},'_known.png'];
+    file=['Pictures/DET_Comparative/DET_kNN_bline_vs_interpolation-',orientation,'-',scenario{i},'_known.png'];
     print('-dpng',file);
     close;
 end

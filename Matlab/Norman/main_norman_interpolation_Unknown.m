@@ -227,7 +227,7 @@ wer(interpolation_unknown_homo.scores{1,m}, interpolation_unknown_homo.scores{2,
 wer(interpolation_unknown_hetero.scores{1,m}, interpolation_unknown_hetero.scores{2,m}, [],2,[],4);
 title({['DET - Classifier: Knn using Interpolation-',orientation]});
 legend('baseline','Known','interpolation Unknown (homo)', 'interpolation Unknown (hetero)');
-file=['Pictures/DET_kNN_bline_vs_interpolation(homo vs hete)-',orientation,'.png'];
+file=['Pictures/DET_Comparative/DET_kNN_bline_vs_interpolation(homo vs hete)-',orientation,'.png'];
 print('-dpng',file);
 
 %%

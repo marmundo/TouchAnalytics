@@ -229,8 +229,8 @@ wer(doublesum_known.scores{1,m}, doublesum_known.scores{2,m}, [],2,[],2);
 wer(doublesum_unknown_homo.scores{1,m}, doublesum_unknown_homo.scores{2,m}, [],2,[],3);
 wer(doublesum_unknown_hetero.scores{1,m}, doublesum_unknown_hetero.scores{2,m}, [],2,[],4);
 title({['DET - Classifier: Knn using DoubleSum-',orientation]});
-legend('baseline','Known','doublesum Unknown (homo)', 'doublesum Unknown (hetero)');
-file=['Pictures/DET_kNN_bline_vs_doublesum(homo vs hete)-',orientation,'.png'];
+legend('baseline','Known','doublesum Unknown (homo)', 'doublesum Unknown (hetero)','Location','southwest');
+file=['Pictures/DET_Comparative/DET_kNN_bline_vs_doublesum(homo vs hete)-',orientation,'.png'];
 print('-dpng',file);
 
 %%
