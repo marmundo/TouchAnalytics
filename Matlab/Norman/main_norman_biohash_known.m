@@ -5,8 +5,8 @@ addpath C:\Users\Poh\Dropbox\LivDet\program\lib\VR-EER
 
 %% load the data
 clear
-orientation='Scrolling';
-%orientation='Horizontal';
+%orientation='Scrolling';
+orientation='Horizontal';
 
 if strcmp(orientation,'Scrolling')
     load('scrolling data.mat');
@@ -33,7 +33,7 @@ xlabel('Feature index');
 %print('-dpng','Pictures/main_norman__unique_value_feature_count.png');
 
 % normalise
-selected_ = find(unique_count>50)
+selected_ = find(unique_count>50);
 ID=data(:,1);
 data=(data(:,selected_));
 
@@ -104,6 +104,10 @@ for i=1:numel(ID_list),
 
   %k-NN
   com.knn.mdl{i} = fitcknn([X_gen; X_imp],Y');
+
+ %SVM
+  com.svm{i}=fitcsvm([X_gen;X_imp],Y','KernelFunction','rbf','Standardize',true,'KernelScale','auto');
+  com.svm{i} = fitSVMPosterior(com.svm{i});
 end;
 bar(median(com.user.b))
 com.median.b = median(com.user.b);
@@ -112,7 +116,7 @@ com.median.b = median(com.user.b);
 % (SIMILAR to main_norman.m)
 clear score*;
 for k=1:2,
-  for m=1:4,
+  for m=1:5,
     scores{k,m}=[];
   end;
 end;
@@ -154,14 +158,22 @@ for i=1:numel(ID_list),
   [~, imp_] = predict( com.knn.mdl{i}, X_imp);
   score_gen{m}=gen_(:,2);
   score_imp{m}=imp_(:,2);
+
+ %METHOD 5: SVM
+  m=5;
+  [~,gen_] =predict(com.svm{i},X_gen);
+  [~,imp_] =predict(com.svm{i},X_imp);
+  score_gen{m}=gen_(:,2);
+  score_imp{m}=imp_(:,2);
+  
   
   %record down the scores
-  for m=2:4,
+  for m=2:5,
     scores{1,m} = [scores{1,m}; score_imp{m}];
     scores{2,m} = [scores{2,m}; score_gen{m}];
   end;
   
-  for m=2:4,
+  for m=2:5,
     eer_(i,m) = wer(scores{1,m}, scores{2,m});
     %eer_(i,m) = wer(score_imp{m}, score_gen{m}, [],2,[],m);
   end;
@@ -179,7 +191,7 @@ end
 
 %%
 figure(2);
-for m=2:4,
+for m=2:5,
   eer_system(m) = wer(scores{1,m}, scores{2,m}, [],2,[],m);
 end;
 eer_system
@@ -197,7 +209,7 @@ for i=1:2
     bhash = load(['main_norman_biohash_',scenario{i},'_Unknown-',orientation]);
     %%
     figure(3);
-    m=4;
+    m=5;
     wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
     wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
     wer(scores{1,m}, scores{2,m}, [],2,[],3);

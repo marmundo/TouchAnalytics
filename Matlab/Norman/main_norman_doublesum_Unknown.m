@@ -110,8 +110,8 @@ for s=1:2
         end
         
         %normailizing
-        X_gen=zscore(X_gen);
-        X_imp=zscore(X_imp);
+%         X_gen=zscore(X_gen);
+%         X_imp=zscore(X_imp);
         
         index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false));
         %logistic regression
@@ -249,7 +249,7 @@ wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
 wer(doublesum_known.scores{1,m}, doublesum_known.scores{2,m}, [],2,[],2);
 wer(doublesum_unknown_homo.scores{1,m}, doublesum_unknown_homo.scores{2,m}, [],2,[],3);
 wer(doublesum_unknown_hetero.scores{1,m}, doublesum_unknown_hetero.scores{2,m}, [],2,[],4);
-classifiers={'','Logistic per User','Logistic per data','kNN','SVM'}
+classifiers={'','Logistic per User','Logistic per data','kNN','SVM'};
 title({['DET - Classifier: ',classifiers{m},' using DubleSum-',orientation]});
 legend('baseline','Known','doublesum Unknown (homo)', 'doublesum Unknown (hetero)','Location','southwest');
 file=['Pictures/DET_Comparative/DET_',classifiers{m},'_bline_vs_biohashing(homo vs hete)-',orientation,'.png'];
