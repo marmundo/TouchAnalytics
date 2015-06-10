@@ -39,6 +39,7 @@ data=(data(:,selected_));
 ID_list = unique(ID)';
 
 %% analyse the test folds (should be 1/3)
+% Use the same samples for each fold in all experiments
 if strcmp(orientation,'Horizontal')
     if exist('c_horizontal.mat', 'file'),
         load c_horizontal.mat
@@ -54,7 +55,11 @@ else
         save c_scrolling.mat c
     end;
 end
+
 clear selected_user;
+
+% put each select used of each folder in the selected_user
+% variable{fold}{user}
 for p=1:3,
     selected_user{p}=cell(1,41);
     for i=1:numel(ID_list),
@@ -85,8 +90,7 @@ for s=1:2
         %negative training samples
         userlist = find(ID_list ~= i);
         userlist = userlist(TRAIN_IMP);
-        %index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false));
-        
+     
         %for each user, the template is encrypted using one common key; and the attacker
         %uses another key for nonmatch
         X_imp=[];
@@ -96,14 +100,13 @@ for s=1:2
             % Encode the impostor user, encode its data with a key
             X_imp = [X_imp;doublesum(data(index_template_neg,:),key_imp)];
         end
-        %key_imp = rand(dim);
+
         if strcmp(scenario{s},'homo')
             X_gen =doublesum(data(index_template,:),key);
         else
-            com.user.key{i} = round(sort((keySize-1).*rand(keySize,1) + 1))';
+            com.user.key{i} = randperm(keySize);
             X_gen =doublesum(data(index_template,:),com.user.key{i});
         end
-        %X_imp = double(doublesum(data(index_template_neg,:),key_imp));
         
         index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false));
         %logistic regression
@@ -112,7 +115,7 @@ for s=1:2
         com.user.b(i,:) = glmfit([X_gen; X_imp],Y', 'binomial', 'weights',W');
         
         %k-NN
-        com.knn.mdl{i} = fitcknn([X_gen; X_imp],Y');
+        com.knn.mdl{i} = fitcknn([X_gen; X_imp],Y','NumNeighbors',8);
     end;
     bar(median(com.user.b))
     com.median.b = median(com.user.b);
@@ -135,7 +138,7 @@ for s=1:2
         %impostor scores -- select only 10 samples from the VALIDATION set
         userlist = find(ID_list ~= i);
         userlist = userlist(VALID_IMP);
-        %index_imp = cell2mat(cellfun(@(x) x(1:10), selected_user{VALID}( userlist ), 'UniformOutput', false));
+       
         X_imp=[];
         %for each user, the template is encrypted using one common key; and the attacker
         %   uses another key for nonmatch
@@ -151,7 +154,6 @@ for s=1:2
         else
             X_gen = doublesum(data(index_gen,:),com.user.key{i});
         end
-        %X_imp = double(doublesum(data(index_imp,:),key_imp));
         
         
         %METHOD 2: logistic regression
