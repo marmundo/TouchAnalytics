@@ -17,10 +17,11 @@ else
     clear horizontal;
 end
 
+%%
 data=cleaningdataset(data);
 zero_ = find(sum(data)==0);
 data(:,zero_)=[];
-
+%%
 % check the numbers
 for i=1:size(data,2),
   unique_count(i) = numel(unique(data(:,i)));
@@ -30,7 +31,7 @@ bar(unique_count);
 ylabel('Unique values');
 xlabel('Feature index');
 %print('-dpng','Pictures/main_norman__unique_value_feature_count.png');
-
+%%
 % normalise
 selected_ = find(unique_count>50)
 ID=data(:,1);
@@ -38,6 +39,21 @@ data=(data(:,selected_));
 
 ID_list = unique(ID)'
 
+%%
+clear unique_count;
+for i=1:size(data,2),
+  unique_count(i) = numel(unique(data(:,i)));
+end;
+unique_count
+bar(unique_count);
+ylabel('Unique values');
+xlabel('Feature index');
+
+%% check the data matrix
+for i=1:size(data,2),
+  subplot(5,6,i);
+  hist(data(:,i),100)
+end;
 %% analyse the test folds (should be 1/3)
 if strcmp(orientation,'Horizontal')
     if exist('c_horizontal.mat', 'file'),
