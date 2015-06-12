@@ -3,6 +3,18 @@ function scores=main_norman(biometricData)
 addpath ..
 addpath ../lib
 %%
+%orientation='Scrolling';
+orientation='Horizontal';
+
+if strcmp(orientation,'Scrolling')
+    load('scrolling data.mat');
+    biometricData=scrolling;
+    clear scrolling;
+else
+    load('horizontal data.mat');
+    biometricData=horizontal;
+    clear horizontal;
+end
 
 %% cleaning
 biometricData=cleaningdataset(biometricData);

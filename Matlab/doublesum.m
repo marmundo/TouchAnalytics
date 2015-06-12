@@ -16,7 +16,7 @@ transformed_data=[];
 %check if the key is empty. If yes, create a random key based in the number of
 %features of the biometric data
 if(isempty(key))
-    key = round((numFeatures-1).*rand(numFeatures,1) + 1);
+    key = randperm(numFeatures);
 end
 
 %protecting each biometric sample using doublesum method with the given
