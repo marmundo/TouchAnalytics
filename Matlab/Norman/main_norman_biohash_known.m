@@ -225,7 +225,6 @@ wer(bhash.scores{1,m}, bhash.scores{2,m}, [],4,[],1);
 wer(scores{1,m}, scores{2,m}, [],4,[],2);
 
 %%
-
 bhash_known_hete1 = load(['main_norman_biohash_hete_known-',orientation,'-kSize-1.mat']);
 bhash_known_hete2 = load(['main_norman_biohash_hete_known-',orientation,'-kSize-2.mat']);
 bhash_known_hete3 = load(['main_norman_biohash_hete_known-',orientation,'-kSize-3.mat']);

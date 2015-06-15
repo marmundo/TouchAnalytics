@@ -270,12 +270,12 @@ bhash_unknown_homo8 = load(['main_norman_biohash_homo_Unknown-',orientation,'-kS
 bhash_unknown_homo40 = load(['main_norman_biohash_homo_Unknown-',orientation,'-kSize-40.mat']);
 figure(6)
 wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
-wer(bhash_unknown_homo1.scores{1,m,1}, bhash_unknown_homo1.scores{2,m,1}, [],2,[],2);
-wer(bhash_unknown_homo2.scores{1,m,2}, bhash_unknown_homo2.scores{2,m,2}, [],2,[],3);
-wer(bhash_unknown_homo3.scores{1,m,3}, bhash_unknown_homo3.scores{2,m,3}, [],2,[],4);
-wer(bhash_unknown_homo4.scores{1,m,4}, bhash_unknown_homo4.scores{2,m,4}, [],2,[],5);
-wer(bhash_unknown_homo8.scores{1,m,8}, bhash_unknown_homo8.scores{2,m,8}, [],2,[],6);
-wer(bhash_unknown_homo40.scores{1,m,40}, bhash_unknown_homo40.scores{2,m,40}, [],2,[],7);
+wer(bhash_unknown_homo1.scores{1,m}, bhash_unknown_homo1.scores{2,m}, [],2,[],2);
+wer(bhash_unknown_homo2.scores{1,m}, bhash_unknown_homo2.scores{2,m}, [],2,[],3);
+wer(bhash_unknown_homo3.scores{1,m}, bhash_unknown_homo3.scores{2,m}, [],2,[],4);
+wer(bhash_unknown_homo4.scores{1,m}, bhash_unknown_homo4.scores{2,m}, [],2,[],5);
+wer(bhash_unknown_homo8.scores{1,m}, bhash_unknown_homo8.scores{2,m}, [],2,[],6);
+wer(bhash_unknown_homo40.scores{1,m}, bhash_unknown_homo40.scores{2,m}, [],2,[],7);
 legend('baseline','biohash Unknown-kSize=25','biohash Unknown-kSize=50','biohash Unknown-kSize=75','biohash Unknown-kSize=100','biohash Unknown-kSize=200','biohash Unknown-kSize=1000');
 title(['DET Comparison KeySize - Biohashing - Unknown- Homogeneous-',orientation])
 file=['Pictures/DET_Comparative/DET_kNN_bline_vs_biohash-',orientation,'-',scenario{1},'_Unknown.png'];
@@ -290,12 +290,12 @@ bhash_unknown_hete8 = load(['main_norman_biohash_hete_Unknown-',orientation,'-kS
 bhash_unknown_hete40 = load(['main_norman_biohash_hete_Unknown-',orientation,'-kSize-40.mat']);
 figure(7)
 wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
-wer(bhash_unknown_hete1.scores{1,m,1}, bhash_unknown_hete1.scores{2,m,1}, [],2,[],2);
-wer(bhash_unknown_hete2.scores{1,m,2}, bhash_unknown_hete2.scores{2,m,2}, [],2,[],3);
-wer(bhash_unknown_hete3.scores{1,m,3}, bhash_unknown_hete3.scores{2,m,3}, [],2,[],4);
-wer(bhash_unknown_hete4.scores{1,m,4}, bhash_unknown_hete4.scores{2,m,4}, [],2,[],5);
-wer(bhash_unknown_hete8.scores{1,m,8}, bhash_unknown_hete8.scores{2,m,8}, [],2,[],6);
-wer(bhash_unknown_hete40.scores{1,m,40}, bhash_unknown_hete40.scores{2,m,40}, [],2,[],7);
+wer(bhash_unknown_hete1.scores{1,m}, bhash_unknown_hete1.scores{2,m}, [],2,[],2);
+wer(bhash_unknown_hete2.scores{1,m}, bhash_unknown_hete2.scores{2,m}, [],2,[],3);
+wer(bhash_unknown_hete3.scores{1,m}, bhash_unknown_hete3.scores{2,m}, [],2,[],4);
+wer(bhash_unknown_hete4.scores{1,m}, bhash_unknown_hete4.scores{2,m}, [],2,[],5);
+wer(bhash_unknown_hete8.scores{1,m}, bhash_unknown_hete8.scores{2,m}, [],2,[],6);
+wer(bhash_unknown_hete40.scores{1,m}, bhash_unknown_hete40.scores{2,m}, [],2,[],7);
 legend('baseline','biohash Unknown-kSize=25','biohash Unknown-kSize=50','biohash Unknown-kSize=75','biohash Unknown-kSize=100','biohash Unknown-kSize=200','biohash Unknown-kSize=1000');
 title(['DET Comparison KeySize - Biohashing - Unknown- Heterogeneous-',orientation])
 file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_biohash-',orientation,'-',scenario{2},'_Unknown.png'];
