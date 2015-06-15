@@ -73,8 +73,8 @@ TRAIN=1;
 VALID=2;
 TEST=3;
 TRAIN_IMP=1:20; %impostor used for training
-VALID_IMP=21:41;%impostor used for validation
-TEST_IMP =21:41;%impostor used for test
+VALID_IMP=21:40;%impostor used for validation
+TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
 load('BioHashingKey.mat','key');
