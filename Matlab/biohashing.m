@@ -5,9 +5,6 @@ function [transformed_data] = biohashing(biometric_data,key)
 % key is optional. key which will be used to encode the data
 
 
-%number of samples in the biometric data
-numSamples=length(biometric_data(:,1));
-
 %number of features in the biometric data
 numFeatures=length(biometric_data(1,:));
 

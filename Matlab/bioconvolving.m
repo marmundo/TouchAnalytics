@@ -5,15 +5,12 @@ if isempty(key)
     key=generateBioConvolvingKey(2,length(biometric_data(1,:)));
 end
 
-
 for sample=1:length(biometric_data(:,1))
-    first=0;
     c=0;
     for i=1:length(key)-1
-        if first==0
+        if i==1
             size=key(i+1)-key(i);
             c=biometric_data(sample,1:(size+key(i)));
-            first=1;
         else
             n=key(i)+1;
             size=key(i+1)-key(i);

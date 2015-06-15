@@ -243,7 +243,7 @@ bhash_unknown_hetero = load(['main_norman_biohash_hete_Unknown-',orientation,'.m
 %%
 close all;
 figure(3);
-m=5;
+m=4;
 
 wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
 %wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);

@@ -17,6 +17,10 @@ for i=1:numel(ID_list),
     
     %k-NN
     com.knn.mdl{i} = fitcknn(data([index_template index_template_neg],:),Y');
+    
+    %SVM
+    com.svm{i}=fitcsvm(data([index_template index_template_neg],:),Y','KernelFunction','rbf','Standardize',true,'KernelScale','auto');
+    com.svm{i} = fitSVMPosterior(com.svm{i});
 end;
 % bar(median(com.user.b))
 com.median.b = median(com.user.b);
@@ -24,7 +28,7 @@ com.median.b = median(com.user.b);
 %% Compare the 4 methods
 clear score*;
 for k=1:2,
-    for m=1:4,
+    for m=1:5,
         scores{k,m}=[];
     end;
 end;
@@ -74,27 +78,39 @@ for i=1:numel(ID_list),
     score_gen{m}=gen_(:,2);
     score_imp{m}=imp_(:,2);
     
+    %METHOD 5: SVM
+    m=5;
+    [~,gen_] =predict(com.svm{i},data(selected_user{VALID}{i},:));
+    [~,imp_] =predict(com.svm{i},data(index_imp,:));
+    score_gen{m}=gen_(:,2);
+    score_imp{m}=imp_(:,2);
+    
+    
     %record down the scores
-    for m=2:4,
+    for m=2:5,
         scores{1,m} = [scores{1,m}; score_imp{m}];
         scores{2,m} = [scores{2,m}; score_gen{m}];
     end;
     
-    for m=2:4,
+    for m=2:5,
         eer_(i,m) = wer(scores{1,m}, scores{2,m});
         %eer_(i,m) = wer(score_imp{m}, score_gen{m}, [],2,[],m);
     end;
     %pause;
     fprintf(1,'.');
 end;
+
 fprintf(1,'\n');
+
+fileName='main_norman.mat';
+save(fileName,'scores');
 %%
 % for m=1:4,
 %     eer_system(m) = wer(scores{1,m}, scores{2,m}, [],2,[],m);
 % end;
 % eer_system
 % legend('Euclidean','LR user-specific','LR common', 'kNN (4)','location', 'Southwest');
-% 
+%
 % print('-dpng','Pictures/main_norman__DET_Euc_LR_kNN.png');
 %%
 end
