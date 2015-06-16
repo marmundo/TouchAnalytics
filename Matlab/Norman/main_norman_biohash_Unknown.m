@@ -79,7 +79,7 @@ TEST_IMP =21:40;%impostor used for test
 %% load the common key
 load('BioHashingKey.mat','key');
 
-keySize=1;
+keySize=40;
 dim = round(size(data,2)*keySize);
 key = key(1:dim, 1:dim);
 
@@ -135,7 +135,7 @@ for s=1:2
     clear score*;
     for k=1:2,
         for m=1:5,
-            scores{k,m,keySize}=[];
+            scores{k,m}=[];
         end;
     end;
     
@@ -169,34 +169,34 @@ for s=1:2
         
         %METHOD 2: logistic regression
         m=2;
-        score_gen{m,keySize} = glmval(com.user.b(i,:)', X_gen,'identity');
-        score_imp{m,keySize} = glmval(com.user.b(i,:)', X_imp,'identity');
+        score_gen{m} = glmval(com.user.b(i,:)', X_gen,'identity');
+        score_imp{m} = glmval(com.user.b(i,:)', X_imp,'identity');
         
         %METHOD 3: logistic regression
         m=3;
-        score_gen{m,keySize} = glmval(com.median.b', X_gen,'identity');
-        score_imp{m,keySize} = glmval(com.median.b', X_imp,'identity');
+        score_gen{m} = glmval(com.median.b', X_gen,'identity');
+        score_imp{m} = glmval(com.median.b', X_imp,'identity');
         
         %METHOD 4: K-NN
         m=4;
         com.knn.mdl{i}.NumNeighbors = 8;%4
         [~, gen_] = predict( com.knn.mdl{i}, X_gen);
         [~, imp_] = predict( com.knn.mdl{i}, X_imp);
-        score_gen{m,keySize}=gen_(:,2);
-        score_imp{m,keySize}=imp_(:,2);
+        score_gen{m}=gen_(:,2);
+        score_imp{m}=imp_(:,2);
 
         %METHOD 5: SVM
         m=5;
         [~,gen_] =predict(com.svm{i},X_gen);
         [~,imp_] =predict(com.svm{i},X_imp);
-        score_gen{m,keySize}=gen_(:,2);
-        score_imp{m,keySize}=imp_(:,2);
+        score_gen{m}=gen_(:,2);
+        score_imp{m}=imp_(:,2);
   
         
         %record down the scores
         for m=2:5,
-            scores{1,m} = [scores{1,m}; score_imp{m,keySize}];
-            scores{2,m} = [scores{2,m}; score_gen{m,keySize}];
+            scores{1,m} = [scores{1,m}; score_imp{m}];
+            scores{2,m} = [scores{2,m}; score_gen{m}];
         end;
         
         for m=2:5,
@@ -238,8 +238,8 @@ end
 %% main_norman_biohash_
 bline = load('main_norman.mat');
 bhash_known=load(['main_norman_biohash_homo_known-',orientation,'.mat']);
-bhash_unknown_homo = load(['main_norman_biohash_homo_Unknown-',orientation,'.mat']);
-bhash_unknown_hetero = load(['main_norman_biohash_hete_Unknown-',orientation,'.mat']);
+bhash_unknown_homo = load(['main_norman_biohash_homo_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);
+bhash_unknown_hetero = load(['main_norman_biohash_hete_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);
 %%
 close all;
 figure(3);
@@ -258,7 +258,7 @@ print('-dpng',file);
 
 %%
 figure(4);
-wer(bhash.scores{1,m}, bhash.scores{2,m}, [],4,[],1);
+wer(bhash_known.scores{1,m}, bhash_known.scores{2,m}, [],4,[],1);
 wer(scores{1,m}, scores{2,m}, [],4,[],2);
 
 %%
@@ -278,7 +278,7 @@ wer(bhash_unknown_homo8.scores{1,m}, bhash_unknown_homo8.scores{2,m}, [],2,[],6)
 wer(bhash_unknown_homo40.scores{1,m}, bhash_unknown_homo40.scores{2,m}, [],2,[],7);
 legend('baseline','biohash Unknown-kSize=25','biohash Unknown-kSize=50','biohash Unknown-kSize=75','biohash Unknown-kSize=100','biohash Unknown-kSize=200','biohash Unknown-kSize=1000');
 title(['DET Comparison KeySize - Biohashing - Unknown- Homogeneous-',orientation])
-file=['Pictures/DET_Comparative/DET_kNN_bline_vs_biohash-',orientation,'-',scenario{1},'_Unknown.png'];
+file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_biohash-',orientation,'-',scenario{1},'_Unknown.png'];
 print('-dpng',file);
 
 %%

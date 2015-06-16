@@ -118,7 +118,7 @@ com.median.b = median(com.user.b);
 clear score*;
 for k=1:2,
   for m=1:5,
-    scores{k,m,keySize}=[];
+    scores{k,m}=[];
   end;
 end;
 
@@ -233,12 +233,12 @@ bhash_known_hete8 = load(['main_norman_biohash_hete_known-',orientation,'-kSize-
 bhash_known_hete40 = load(['main_norman_biohash_hete_known-',orientation,'-kSize-40.mat']);
 figure(5)
 wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
-wer(bhash_known_hete1.scores{1,m,1}, bhash_known_hete1.scores{2,m,1}, [],2,[],2);
-wer(bhash_known_hete2.scores{1,m,2}, bhash_known_hete2.scores{2,m,2}, [],2,[],3);
-wer(bhash_known_hete3.scores{1,m,3}, bhash_known_hete3.scores{2,m,3}, [],2,[],4);
-wer(bhash_known_hete4.scores{1,m,4}, bhash_known_hete4.scores{2,m,4}, [],2,[],5);
-wer(bhash_known_hete8.scores{1,m,8}, bhash_known_hete8.scores{2,m,8}, [],2,[],6);
-wer(bhash_known_hete40.scores{1,m,40}, bhash_known_hete40.scores{2,m,40}, [],2,[],7);
+wer(bhash_known_hete1.scores{1,m}, bhash_known_hete1.scores{2,m}, [],2,[],2);
+wer(bhash_known_hete2.scores{1,m}, bhash_known_hete2.scores{2,m}, [],2,[],3);
+wer(bhash_known_hete3.scores{1,m}, bhash_known_hete3.scores{2,m}, [],2,[],4);
+wer(bhash_known_hete4.scores{1,m}, bhash_known_hete4.scores{2,m}, [],2,[],5);
+wer(bhash_known_hete8.scores{1,m}, bhash_known_hete8.scores{2,m}, [],2,[],6);
+wer(bhash_known_hete40.scores{1,m}, bhash_known_hete40.scores{2,m}, [],2,[],7);
 legend('baseline','biohash known-kSize=25','biohash known-kSize=50','biohash known-kSize=75','biohash known-kSize=100','biohash known-kSize=200','biohash known-kSize=1000');
 title(['DET Comparison KeySize - Biohashing - Know Scenario-',orientation])
 file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_biohash-',orientation,'-known.png'];
