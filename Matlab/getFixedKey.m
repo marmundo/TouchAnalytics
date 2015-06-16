@@ -17,7 +17,10 @@ elseif strcmp(cancelableFunction,'BioConvolving')
     key=[key,keySize.nFeatures];
 %     key=[0,round(keySize/2),keySize];
 elseif strcmp(cancelableFunction,'DoubleSum')
-    key=1:2:keySize;
-    key=[key,2:2:keySize];
+    load('DoubleSumKey.mat','key');
+    key=key(1:keySize);
+    
+    %key=1:2:keySize;
+    %key=[key,2:2:keySize];
 end
 end

@@ -36,7 +36,7 @@ selected_ = find(unique_count>50)
 ID=data(:,1);
 data=(data(:,selected_));
 
-ID_list = unique(ID)'
+ID_list = unique(ID)';
 
 %% analyse the test folds (should be 1/3)
 if strcmp(orientation,'Horizontal')
@@ -72,7 +72,7 @@ VALID_IMP=21:40;%impostor used for validation
 TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
-keySize=length(data(1,:));
+keySize=400;
 key=getFixedKey('DoubleSum',keySize);
 
 %% train classifiers in the doublesum domain 
@@ -179,7 +179,7 @@ fprintf(1,'\n');
 extension='.mat';
 scenario={'homo','hete'};
 for i=1:2
-    fileName=['main_norman_doublesum_',scenario{i},'_known-',orientation];
+    fileName=['main_norman_doublesum_',scenario{i},'_known-',orientation,'-kSize-',num2str(keySize)];
     save([fileName,extension],'scores');
 end
 
@@ -189,7 +189,7 @@ figure(2);
 for m=2:5,
   eer_system(m) = wer(scores{1,m}, scores{2,m}, [],2,[],m);
 end;
-eer_system
+eer_system;
 legend('LR user-specific','LR common', 'kNN (8)','location', 'Southwest');
 
 for i=1:2
@@ -217,3 +217,24 @@ end
 figure(4);
 wer(bhash.scores{1,m}, bhash.scores{2,m}, [],4,[],1);
 wer(scores{1,m}, scores{2,m}, [],4,[],2);
+
+%%
+dsum_known_hete25 = load(['main_norman_doublesum_hete_known-',orientation,'-kSize-25.mat']);
+dsum_known_hete50 = load(['main_norman_doublesum_hete_known-',orientation,'-kSize-50.mat']);
+dsum_known_hete75 = load(['main_norman_doublesum_hete_known-',orientation,'-kSize-75.mat']);
+dsum_known_hete100 = load(['main_norman_doublesum_hete_known-',orientation,'-kSize-100.mat']);
+dsum_known_hete200 = load(['main_norman_doublesum_hete_known-',orientation,'-kSize-200.mat']);
+dsum_known_hete400 = load(['main_norman_doublesum_hete_known-',orientation,'-kSize-400.mat']);
+figure(5)
+wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+wer(dsum_known_hete25.scores{1,m}, dsum_known_hete25.scores{2,m}, [],2,[],2);
+wer(dsum_known_hete50.scores{1,m}, dsum_known_hete50.scores{2,m}, [],2,[],3);
+wer(dsum_known_hete75.scores{1,m}, dsum_known_hete75.scores{2,m}, [],2,[],4);
+wer(dsum_known_hete100.scores{1,m}, dsum_known_hete100.scores{2,m}, [],2,[],5);
+wer(dsum_known_hete200.scores{1,m}, dsum_known_hete200.scores{2,m}, [],2,[],6);
+wer(dsum_known_hete400.scores{1,m}, dsum_known_hete400.scores{2,m}, [],2,[],7);
+legend('baseline','doublesum known-kSize=25','doublesum known-kSize=50','doublesum known-kSize=75','doublesum known-kSize=100','doublesum known-kSize=200','doublesum known-kSize=400','Location','southwest');
+title(['DET Comparison KeySize - doublesuming - Know Scenario-',orientation])
+file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_doublesum-',orientation,'-known.png'];
+print('-dpng',file);
+

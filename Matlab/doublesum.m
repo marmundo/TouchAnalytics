@@ -22,8 +22,8 @@ end
 %protecting each biometric sample using doublesum method with the given
 %key.
 
-C1=randperm(length(key));
-C2=randperm(length(key));
+C1=randi([1,25],1,length(key));
+C2=randi([1,25],1,length(key));
 
 
 for i=1:numFeatures
