@@ -1,30 +1,25 @@
-function [transformed_data] = doublesum(biometric_data,key)
+function [transformed_data] = doublesum(biometric_data,key,C1,C2)
 % DOUBLE SUM function protects a biometric data using biometric method
 % transformed_data=doublesum(biometric_data,key)
 % biometric_data is the biometric data
 % key is optional. key which will be used to encode the data
 
-%number of samples in the biometric data
-numSamples=length(biometric_data(:,1));
-
-%number of features in the biometric data
-numFeatures=length(biometric_data(1,:));
-
-%starting variable
-transformed_data=[];
+[numSamples, numFeatures]=size(biometric_data);
 
 %check if the key is empty. If yes, create a random key based in the number of
 %features of the biometric data
 if(isempty(key))
     key = randperm(numFeatures);
 end
+if nargin<3|| isempty(C1),
+  C1=randi([1,25],1,length(key));
+end;
+if nargin<4|| isempty(C2),
+  C2=randi([1,25],1,length(key));
+end;
 
-%protecting each biometric sample using doublesum method with the given
-%key.
-
-C1=randi([1,25],1,length(key));
-C2=randi([1,25],1,length(key));
-
+%starting variable
+transformed_data=zeros(numSamples, numFeatures);
 
 for i=1:numFeatures
     if(i>length(key))

@@ -80,9 +80,13 @@ TEST_IMP =21:40;%impostor used for test
 keySize=400;
 key=getFixedKey('DoubleSum',keySize);
 
+%starting variable
+C1=randi([1,25],1,length(key));
+C2=randi([1,25],1,length(key));
+
+%% train classifiers in the doublesum domain
 scenario={'homo','hete'};
 for s=1:2
-    %% train classifiers in the doublesum domain
     for i=1:numel(ID_list),
         
         %positive training samples
@@ -99,41 +103,38 @@ for s=1:2
             index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( iUser ), 'UniformOutput', false));
             key_imp=generateDoubleSumKey(keySize);
             % Encode the impostor user, encode its data with a key
-            X_imp = [X_imp;doublesum(data(index_template_neg,:),key_imp)];
+            X_imp = [X_imp;doublesum(data(index_template_neg,:),key_imp,C1,C2)];
         end
 
         if strcmp(scenario{s},'homo')
-            X_gen =doublesum(data(index_template,:),key);
+            X_gen =doublesum(data(index_template,:),key,C1,C2);
         else
             com.user.key{i} = generateDoubleSumKey(keySize);
-            X_gen =doublesum(data(index_template,:),com.user.key{i});
+            X_gen =doublesum(data(index_template,:),com.user.key{i},C1,C2);
         end
-        
-        %normailizing
-%         X_gen=zscore(X_gen);
-%         X_imp=zscore(X_imp);
+   
         
         index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false));
         %logistic regression
         Y = [ones(1, numel(index_template)) zeros(1, numel(index_template_neg))];
-        W = [ones(1, numel(index_template)) / numel(index_template) ones(1, numel(index_template_neg)) /numel(index_template_neg) ];
-        com.user.b(i,:) = glmfit([X_gen; X_imp],Y', 'binomial', 'weights',W');
+%         W = [ones(1, numel(index_template)) / numel(index_template) ones(1, numel(index_template_neg)) /numel(index_template_neg) ];
+%         com.user.b(i,:) = glmfit([X_gen; X_imp],Y', 'binomial', 'weights',W');
         
         %k-NN
         com.knn.mdl{i} = fitcknn([X_gen; X_imp],Y','NumNeighbors',8);
         
         %SVM
-        com.svm{i}=fitcsvm([X_gen;X_imp],Y','KernelFunction','rbf','Standardize',true,'KernelScale','auto');
-        com.svm{i} = fitSVMPosterior(com.svm{i});
+%         com.svm{i}=fitcsvm([X_gen;X_imp],Y','KernelFunction','rbf','Standardize',true,'KernelScale','auto');
+%         com.svm{i} = fitSVMPosterior(com.svm{i});
     end;
-    bar(median(com.user.b))
-    com.median.b = median(com.user.b);
+%     bar(median(com.user.b))
+%     com.median.b = median(com.user.b);
     
     %% Compare the 4 methods
     % (SIMILAR to main_norman.m)
     clear score*;
     for k=1:2,
-        for m=1:5,
+        for m=4,
             scores{k,m}=[];
         end;
     end;
@@ -159,24 +160,20 @@ for s=1:2
         end
         %key_imp = rand(dim);
         if strcmp(scenario{s},'homo')
-            X_gen = doublesum(data(index_gen,:),key);
+            X_gen = doublesum(data(index_gen,:),key,C1,C2);
         else
-            X_gen = doublesum(data(index_gen,:),com.user.key{i});
+            X_gen = doublesum(data(index_gen,:),com.user.key{i},C1,C2);
         end
         
-        %normalizing
-        X_gen=zscore(X_gen);
-        X_imp=zscore(X_imp);
-        
         %METHOD 2: logistic regression
-        m=2;
-        score_gen{m} = glmval(com.user.b(i,:)', X_gen,'identity');
-        score_imp{m} = glmval(com.user.b(i,:)', X_imp,'identity');
+%         m=2;
+%         score_gen{m} = glmval(com.user.b(i,:)', X_gen,'identity');
+%         score_imp{m} = glmval(com.user.b(i,:)', X_imp,'identity');
         
         %METHOD 3: logistic regression
-        m=3;
-        score_gen{m} = glmval(com.median.b', X_gen,'identity');
-        score_imp{m} = glmval(com.median.b', X_imp,'identity');
+%         m=3;
+%         score_gen{m} = glmval(com.median.b', X_gen,'identity');
+%         score_imp{m} = glmval(com.median.b', X_imp,'identity');
         
         %METHOD 4: K-NN
         m=4;
@@ -187,19 +184,19 @@ for s=1:2
         score_imp{m}=imp_(:,2);
         
         %METHOD 5: SVM
-        m=5;
-        [~,gen_] =predict(com.svm{i},X_gen);
-        [~,imp_] =predict(com.svm{i},X_imp);
-        score_gen{m}=gen_(:,2);
-        score_imp{m}=imp_(:,2);
+%         m=5;
+%         [~,gen_] =predict(com.svm{i},X_gen);
+%         [~,imp_] =predict(com.svm{i},X_imp);
+%         score_gen{m}=gen_(:,2);
+%         score_imp{m}=imp_(:,2);
         
         %record down the scores
-        for m=2:5,
+        for m=4,
             scores{1,m} = [scores{1,m}; score_imp{m}];
             scores{2,m} = [scores{2,m}; score_gen{m}];
         end;
         
-        for m=2:5,
+        for m=4,
             eer_(i,m) = wer(scores{1,m}, scores{2,m});
             %eer_(i,m) = wer(score_imp{m}, score_gen{m}, [],2,[],m);
         end;
@@ -212,21 +209,21 @@ for s=1:2
     save([fileName,extension],'scores');
 
     %%
-    figure(2);
-    for m=2:5,
-      eer_system(m) = wer(scores{1,m}, scores{2,m}, [],2,[],m);
-    end;
-    eer_system;
-    legend('LR user-specific','LR common', 'kNN (8)','location', 'Southwest');
-    file=['Pictures/',fileName,'__DET_Euc_LR_kNN.png'];
-    print('-dpng',file);
+%     figure(2);
+%     for m=4,
+%       eer_system(m) = wer(scores{1,m}, scores{2,m}, [],2,[],m);
+%     end;
+%     eer_system;
+%     legend('LR user-specific','LR common', 'kNN (8)','location', 'Southwest');
+%     file=['Pictures/',fileName,'__DET_Euc_LR_kNN.png'];
+%     print('-dpng',file);
 
     %% compare with main_norman
     bline = load('main_norman.mat');
-    bhash = load(['main_norman_doublesum_',scenario{s},'_known-',orientation]);
+    bhash = load(['main_norman_doublesum_',scenario{s},'_known-',orientation,'-kSize-',num2str(keySize)]);
     %%
     figure(3);
-    m=5;
+    m=4;
     wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
     wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
     wer(scores{1,m}, scores{2,m}, [],2,[],3);
@@ -237,10 +234,10 @@ end
 
 %% main_norman_doublesum_
 bline = load('main_norman.mat');
-doublesum_known=load(['main_norman_doublesum_homo_known-',orientation,'.mat']);
-doublesum_unknown_homo = load(['main_norman_doublesum_homo_Unknown-',orientation,'.mat']);
-doublesum_unknown_hetero = load(['main_norman_doublesum_hete_Unknown-',orientation,'.mat']);
-%%
+for keySize=[25,50,75,100,200,400]
+doublesum_known=load(['main_norman_doublesum_homo_known-',orientation,'-kSize-',num2str(keySize),'.mat']);
+doublesum_unknown_homo = load(['main_norman_doublesum_homo_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);
+doublesum_unknown_hetero = load(['main_norman_doublesum_hete_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);
 close all;
 figure(3);
 m=4;
@@ -250,11 +247,11 @@ wer(doublesum_known.scores{1,m}, doublesum_known.scores{2,m}, [],2,[],2);
 wer(doublesum_unknown_homo.scores{1,m}, doublesum_unknown_homo.scores{2,m}, [],2,[],3);
 wer(doublesum_unknown_hetero.scores{1,m}, doublesum_unknown_hetero.scores{2,m}, [],2,[],4);
 classifiers={'','Logistic per User','Logistic per data','kNN','SVM'};
-title({['DET - Classifier: ',classifiers{m},' using DubleSum-',orientation]});
+title({['DET - Classifier: ',classifiers{m},' using DubleSum-',orientation,'-keySize-',num2str(keySize)]});
 legend('baseline','Known','doublesum Unknown (homo)', 'doublesum Unknown (hetero)','Location','southwest');
-file=['Pictures/DET_Comparative/DET_',classifiers{m},'_bline_vs_biohashing(homo vs hete)-',orientation,'.png'];
+file=['Pictures/DET_Comparative/DET_',classifiers{m},'_bline_vs_biohashing(homo vs hete)-',orientation,'-kSize-',num2str(keySize),'.png'];
 print('-dpng',file);
-
+end
 %%
 figure(4);
 wer(bhash.scores{1,m}, bhash.scores{2,m}, [],4,[],1);
