@@ -1,7 +1,8 @@
 % program is very similar to main_norman_biohash
 
-addpath ..
-addpath C:\Users\Poh\Dropbox\LivDet\program\lib\VR-EER
+addpath ../lib
+addpath ../
+% addpath C:\Users\Poh\Dropbox\LivDet\program\lib\VR-EER
 
 %% load the data
 clear
@@ -18,6 +19,7 @@ else
     clear horizontal;
 end
 
+%% Cleaning and normalizing data
 data=cleaningdataset(data);
 zero_ = find(sum(data)==0);
 data(:,zero_)=[];
@@ -27,18 +29,18 @@ for i=1:size(data,2),
     unique_count(i) = numel(unique(data(:,i)));
 end;
 
-bar(unique_count);
-ylabel('Unique values');
-xlabel('Feature index');
+% bar(unique_count);
+% ylabel('Unique values');
+% xlabel('Feature index');
 %print('-dpng','Pictures/main_norman__unique_value_feature_count.png');
 
-% normalise
 selected_ = find(unique_count>50);
 ID=data(:,1);
 data=(data(:,selected_));
-%data=zscore(data);
 
-ID_list = unique(ID)'
+data=zscore(data);
+
+ID_list = unique(ID)';
 
 %% analyse the test folds (should be 1/3)
 if strcmp(orientation,'Horizontal')
@@ -57,6 +59,7 @@ else
     end;
 end
 
+%selected users per fold (TRAIN, VALID and TEST)
 clear selected_user;
 for p=1:3,
     selected_user{p}=cell(1,41);
@@ -75,15 +78,15 @@ TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
 load('BioHashingKey.mat','key');
-dim = size(data,2);
 
-
+keySize=40;
+dim = round(size(data,2)*keySize);
 key = key(1:dim, 1:dim);
 
+%% train classifiers in the biohashing domain
 scenario={'homo','hete'};
 for s=1:2
-    %% train classifiers in the biohashing domain
-    for i=1:numel(ID_list),
+   for i=1:numel(ID_list),
         
         %positive training samples
         index_template = selected_user{TRAIN}{i}; %use all the available samples for training
@@ -204,42 +207,43 @@ for s=1:2
         fprintf(1,'.');
     end;
     fprintf(1,'\n');
-    fileName=['main_norman_biohash_',scenario{s},'_Unknown-',orientation];
+    fileName=['main_norman_biohash_',scenario{s},'_Unknown-',orientation,'-kSize-',num2str(keySize)];
     extension='.mat';
     save([fileName,extension],'scores');
 
     %%
-    figure(2);
-    for m=2:5,
-      eer_system(m) = wer(scores{1,m}, scores{2,m}, [],2,[],m);
-    end;
-    eer_system
-    legend('LR user-specific','LR common', 'kNN (8)','location', 'Southwest');
-    file=['Pictures/',fileName,'__DET_Euc_LR_kNN.png'];
-    print('-dpng',file);
-
-    %% compare with main_norman
-    bline = load('main_norman.mat');
-    bhash = load(['main_norman_biohash_',scenario{s},'_known-',orientation]);
+%     figure(2);
+%     for m=2:5,
+%       eer_system(m) = wer(scores{1,m}, scores{2,m}, [],2,[],m);
+%     end;
+%     eer_system
+%     legend('LR user-specific','LR common', 'kNN (8)','location', 'Southwest');
+%     file=['Pictures/',fileName,'__DET_Euc_LR_kNN.png'];
+%     print('-dpng',file);
+% 
+%     %% compare with main_norman
+%      bline = load('main_norman.mat');
+%     bhash = load(['main_norman_biohash_',scenario{s},'_known-',orientation]);
     %%
-    figure(3);
-    m=5;
-    wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
-    wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
-    wer(scores{1,m}, scores{2,m}, [],2,[],3);
-    legend('baseline','biohash Known','biohash Unknown');
-    file=['Pictures/DET_kNN_bline_vs_biohash-',orientation,'-',scenario{s},'_Unknown.png'];
-    print('-dpng',file);
+%     figure(3);
+%     m=5;
+%     wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+%     wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
+%     wer(scores{1,m}, scores{2,m}, [],2,[],3);
+%     legend('baseline','biohash Known','biohash Unknown');
+%     file=['Pictures/DET_kNN_bline_vs_biohash-',orientation,'-',scenario{s},'_Unknown.png'];
+%     print('-dpng',file);
 end
 
 %% main_norman_biohash_
+bline = load('main_norman.mat');
 bhash_known=load(['main_norman_biohash_homo_known-',orientation,'.mat']);
-bhash_unknown_homo = load(['main_norman_biohash_homo_Unknown-',orientation,'.mat']);
-bhash_unknown_hetero = load(['main_norman_biohash_hete_Unknown-',orientation,'.mat']);
+bhash_unknown_homo = load(['main_norman_biohash_homo_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);
+bhash_unknown_hetero = load(['main_norman_biohash_hete_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);
 %%
 close all;
 figure(3);
-m=5;
+m=4;
 
 wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
 %wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
@@ -254,5 +258,45 @@ print('-dpng',file);
 
 %%
 figure(4);
-wer(bhash.scores{1,m}, bhash.scores{2,m}, [],4,[],1);
+wer(bhash_known.scores{1,m}, bhash_known.scores{2,m}, [],4,[],1);
 wer(scores{1,m}, scores{2,m}, [],4,[],2);
+
+%%
+bhash_unknown_homo1 = load(['main_norman_biohash_homo_Unknown-',orientation,'-kSize-1.mat']);
+bhash_unknown_homo2 = load(['main_norman_biohash_homo_Unknown-',orientation,'-kSize-2.mat']);
+bhash_unknown_homo3 = load(['main_norman_biohash_homo_Unknown-',orientation,'-kSize-3.mat']);
+bhash_unknown_homo4 = load(['main_norman_biohash_homo_Unknown-',orientation,'-kSize-4.mat']);
+bhash_unknown_homo8 = load(['main_norman_biohash_homo_Unknown-',orientation,'-kSize-8.mat']);
+bhash_unknown_homo40 = load(['main_norman_biohash_homo_Unknown-',orientation,'-kSize-40.mat']);
+figure(6)
+wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+wer(bhash_unknown_homo1.scores{1,m}, bhash_unknown_homo1.scores{2,m}, [],2,[],2);
+wer(bhash_unknown_homo2.scores{1,m}, bhash_unknown_homo2.scores{2,m}, [],2,[],3);
+wer(bhash_unknown_homo3.scores{1,m}, bhash_unknown_homo3.scores{2,m}, [],2,[],4);
+wer(bhash_unknown_homo4.scores{1,m}, bhash_unknown_homo4.scores{2,m}, [],2,[],5);
+wer(bhash_unknown_homo8.scores{1,m}, bhash_unknown_homo8.scores{2,m}, [],2,[],6);
+wer(bhash_unknown_homo40.scores{1,m}, bhash_unknown_homo40.scores{2,m}, [],2,[],7);
+legend('baseline','biohash Unknown-kSize=25','biohash Unknown-kSize=50','biohash Unknown-kSize=75','biohash Unknown-kSize=100','biohash Unknown-kSize=200','biohash Unknown-kSize=1000');
+title(['DET Comparison KeySize - Biohashing - Unknown- Homogeneous-',orientation])
+file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_biohash-',orientation,'-',scenario{1},'_Unknown.png'];
+print('-dpng',file);
+
+%%
+bhash_unknown_hete1 = load(['main_norman_biohash_hete_Unknown-',orientation,'-kSize-1.mat']);
+bhash_unknown_hete2 = load(['main_norman_biohash_hete_Unknown-',orientation,'-kSize-2.mat']);
+bhash_unknown_hete3 = load(['main_norman_biohash_hete_Unknown-',orientation,'-kSize-3.mat']);
+bhash_unknown_hete4 = load(['main_norman_biohash_hete_Unknown-',orientation,'-kSize-4.mat']);
+bhash_unknown_hete8 = load(['main_norman_biohash_hete_Unknown-',orientation,'-kSize-8.mat']);
+bhash_unknown_hete40 = load(['main_norman_biohash_hete_Unknown-',orientation,'-kSize-40.mat']);
+figure(7)
+wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+wer(bhash_unknown_hete1.scores{1,m}, bhash_unknown_hete1.scores{2,m}, [],2,[],2);
+wer(bhash_unknown_hete2.scores{1,m}, bhash_unknown_hete2.scores{2,m}, [],2,[],3);
+wer(bhash_unknown_hete3.scores{1,m}, bhash_unknown_hete3.scores{2,m}, [],2,[],4);
+wer(bhash_unknown_hete4.scores{1,m}, bhash_unknown_hete4.scores{2,m}, [],2,[],5);
+wer(bhash_unknown_hete8.scores{1,m}, bhash_unknown_hete8.scores{2,m}, [],2,[],6);
+wer(bhash_unknown_hete40.scores{1,m}, bhash_unknown_hete40.scores{2,m}, [],2,[],7);
+legend('baseline','biohash Unknown-kSize=25','biohash Unknown-kSize=50','biohash Unknown-kSize=75','biohash Unknown-kSize=100','biohash Unknown-kSize=200','biohash Unknown-kSize=1000');
+title(['DET Comparison KeySize - Biohashing - Unknown- Heterogeneous-',orientation])
+file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_biohash-',orientation,'-',scenario{2},'_Unknown.png'];
+print('-dpng',file);

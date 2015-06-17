@@ -26,17 +26,17 @@ for i=1:size(data,2),
   unique_count(i) = numel(unique(data(:,i)));
 end;
 
-bar(unique_count);
-ylabel('Unique values');
-xlabel('Feature index');
+%bar(unique_count);
+% ylabel('Unique values');
+% xlabel('Feature index');
 %print('-dpng','Pictures/main_norman__unique_value_feature_count.png');
 
 % normalise
-selected_ = find(unique_count>50)
+selected_ = find(unique_count>50);
 ID=data(:,1);
 data=(data(:,selected_));
 
-ID_list = unique(ID)'
+ID_list = unique(ID)';
 
 %% analyse the test folds (should be 1/3)
 if strcmp(orientation,'Horizontal')
@@ -72,7 +72,8 @@ VALID_IMP=21:40;%impostor used for validation
 TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
-keySize=length(data(1,:));
+keySize.nFeatures=length(data(1,:));
+keySize.partitions=25;
 key=getFixedKey('BioConvolving',keySize);
 
 %% train classifiers in the bioconvolving domain 
@@ -100,6 +101,10 @@ for i=1:numel(ID_list),
 
   %k-NN
   com.knn.mdl{i} = fitcknn([X_gen; X_imp],Y');
+  
+  %SVM
+%   com.svm{i}=fitcsvm([X_gen;X_imp],Y','KernelFunction','rbf','Standardize',true,'KernelScale','auto');
+%   com.svm{i} = fitSVMPosterior(com.svm{i});
 end;
 bar(median(com.user.b))
 com.median.b = median(com.user.b);
@@ -151,6 +156,13 @@ for i=1:numel(ID_list),
   score_gen{m}=gen_(:,2);
   score_imp{m}=imp_(:,2);
   
+  %METHOD 5: SVM
+%   m=5;
+%   [~,gen_] =predict(com.svm{i},X_gen);
+%   [~,imp_] =predict(com.svm{i},X_imp);
+%   score_gen{m}=gen_(:,2);
+%   score_imp{m}=imp_(:,2);
+  
   %record down the scores
   for m=2:4,
     scores{1,m} = [scores{1,m}; score_imp{m}];
@@ -168,7 +180,7 @@ fprintf(1,'\n');
 extension='.mat';
 scenario={'homo','hete'};
 for i=1:2
-    fileName=['main_norman_bioconvolving_',scenario{i},'_known-',orientation];
+    fileName=['main_norman_bioconvolving_',scenario{i},'_known-',orientation,'-kSize-',num2str(keySize.partitions)];
     save([fileName,extension],'scores');
 end
 
@@ -190,19 +202,39 @@ end
 for i=1:2
     %% compare with main_norman
     bline = load('main_norman.mat');
-    bhash = load(['main_norman_bioconvolving_',scenario{i},'_Unknown-',orientation]);
+    bconvolving = load(['main_norman_bioconvolving_',scenario{i},'_Unknown-',orientation]);
     %%
     figure(3);
     m=4;
     wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
-    wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
+    wer(bconvolving.scores{1,m}, bconvolving.scores{2,m}, [],2,[],2);
     wer(scores{1,m}, scores{2,m}, [],2,[],3);
     legend('baseline','bioconvolving Unknown','bioconvolving known');
-    file=['Pictures/DET_Comparative/DET_kNN_bline_vs_biohash-',orientation,'-',scenario{i},'_known.png'];
+    file=['Pictures/DET_Comparative/DET_kNN_bline_vs_bioconvolving-',orientation,'-',scenario{i},'_known.png'];
     print('-dpng',file);
     close;
 end
 %%
 figure(4);
-wer(bhash.scores{1,m}, bhash.scores{2,m}, [],4,[],1);
+wer(bconvolving.scores{1,m}, bconvolving.scores{2,m}, [],4,[],1);
 wer(scores{1,m}, scores{2,m}, [],4,[],2);
+
+%%
+bconvolving_known_hete1 = load(['main_norman_bioconvolving_hete_known-',orientation,'-kSize-2.mat']);
+bconvolving_known_hete2 = load(['main_norman_bioconvolving_hete_known-',orientation,'-kSize-3.mat']);
+bconvolving_known_hete3 = load(['main_norman_bioconvolving_hete_known-',orientation,'-kSize-4.mat']);
+bconvolving_known_hete4 = load(['main_norman_bioconvolving_hete_known-',orientation,'-kSize-8.mat']);
+bconvolving_known_hete8 = load(['main_norman_bioconvolving_hete_known-',orientation,'-kSize-16.mat']);
+bconvolving_known_hete40 = load(['main_norman_bioconvolving_hete_known-',orientation,'-kSize-25.mat']);
+figure(5)
+wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+wer(bconvolving_known_hete1.scores{1,m}, bconvolving_known_hete1.scores{2,m}, [],2,[],2);
+wer(bconvolving_known_hete2.scores{1,m}, bconvolving_known_hete2.scores{2,m}, [],2,[],3);
+wer(bconvolving_known_hete3.scores{1,m}, bconvolving_known_hete3.scores{2,m}, [],2,[],4);
+wer(bconvolving_known_hete4.scores{1,m}, bconvolving_known_hete4.scores{2,m}, [],2,[],5);
+wer(bconvolving_known_hete8.scores{1,m}, bconvolving_known_hete8.scores{2,m}, [],2,[],6);
+wer(bconvolving_known_hete40.scores{1,m}, bconvolving_known_hete40.scores{2,m}, [],2,[],7);
+legend('baseline','bioconvolving known-kSize=2','bioconvolving known-kSize=3','bioconvolving known-kSize=4','bioconvolving known-kSize=8','bioconvolving known-kSize=16','bioconvolving known-kSize=25');
+title(['DET Comparison KeySize - bioconvolvinging - Know Scenario-',orientation])
+file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_bioconvolving-',orientation,'-known.png'];
+print('-dpng',file);

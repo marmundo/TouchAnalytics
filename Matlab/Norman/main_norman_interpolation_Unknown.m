@@ -22,9 +22,9 @@ for i=1:size(data,2),
     unique_count(i) = numel(unique(data(:,i)));
 end;
 
-bar(unique_count);
-ylabel('Unique values');
-xlabel('Feature index');
+% bar(unique_count);
+% ylabel('Unique values');
+% xlabel('Feature index');
 %print('-dpng','Pictures/main_norman__unique_value_feature_count.png');
 
 % normalise
@@ -69,7 +69,7 @@ VALID_IMP=21:40;%impostor used for validation
 TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
-keySize=length(data(1,:));
+keySize=400
 key=getFixedKey('Interpolation',keySize);
 
 scenario={'homo','hete'};
@@ -90,7 +90,7 @@ for s=1:2
         X_imp=[];
         for iUser=1:numel(userlist)
             index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( iUser ), 'UniformOutput', false));
-            key_imp =((keySize-1).*rand(keySize,1) + 1)';
+            key_imp =randi([1,25],1,keySize);
             % Encode the impostor user, encode its data with a key
             X_imp = [X_imp;interpolation(data(index_template_neg,:),key_imp)];
         end
@@ -98,7 +98,7 @@ for s=1:2
         if strcmp(scenario{s},'homo')
             X_gen =interpolation(data(index_template,:),key);
         else
-            com.user.key{i} = ((keySize-1).*rand(keySize,1) + 1)';
+            com.user.key{i} = randi([1,25],1,keySize);
             X_gen =interpolation(data(index_template,:),com.user.key{i});
         end
         %X_imp = double(interpolation(data(index_template_neg,:),key_imp));
@@ -184,7 +184,7 @@ for s=1:2
         fprintf(1,'.');
     end;
     fprintf(1,'\n');
-    fileName=['main_norman_interpolation_',scenario{s},'_Unknown-',orientation];
+    fileName=['main_norman_interpolation_',scenario{s},'_Unknown-',orientation,'-kSize-',num2str(keySize)];
     extension='.mat';
     save([fileName,extension],'scores');
 
@@ -234,3 +234,44 @@ print('-dpng',file);
 figure(4);
 wer(bhash.scores{1,m}, bhash.scores{2,m}, [],4,[],1);
 wer(scores{1,m}, scores{2,m}, [],4,[],2);
+
+%%
+inter_unknown_homo25 = load(['main_norman_interpolation_homo_Unknown-',orientation,'-kSize-25.mat']);
+inter_unknown_homo50 = load(['main_norman_interpolation_homo_Unknown-',orientation,'-kSize-50.mat']);
+inter_unknown_homo75 = load(['main_norman_interpolation_homo_Unknown-',orientation,'-kSize-75.mat']);
+inter_unknown_homo100 = load(['main_norman_interpolation_homo_Unknown-',orientation,'-kSize-100.mat']);
+inter_unknown_homo200 = load(['main_norman_interpolation_homo_Unknown-',orientation,'-kSize-200.mat']);
+inter_unknown_homo400 = load(['main_norman_interpolation_homo_Unknown-',orientation,'-kSize-400.mat']);
+figure(6)
+wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+wer(inter_unknown_homo25.scores{1,m}, inter_unknown_homo25.scores{2,m}, [],2,[],2);
+wer(inter_unknown_homo50.scores{1,m}, inter_unknown_homo50.scores{2,m}, [],2,[],3);
+wer(inter_unknown_homo75.scores{1,m}, inter_unknown_homo75.scores{2,m}, [],2,[],4);
+wer(inter_unknown_homo100.scores{1,m}, inter_unknown_homo100.scores{2,m}, [],2,[],5);
+wer(inter_unknown_homo200.scores{1,m}, inter_unknown_homo200.scores{2,m}, [],2,[],6);
+wer(inter_unknown_homo400.scores{1,m}, inter_unknown_homo400.scores{2,m}, [],2,[],7);
+legend('baseline','interpolation Unknown-kSize=25','interpolation Unknown-kSize=50','interpolation Unknown-kSize=75','interpolation Unknown-kSize=100','interpolation Unknown-kSize=200','interpolation Unknown-kSize=400');
+title(['DET Comparison KeySize - interpolation - Unknown- Homogeneous-',orientation])
+file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_interpolation-',orientation,'-',scenario{1},'_Unknown.png'];
+print('-dpng',file);
+
+%%
+inter_unknown_hete25 = load(['main_norman_interpolation_hete_Unknown-',orientation,'-kSize-25.mat']);
+inter_unknown_hete50 = load(['main_norman_interpolation_hete_Unknown-',orientation,'-kSize-50.mat']);
+inter_unknown_hete75 = load(['main_norman_interpolation_hete_Unknown-',orientation,'-kSize-75.mat']);
+inter_unknown_hete100 = load(['main_norman_interpolation_hete_Unknown-',orientation,'-kSize-100.mat']);
+inter_unknown_hete200 = load(['main_norman_interpolation_hete_Unknown-',orientation,'-kSize-200.mat']);
+inter_unknown_hete400 = load(['main_norman_interpolation_hete_Unknown-',orientation,'-kSize-400.mat']);
+figure(7)
+wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+wer(inter_unknown_hete25.scores{1,m}, inter_unknown_hete25.scores{2,m}, [],2,[],2);
+wer(inter_unknown_hete50.scores{1,m}, inter_unknown_hete50.scores{2,m}, [],2,[],3);
+wer(inter_unknown_hete75.scores{1,m}, inter_unknown_hete75.scores{2,m}, [],2,[],4);
+wer(inter_unknown_hete100.scores{1,m}, inter_unknown_hete100.scores{2,m}, [],2,[],5);
+wer(inter_unknown_hete200.scores{1,m}, inter_unknown_hete200.scores{2,m}, [],2,[],6);
+wer(inter_unknown_hete400.scores{1,m}, inter_unknown_hete400.scores{2,m}, [],2,[],7);
+legend('baseline','interpolation Unknown-kSize=25','interpolation Unknown-kSize=50','interpolation Unknown-kSize=75','interpolation Unknown-kSize=100','interpolation Unknown-kSize=200','interpolation Unknown-kSize=400');
+title(['DET Comparison KeySize - interpolation - Unknown- Heterogeneous-',orientation])
+file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_interpolation-',orientation,'-',scenario{2},'_Unknown.png'];
+print('-dpng',file);
+

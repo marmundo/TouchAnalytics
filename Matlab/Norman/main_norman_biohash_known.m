@@ -27,9 +27,9 @@ for i=1:size(data,2),
   unique_count(i) = numel(unique(data(:,i)));
 end;
 
-bar(unique_count);
-ylabel('Unique values');
-xlabel('Feature index');
+% bar(unique_count);
+%ylabel('Unique values');
+%xlabel('Feature index');
 %print('-dpng','Pictures/main_norman__unique_value_feature_count.png');
 
 % normalise
@@ -74,8 +74,9 @@ TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
 load('BioHashingKey.mat','key');
-dim = size(data,2);
 
+keySize=40;
+dim = round(size(data,2)*keySize);
 
 key = key(1:dim, 1:dim);
 
@@ -175,7 +176,7 @@ for i=1:numel(ID_list),
   
   for m=2:5,
     eer_(i,m) = wer(scores{1,m}, scores{2,m});
-    %eer_(i,m) = wer(score_imp{m}, score_gen{m}, [],2,[],m);
+    %eer_(i,m) = wer(score_imp{m,keySize}, score_gen{m,keySize}, [],2,[],m);
   end;
   %pause;
   fprintf(1,'.');
@@ -184,7 +185,7 @@ fprintf(1,'\n');
 extension='.mat';
 scenario={'homo','hete'};
 for i=1:2
-    fileName=['main_norman_biohash_',scenario{i},'_known-',orientation];
+    fileName=['main_norman_biohash_',scenario{i},'_known-',orientation,'-kSize-',num2str(keySize)];
     save([fileName,extension],'scores');
 end
 
@@ -206,7 +207,7 @@ end
 for i=1:2
     %% compare with main_norman
     bline = load('main_norman.mat');
-    bhash = load(['main_norman_biohash_',scenario{i},'_Unknown-',orientation]);
+    bhash = load(['main_norman_biohash_',scenario{i},'_Unknown-',orientation,'-kSize-',num2str(keySize)]);
     %%
     figure(3);
     m=5;
@@ -222,3 +223,23 @@ end
 figure(4);
 wer(bhash.scores{1,m}, bhash.scores{2,m}, [],4,[],1);
 wer(scores{1,m}, scores{2,m}, [],4,[],2);
+
+%%
+bhash_known_hete1 = load(['main_norman_biohash_hete_known-',orientation,'-kSize-1.mat']);
+bhash_known_hete2 = load(['main_norman_biohash_hete_known-',orientation,'-kSize-2.mat']);
+bhash_known_hete3 = load(['main_norman_biohash_hete_known-',orientation,'-kSize-3.mat']);
+bhash_known_hete4 = load(['main_norman_biohash_hete_known-',orientation,'-kSize-4.mat']);
+bhash_known_hete8 = load(['main_norman_biohash_hete_known-',orientation,'-kSize-8.mat']);
+bhash_known_hete40 = load(['main_norman_biohash_hete_known-',orientation,'-kSize-40.mat']);
+figure(5)
+wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+wer(bhash_known_hete1.scores{1,m}, bhash_known_hete1.scores{2,m}, [],2,[],2);
+wer(bhash_known_hete2.scores{1,m}, bhash_known_hete2.scores{2,m}, [],2,[],3);
+wer(bhash_known_hete3.scores{1,m}, bhash_known_hete3.scores{2,m}, [],2,[],4);
+wer(bhash_known_hete4.scores{1,m}, bhash_known_hete4.scores{2,m}, [],2,[],5);
+wer(bhash_known_hete8.scores{1,m}, bhash_known_hete8.scores{2,m}, [],2,[],6);
+wer(bhash_known_hete40.scores{1,m}, bhash_known_hete40.scores{2,m}, [],2,[],7);
+legend('baseline','biohash known-kSize=25','biohash known-kSize=50','biohash known-kSize=75','biohash known-kSize=100','biohash known-kSize=200','biohash known-kSize=1000');
+title(['DET Comparison KeySize - Biohashing - Know Scenario-',orientation])
+file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_biohash-',orientation,'-known.png'];
+print('-dpng',file);

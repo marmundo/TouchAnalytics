@@ -26,9 +26,9 @@ for i=1:size(data,2),
     unique_count(i) = numel(unique(data(:,i)));
 end;
 
-bar(unique_count);
-ylabel('Unique values');
-xlabel('Feature index');
+% bar(unique_count);
+% ylabel('Unique values');
+% xlabel('Feature index');
 %print('-dpng','Pictures/main_norman__unique_value_feature_count.png');
 
 % normalise
@@ -77,7 +77,7 @@ VALID_IMP=21:40;%impostor used for validation
 TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
-keySize=length(data(1,:));
+keySize=400;
 key=getFixedKey('DoubleSum',keySize);
 
 scenario={'homo','hete'};
@@ -97,7 +97,7 @@ for s=1:2
         X_imp=[];
         for iUser=1:numel(userlist)
             index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( iUser ), 'UniformOutput', false));
-            key_imp =randperm(keySize);
+            key_imp=generateDoubleSumKey(keySize);
             % Encode the impostor user, encode its data with a key
             X_imp = [X_imp;doublesum(data(index_template_neg,:),key_imp)];
         end
@@ -105,7 +105,7 @@ for s=1:2
         if strcmp(scenario{s},'homo')
             X_gen =doublesum(data(index_template,:),key);
         else
-            com.user.key{i} = randperm(keySize);
+            com.user.key{i} = generateDoubleSumKey(keySize);
             X_gen =doublesum(data(index_template,:),com.user.key{i});
         end
         
@@ -153,7 +153,7 @@ for s=1:2
         %   uses another key for nonmatch
         for iUser=1:numel(userlist)
             index_imp  = cell2mat(cellfun(@(x) x(1:10), selected_user{VALID}( iUser ), 'UniformOutput', false));
-            key_imp = randperm(keySize);
+            key_imp=generateDoubleSumKey(keySize);
             % Encode the impostor user, encode its data with a key
             X_imp = [X_imp;doublesum(data(index_imp,:),key_imp)];
         end
@@ -207,7 +207,7 @@ for s=1:2
         fprintf(1,'.');
     end;
     fprintf(1,'\n');
-    fileName=['main_norman_doublesum_',scenario{s},'_Unknown-',orientation];
+    fileName=['main_norman_doublesum_',scenario{s},'_Unknown-',orientation,'-kSize-',num2str(keySize)];
     extension='.mat';
     save([fileName,extension],'scores');
 
@@ -216,7 +216,7 @@ for s=1:2
     for m=2:5,
       eer_system(m) = wer(scores{1,m}, scores{2,m}, [],2,[],m);
     end;
-    eer_system
+    eer_system;
     legend('LR user-specific','LR common', 'kNN (8)','location', 'Southwest');
     file=['Pictures/',fileName,'__DET_Euc_LR_kNN.png'];
     print('-dpng',file);
@@ -259,3 +259,43 @@ print('-dpng',file);
 figure(4);
 wer(bhash.scores{1,m}, bhash.scores{2,m}, [],4,[],1);
 wer(scores{1,m}, scores{2,m}, [],4,[],2);
+%%
+dsum_unknown_homo25 = load(['main_norman_doublesum_homo_Unknown-',orientation,'-kSize-25.mat']);
+dsum_unknown_homo50 = load(['main_norman_doublesum_homo_Unknown-',orientation,'-kSize-50.mat']);
+dsum_unknown_homo75 = load(['main_norman_doublesum_homo_Unknown-',orientation,'-kSize-75.mat']);
+dsum_unknown_homo100 = load(['main_norman_doublesum_homo_Unknown-',orientation,'-kSize-100.mat']);
+dsum_unknown_homo200 = load(['main_norman_doublesum_homo_Unknown-',orientation,'-kSize-200.mat']);
+dsum_unknown_homo400 = load(['main_norman_doublesum_homo_Unknown-',orientation,'-kSize-400.mat']);
+figure(6)
+wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+wer(dsum_unknown_homo25.scores{1,m}, dsum_unknown_homo25.scores{2,m}, [],2,[],2);
+wer(dsum_unknown_homo50.scores{1,m}, dsum_unknown_homo50.scores{2,m}, [],2,[],3);
+wer(dsum_unknown_homo75.scores{1,m}, dsum_unknown_homo75.scores{2,m}, [],2,[],4);
+wer(dsum_unknown_homo100.scores{1,m}, dsum_unknown_homo100.scores{2,m}, [],2,[],5);
+wer(dsum_unknown_homo200.scores{1,m}, dsum_unknown_homo200.scores{2,m}, [],2,[],6);
+wer(dsum_unknown_homo400.scores{1,m}, dsum_unknown_homo400.scores{2,m}, [],2,[],7);
+legend('baseline','doublesum Unknown-kSize=25','doublesum Unknown-kSize=50','doublesum Unknown-kSize=75','doublesum Unknown-kSize=100','doublesum Unknown-kSize=200','doublesum Unknown-kSize=400','Location','southwest');
+title(['DET Comparison KeySize - doublesum - Unknown- Homogeneous-',orientation])
+file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_doublesum-',orientation,'-',scenario{1},'_Unknown.png'];
+print('-dpng',file);
+
+%%
+dsum_unknown_hete25 = load(['main_norman_doublesum_hete_Unknown-',orientation,'-kSize-25.mat']);
+dsum_unknown_hete50 = load(['main_norman_doublesum_hete_Unknown-',orientation,'-kSize-50.mat']);
+dsum_unknown_hete75 = load(['main_norman_doublesum_hete_Unknown-',orientation,'-kSize-75.mat']);
+dsum_unknown_hete100 = load(['main_norman_doublesum_hete_Unknown-',orientation,'-kSize-100.mat']);
+dsum_unknown_hete200 = load(['main_norman_doublesum_hete_Unknown-',orientation,'-kSize-200.mat']);
+dsum_unknown_hete400 = load(['main_norman_doublesum_hete_Unknown-',orientation,'-kSize-400.mat']);
+figure(7)
+wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+wer(dsum_unknown_hete25.scores{1,m}, dsum_unknown_hete25.scores{2,m}, [],2,[],2);
+wer(dsum_unknown_hete50.scores{1,m}, dsum_unknown_hete50.scores{2,m}, [],2,[],3);
+wer(dsum_unknown_hete75.scores{1,m}, dsum_unknown_hete75.scores{2,m}, [],2,[],4);
+wer(dsum_unknown_hete100.scores{1,m}, dsum_unknown_hete100.scores{2,m}, [],2,[],5);
+wer(dsum_unknown_hete200.scores{1,m}, dsum_unknown_hete200.scores{2,m}, [],2,[],6);
+wer(dsum_unknown_hete400.scores{1,m}, dsum_unknown_hete400.scores{2,m}, [],2,[],7);
+legend('baseline','doublesum Unknown-kSize=25','doublesum Unknown-kSize=50','doublesum Unknown-kSize=75','doublesum Unknown-kSize=100','doublesum Unknown-kSize=200','doublesum Unknown-kSize=400','Location','southwest');
+title(['DET Comparison KeySize - doublesum - Unknown- Heterogeneous-',orientation])
+file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_doublesum-',orientation,'-',scenario{2},'_Unknown.png'];
+print('-dpng',file);
+

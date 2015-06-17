@@ -72,7 +72,8 @@ VALID_IMP=21:40;%impostor used for validation
 TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
-key=getFixedKey('Interpolation',length(data(1,:)));
+keySize=400;
+key=getFixedKey('Interpolation',keySize);
 
 %% train classifiers in the interpolation domain 
 for i=1:numel(ID_list),
@@ -167,7 +168,7 @@ fprintf(1,'\n');
 extension='.mat';
 scenario={'homo','hete'};
 for i=1:2
-    fileName=['main_norman_interpolation_',scenario{i},'_known-',orientation];
+    fileName=['main_norman_interpolation_',scenario{i},'_known-',orientation,'-kSize-',num2str(keySize)];
     save([fileName,extension],'scores');
 end
 
@@ -206,3 +207,23 @@ end
 figure(4);
 wer(bhash.scores{1,m}, bhash.scores{2,m}, [],4,[],1);
 wer(scores{1,m}, scores{2,m}, [],4,[],2);
+
+%%
+inter_known_hete25 = load(['main_norman_interpolation_hete_known-',orientation,'-kSize-25.mat']);
+inter_known_hete50 = load(['main_norman_interpolation_hete_known-',orientation,'-kSize-50.mat']);
+inter_known_hete75 = load(['main_norman_interpolation_hete_known-',orientation,'-kSize-75.mat']);
+inter_known_hete100 = load(['main_norman_interpolation_hete_known-',orientation,'-kSize-100.mat']);
+inter_known_hete200 = load(['main_norman_interpolation_hete_known-',orientation,'-kSize-200.mat']);
+inter_known_hete400 = load(['main_norman_interpolation_hete_known-',orientation,'-kSize-400.mat']);
+figure(5)
+wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+wer(inter_known_hete25.scores{1,m}, inter_known_hete25.scores{2,m}, [],2,[],2);
+wer(inter_known_hete50.scores{1,m}, inter_known_hete50.scores{2,m}, [],2,[],3);
+wer(inter_known_hete75.scores{1,m}, inter_known_hete75.scores{2,m}, [],2,[],4);
+wer(inter_known_hete100.scores{1,m}, inter_known_hete100.scores{2,m}, [],2,[],5);
+wer(inter_known_hete200.scores{1,m}, inter_known_hete200.scores{2,m}, [],2,[],6);
+wer(inter_known_hete400.scores{1,m}, inter_known_hete400.scores{2,m}, [],2,[],7);
+legend('baseline','interpolation known-kSize=25','interpolation known-kSize=50','interpolation known-kSize=75','interpolation known-kSize=100','interpolation known-kSize=200','interpolation known-kSize=400');
+title(['DET Comparison KeySize - interpolation - Know Scenario-',orientation])
+file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_interpolation-',orientation,'-known.png'];
+print('-dpng',file);
