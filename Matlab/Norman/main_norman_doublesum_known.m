@@ -4,8 +4,8 @@ addpath ..
 addpath ../lib
 %% load the data
 clear
-%orientation='Scrolling';
-orientation='Horizontal';
+orientation='Scrolling';
+%orientation='Horizontal';
 
 if strcmp(orientation,'Scrolling')
     load('scrolling data.mat');
@@ -78,7 +78,7 @@ VALID_IMP=21:40;%impostor used for validation
 TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
-keySize=400;
+keySize=25;
 key=getFixedKey('DoubleSum',keySize);
 
 C1=randi([1,25],1,length(key));
@@ -111,8 +111,8 @@ for i=1:numel(ID_list),
   com.knn.mdl{i} = fitcknn([X_gen; X_imp],Y');
   
   %SVM
-%   com.svm{i}=fitcsvm([X_gen;X_imp],Y','KernelFunction','rbf','Standardize',true,'KernelScale','auto');
-%   com.svm{i} = fitSVMPosterior(com.svm{i});
+   com.svm{i}=fitcsvm([X_gen;X_imp],Y','KernelFunction','rbf','Standardize',true,'KernelScale','auto');
+   com.svm{i} = fitSVMPosterior(com.svm{i});
 end;
 % bar(median(com.user.b))
 % com.median.b = median(com.user.b);
@@ -165,19 +165,19 @@ for i=1:numel(ID_list),
   score_imp{m}=imp_(:,2);
 
   %METHOD 5: SVM
-%   m=5;
-%   [~,gen_] =predict(com.svm{i},X_gen);
-%   [~,imp_] =predict(com.svm{i},X_imp);
-%   score_gen{m}=gen_(:,2);
-%   score_imp{m}=imp_(:,2);
+  m=5;
+  [~,gen_] =predict(com.svm{i},X_gen);
+  [~,imp_] =predict(com.svm{i},X_imp);
+  score_gen{m}=gen_(:,2);
+  score_imp{m}=imp_(:,2);
   
   %record down the scores
-  for m=4,
+  for m=4:5,
     scores{1,m} = [scores{1,m}; score_imp{m}];
     scores{2,m} = [scores{2,m}; score_gen{m}];
   end;
   
-  for m=4,
+  for m=4:5,
     eer_(i,m) = wer(scores{1,m}, scores{2,m});
     %eer_(i,m) = wer(score_imp{m}, score_gen{m}, [],2,[],m);
   end;

@@ -6,8 +6,8 @@ addpath ../
 
 %% load the data
 clear
-%orientation='Scrolling';
-orientation='Horizontal';
+orientation='Scrolling';
+%orientation='Horizontal';
 
 if strcmp(orientation,'Scrolling')
     load('scrolling data.mat');
@@ -79,7 +79,7 @@ TEST_IMP =21:40;%impostor used for test
 %% load the common key
 load('BioHashingKey.mat','key');
 
-keySize=40;
+keySize=1;
 dim = round(size(data,2)*keySize);
 key = key(1:dim, 1:dim);
 

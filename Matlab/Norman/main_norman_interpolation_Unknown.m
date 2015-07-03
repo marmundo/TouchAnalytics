@@ -69,7 +69,7 @@ VALID_IMP=21:40;%impostor used for validation
 TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
-keySize=400
+keySize=25;
 key=getFixedKey('Interpolation',keySize);
 
 scenario={'homo','hete'};
@@ -111,6 +111,10 @@ for s=1:2
         
         %k-NN
         com.knn.mdl{i} = fitcknn([X_gen; X_imp],Y');
+        
+        %SVM
+        com.svm{i}=fitcsvm([X_gen;X_imp],Y','KernelFunction','rbf','Standardize',true,'KernelScale','auto');
+        com.svm{i} = fitSVMPosterior(com.svm{i});
     end;
     bar(median(com.user.b))
     com.median.b = median(com.user.b);
@@ -119,7 +123,7 @@ for s=1:2
     % (SIMILAR to main_norman.m)
     clear score*;
     for k=1:2,
-        for m=1:4,
+        for m=1:5,
             scores{k,m}=[];
         end;
     end;
@@ -152,15 +156,15 @@ for s=1:2
         %X_imp = double(interpolation(data(index_imp,:),key_imp));
         
         
-        %METHOD 2: logistic regression
-        m=2;
-        score_gen{m} = glmval(com.user.b(i,:)', X_gen,'identity');
-        score_imp{m} = glmval(com.user.b(i,:)', X_imp,'identity');
-        
-        %METHOD 3: logistic regression
-        m=3;
-        score_gen{m} = glmval(com.median.b', X_gen,'identity');
-        score_imp{m} = glmval(com.median.b', X_imp,'identity');
+%         %METHOD 2: logistic regression
+%         m=2;
+%         score_gen{m} = glmval(com.user.b(i,:)', X_gen,'identity');
+%         score_imp{m} = glmval(com.user.b(i,:)', X_imp,'identity');
+%         
+%         %METHOD 3: logistic regression
+%         m=3;
+%         score_gen{m} = glmval(com.median.b', X_gen,'identity');
+%         score_imp{m} = glmval(com.median.b', X_imp,'identity');
         
         %METHOD 4: K-NN
         m=4;
@@ -170,13 +174,20 @@ for s=1:2
         score_gen{m}=gen_(:,2);
         score_imp{m}=imp_(:,2);
         
+          %METHOD 5: SVM
+        m=5;
+        [~,gen_] =predict(com.svm{i},X_gen);
+        [~,imp_] =predict(com.svm{i},X_imp);
+        score_gen{m}=gen_(:,2);
+        score_imp{m}=imp_(:,2);
+        
         %record down the scores
-        for m=2:4,
+        for m=4:5,
             scores{1,m} = [scores{1,m}; score_imp{m}];
             scores{2,m} = [scores{2,m}; score_gen{m}];
         end;
         
-        for m=2:4,
+        for m=4:5,
             eer_(i,m) = wer(scores{1,m}, scores{2,m});
             %eer_(i,m) = wer(score_imp{m}, score_gen{m}, [],2,[],m);
         end;
@@ -190,7 +201,7 @@ for s=1:2
 
     %%
     figure(2);
-    for m=2:4,
+    for m=4:5,
       eer_system(m) = wer(scores{1,m}, scores{2,m}, [],2,[],m);
     end;
     eer_system
