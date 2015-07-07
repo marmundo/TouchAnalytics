@@ -69,6 +69,7 @@ for p=1:3,
   end;
 end;
 
+
 %%
 TRAIN=1;
 VALID=2;
@@ -112,7 +113,7 @@ for i=1:numel(ID_list),
   
   %SVM
    com.svm{i}=fitcsvm([X_gen;X_imp],Y','KernelFunction','rbf','Standardize',true,'KernelScale','auto');
-   com.svm{i} = fitSVMPosterior(com.svm{i});
+   %com.svm{i} = fitSVMPosterior(com.svm{i});
 end;
 % bar(median(com.user.b))
 % com.median.b = median(com.user.b);
@@ -208,22 +209,22 @@ for i=1:2
 end
 
  %% compare with main_norman
-for i=1:2
-    bline = load('main_norman.mat');
-    for keySize=[25,50,75,100,200,400]
-    bhash = load(['main_norman_doublesum_',scenario{i},'_Unknown-',orientation,'-kSize-',num2str(keySize)]);
-    
-    figure(3);
-    m=4;
-    wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
-    wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
-    wer(scores{1,m}, scores{2,m}, [],2,[],3);
-    legend('baseline','doublesum Unknown','doublesum known');
-    title({['DET - Classifier: ',classifiers{m},' using DubleSum-',orientation,'-Known']});
-    file=['Pictures/DET_Comparative/DET_kNN_bline_vs_doublesum-',orientation,'-',scenario{i},'-kSize-',num2str(keySize),'_known.png'];
-    print('-dpng',file);
-    end
-end
+ for i=1:2
+   bline = load('main_norman.mat');
+   for keySize=[25]%,50,75,100,200,400]
+     bhash = load(['main_norman_doublesum_',scenario{i},'_Unknown-',orientation,'-kSize-',num2str(keySize)]);
+     
+     figure(3);
+     m=5;
+     wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+     wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
+     wer(scores{1,m}, scores{2,m}, [],2,[],3);
+     legend('baseline','doublesum Unknown','doublesum known');
+     title({['DET - Classifier: SVM using DubleSum-',orientation,'-Known']});
+     file=['Pictures/DET_Comparative/DET_kNN_bline_vs_doublesum-',orientation,'-',scenario{i},'-kSize-',num2str(keySize),'_known.png'];
+     print('-dpng',file);
+   end
+ end
 %%
 % figure(4);
 % wer(bhash.scores{1,m}, bhash.scores{2,m}, [],4,[],1);

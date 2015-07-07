@@ -4,8 +4,8 @@ addpath ../lib
 
 %% load the data
 clear
-orientation='Scrolling';
-%orientation='Horizontal';
+%orientation='Scrolling';
+orientation='Horizontal';
 
 if strcmp(orientation,'Scrolling')
     load('scrolling data.mat');
@@ -125,7 +125,7 @@ for s=2:2
         
         %SVM
         com.svm{i}=fitcsvm([X_gen;X_imp],Y','KernelFunction','rbf','Standardize',true,'KernelScale','auto');
-        com.svm{i} = fitSVMPosterior(com.svm{i});
+       % com.svm{i} = fitSVMPosterior(com.svm{i});
     end;
 %     bar(median(com.user.b))
 %     com.median.b = median(com.user.b);
@@ -234,7 +234,7 @@ end
 
 %% main_norman_doublesum_
 bline = load('main_norman.mat');
-for keySize=[25,50,75,100,200,400]
+for keySize=[25]%,50,75,100,200,400]
 doublesum_known=load(['main_norman_doublesum_homo_known-',orientation,'-kSize-',num2str(keySize),'.mat']);
 doublesum_unknown_homo = load(['main_norman_doublesum_homo_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);
 doublesum_unknown_hetero = load(['main_norman_doublesum_hete_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);

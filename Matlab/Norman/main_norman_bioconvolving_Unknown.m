@@ -3,8 +3,8 @@ addpath ..
 addpath ../lib
 
 %% load the data
-orientation='Scrolling';
-%orientation='Horizontal';
+%orientation='Scrolling';
+orientation='Horizontal';
 
 if strcmp(orientation,'Scrolling')
   load('scrolling data.mat');
@@ -118,7 +118,7 @@ for s=1:2
     
     %SVM
     com.svm{i}=fitcsvm([X_gen;X_imp],Y','KernelFunction','rbf','Standardize',true,'KernelScale','auto');
-    com.svm{i} = fitSVMPosterior(com.svm{i});
+    %com.svm{i} = fitSVMPosterior(com.svm{i});
   end;
   bar(median(com.user.b))
   com.median.b = median(com.user.b);
