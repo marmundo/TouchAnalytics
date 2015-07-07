@@ -229,21 +229,21 @@ end
 
 %% main_norman_bioconvolving_
 bline = load('main_norman.mat');
-bioconvolving_known=load(['main_norman_bioconvolving_homo_known-',orientation,'.mat']);
-bioconvolving_unknown_homo = load(['main_norman_bioconvolving_homo_Unknown-',orientation,'.mat']);
-bioconvolving_unknown_hetero = load(['main_norman_bioconvolving_hete_Unknown-',orientation,'.mat']);
+bioconvolving_known=load(['main_norman_bioconvolving_homo_known-',orientation,'-kSize-',num2str(keySize.partitions),'.mat']);
+bioconvolving_unknown_homo = load(['main_norman_bioconvolving_homo_Unknown-',orientation,'-kSize-',num2str(keySize.partitions),'.mat']);
+bioconvolving_unknown_hetero = load(['main_norman_bioconvolving_hete_Unknown-',orientation,'-kSize-',num2str(keySize.partitions),'.mat']);
 %%
 close all;
 figure(3);
-m=4;
+m=5;
 wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
 %wer(bconvolving.scores{1,m}, bconvolving.scores{2,m}, [],2,[],2);
 wer(bioconvolving_known.scores{1,m}, bioconvolving_known.scores{2,m}, [],2,[],2);
 wer(bioconvolving_unknown_homo.scores{1,m}, bioconvolving_unknown_homo.scores{2,m}, [],2,[],3);
 wer(bioconvolving_unknown_hetero.scores{1,m}, bioconvolving_unknown_hetero.scores{2,m}, [],2,[],4);
-title({['DET - Classifier: Knn using BioConvolving-',orientation]});
-legend('baseline','Known','bioconvolving Unknown (homo)', 'bioconvolving Unknown (hetero)');
-file=['Pictures/DET_Comparative/DET_kNN_bline_vs_bioconvolving(homo vs hete)-',orientation,'.png'];
+title({['DET - Classifier: ',classifiers{m},' using BioConvolving-',orientation]});
+legend('Baseline','Known Key','BioConvolving Unknown (homo)', 'BioConvolving Unknown (hetero)');
+file=['Pictures/DET_Comparative/DET_',classifiers{m},'_bline_vs_bioconvolving(homovshete)-',orientation,'.png'];
 print('-dpng',file);
 
 %%

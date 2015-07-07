@@ -2,10 +2,11 @@
 
 addpath ..
 addpath ../lib
-%% load the data
 clear
-%orientation='Scrolling';
-orientation='Horizontal';
+%% load the data
+
+orientation='Scrolling';
+%orientation='Horizontal';
 
 if strcmp(orientation,'Scrolling')
     load('scrolling data.mat');
@@ -74,6 +75,7 @@ TEST_IMP =21:40;%impostor used for test
 %% load the common key
 keySize=25;
 key=getFixedKey('Interpolation',keySize);
+classifiers={'x','Logistic Regression per User','One Logistic Regression','kNN','SVM'};
 
 %% train classifiers in the interpolation domain 
 for i=1:numel(ID_list),
@@ -198,21 +200,21 @@ for i=1:2
     print('-dpng',file);
 end
 
+%% compare with main_norman
 for i=1:2
-    %% compare with main_norman
-    bline = load('main_norman.mat');
-    bhash = load(['main_norman_interpolation_',scenario{i},'_Unknown-',orientation,'.mat']);
-    %%
+  bline = load('main_norman.mat');
+  for keySize=[25]%,50,75,100,200,400]
+    bhash = load(['main_norman_interpolation_',scenario{i},'_Unknown-',orientation,'-kSize-',num2str(keySize)]);
     figure(3);
-    m=4;
+    m=5;
     wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
     wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
     wer(scores{1,m}, scores{2,m}, [],2,[],3);
-    legend('baseline','interpolation Unknown','interpolation known');
-    fileName=['main_norman_interpolation_',scenario{i},'_known'];
-    file=['Pictures/DET_Comparative/DET_kNN_bline_vs_interpolation-',orientation,'-',scenario{i},'_known.png'];
+    legend('Baseline','Interpolation Unknown','Interpolation Known');    
+    title({['DET - Classifier: ',classifiers{m},' using DubleSum-',orientation]});
+    file=['Pictures/DET_Comparative/DET_',classifiers{m},'_bline_vs_interpolation-',orientation,'-',scenario{i},'_known.png'];
     print('-dpng',file);
-    close;
+  end
 end
 %%
 figure(4);

@@ -2,10 +2,10 @@
 
 addpath ..
 addpath ../lib
-%% load the data
 clear
-orientation='Scrolling';
-%orientation='Horizontal';
+%% load the data
+%orientation='Scrolling';
+orientation='Horizontal';
 
 if strcmp(orientation,'Scrolling')
     load('scrolling data.mat');
@@ -84,6 +84,7 @@ key=getFixedKey('DoubleSum',keySize);
 
 C1=randi([1,25],1,length(key));
 C2=randi([1,25],1,length(key));
+classifiers={'x','Logistic Regression per User','One Logistic Regression','kNN','SVM'};
 
 %% train classifiers in the doublesum domain 
 for i=1:numel(ID_list),
@@ -145,7 +146,6 @@ for i=1:numel(ID_list),
   
   X_gen = doublesum(data(index_gen,:),key,C1,C2);
   X_imp = doublesum(data(index_imp,:),key,C1,C2);
-  
   
   %METHOD 2: logistic regression
 %   m=2;
@@ -219,9 +219,9 @@ end
      wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
      wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
      wer(scores{1,m}, scores{2,m}, [],2,[],3);
-     legend('baseline','doublesum Unknown','doublesum known');
-     title({['DET - Classifier: SVM using DubleSum-',orientation,'-Known']});
-     file=['Pictures/DET_Comparative/DET_kNN_bline_vs_doublesum-',orientation,'-',scenario{i},'-kSize-',num2str(keySize),'_known.png'];
+     legend('Baseline','DoubleSum Unknown','DoubleSum Known');
+     title({['DET - Classifier: ',classifiers{m},' using DubleSum-',orientation]});
+     file=['Pictures/DET_Comparative/DET_',classifiers{m},'_bline_vs_doublesum-',orientation,'-',scenario{i},'-kSize-',num2str(keySize),'_known.png'];
      print('-dpng',file);
    end
  end

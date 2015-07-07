@@ -4,8 +4,8 @@ addpath ../lib
 
 %% load the data
 clear
-%orientation='Scrolling';
-orientation='Horizontal';
+orientation='Scrolling';
+%orientation='Horizontal';
 
 if strcmp(orientation,'Scrolling')
     load('scrolling data.mat');
@@ -83,6 +83,8 @@ key=getFixedKey('DoubleSum',keySize);
 %starting variable
 C1=randi([1,25],1,length(key));
 C2=randi([1,25],1,length(key));
+
+classifiers={'x','Logistic Regression per User','One Logistic Regression','kNN','SVM'}
 
 %% train classifiers in the doublesum domain
 scenario={'homo','hete'};
@@ -235,22 +237,22 @@ end
 %% main_norman_doublesum_
 bline = load('main_norman.mat');
 for keySize=[25]%,50,75,100,200,400]
-doublesum_known=load(['main_norman_doublesum_homo_known-',orientation,'-kSize-',num2str(keySize),'.mat']);
-doublesum_unknown_homo = load(['main_norman_doublesum_homo_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);
-doublesum_unknown_hetero = load(['main_norman_doublesum_hete_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);
-close all;
-figure(3);
-m=4;
-wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
-%wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
-wer(doublesum_known.scores{1,m}, doublesum_known.scores{2,m}, [],2,[],2);
-wer(doublesum_unknown_homo.scores{1,m}, doublesum_unknown_homo.scores{2,m}, [],2,[],3);
-wer(doublesum_unknown_hetero.scores{1,m}, doublesum_unknown_hetero.scores{2,m}, [],2,[],4);
-classifiers={'','Logistic per User','Logistic per data','kNN','SVM'};
-title({['DET - Classifier: ',classifiers{m},' using DubleSum-',orientation,'-keySize-',num2str(keySize)]});
-legend('baseline','Known','doublesum Unknown (homo)', 'doublesum Unknown (hetero)','Location','southwest');
-file=['Pictures/DET_Comparative/DET_',classifiers{m},'_bline_vs_biohashing(homo vs hete)-',orientation,'-kSize-',num2str(keySize),'.png'];
-print('-dpng',file);
+  doublesum_known=load(['main_norman_doublesum_homo_known-',orientation,'-kSize-',num2str(keySize),'.mat']);
+  doublesum_unknown_homo = load(['main_norman_doublesum_homo_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);
+  doublesum_unknown_hetero = load(['main_norman_doublesum_hete_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);
+  close all;
+  figure(3);
+  m=5;
+  wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+  %wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
+  wer(doublesum_known.scores{1,m}, doublesum_known.scores{2,m}, [],2,[],2);
+  wer(doublesum_unknown_homo.scores{1,m}, doublesum_unknown_homo.scores{2,m}, [],2,[],3);
+  wer(doublesum_unknown_hetero.scores{1,m}, doublesum_unknown_hetero.scores{2,m}, [],2,[],4);
+  classifiers={'','Logistic per User','Logistic per data','kNN','SVM'};
+  title({['DET - Classifier: ',classifiers{m},' using DubleSum-',orientation]});
+  legend('Baseline','Known Key','Doublesum Unknown (homo)', 'Doublesum Unknown (hetero)');%,'Location','southwest');
+  file=['Pictures/DET_Comparative/DET_',classifiers{m},'_bline_vs_doublesum(homovshete)-',orientation,'-kSize-',num2str(keySize),'.png'];
+  print('-dpng',file);
 end
 %%
 figure(4);

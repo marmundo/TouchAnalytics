@@ -221,10 +221,10 @@ for s=1:2
 %     file=['Pictures/',fileName,'__DET_Euc_LR_kNN.png'];
 %     print('-dpng',file);
 % 
-%     %% compare with main_norman
+    %% compare with main_norman
 %      bline = load('main_norman.mat');
 %     bhash = load(['main_norman_biohash_',scenario{s},'_known-',orientation]);
-    %%
+%     
 %     figure(3);
 %     m=5;
 %     wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
@@ -237,13 +237,13 @@ end
 
 %% main_norman_biohash_
 bline = load('main_norman.mat');
-bhash_known=load(['main_norman_biohash_homo_known-',orientation,'.mat']);
+bhash_known=load(['main_norman_biohash_homo_known-',orientation,'-kSize-',num2str(keySize),'.mat']);
 bhash_unknown_homo = load(['main_norman_biohash_homo_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);
 bhash_unknown_hetero = load(['main_norman_biohash_hete_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);
 %%
 close all;
 figure(3);
-m=4;
+m=5;
 
 wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
 %wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
@@ -252,8 +252,8 @@ wer(bhash_unknown_homo.scores{1,m}, bhash_unknown_homo.scores{2,m}, [],2,[],3);
 wer(bhash_unknown_hetero.scores{1,m}, bhash_unknown_hetero.scores{2,m}, [],2,[],4);
 classifiers={'','Logistic per User','Logistic per data','kNN','SVM'}
 title({['DET - Classifier: ',classifiers{m},' using BioHashing-',orientation]});
-legend('baseline','Known','biohash Unknown (homo)', 'biohash Unknown (hetero)');
-file=['Pictures/DET_Comparative/DET_',classifiers{m},'_bline_vs_biohashing(homo vs hete)-',orientation,'.png'];
+legend('Baseline','Known Key','BioHashing Unknown (homo)', 'BioHashing Unknown (hetero)');
+file=['Pictures/DET_Comparative/DET_',classifiers{m},'_bline_vs_biohashing(homovshete)-',orientation,'.png'];
 print('-dpng',file);
 
 %%

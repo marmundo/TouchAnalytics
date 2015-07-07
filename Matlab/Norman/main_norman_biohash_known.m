@@ -2,9 +2,8 @@
 
 addpath ..
 addpath C:\Users\Poh\Dropbox\LivDet\program\lib\VR-EER
-
-%% load the data
 clear
+%% load the data
 %orientation='Scrolling';
 orientation='Horizontal';
 
@@ -17,6 +16,8 @@ else
     data=horizontal;
     clear horizontal;
 end
+
+scenario={'homo','hete'};
 
 data=cleaningdataset(data);
 zero_ = find(sum(data)==0);
@@ -79,7 +80,7 @@ keySize=1;
 dim = round(size(data,2)*keySize);
 
 key = key(1:dim, 1:dim);
-
+classifiers={'x','Logistic Regression per User','One Logistic Regression','kNN','SVM'};
 %% train classifiers in the biohashing domain 
 for i=1:numel(ID_list),
 
@@ -183,7 +184,7 @@ for i=1:numel(ID_list),
 end;
 fprintf(1,'\n');
 extension='.mat';
-scenario={'homo','hete'};
+
 for i=1:2
     fileName=['main_norman_biohash_',scenario{i},'_known-',orientation,'-kSize-',num2str(keySize)];
     save([fileName,extension],'scores');
@@ -204,20 +205,21 @@ for i=1:2
     print('-dpng',file);
 end
 
-for i=1:2
-    %% compare with main_norman
-    bline = load('main_norman.mat');
-    bhash = load(['main_norman_biohash_',scenario{i},'_Unknown-',orientation,'-kSize-',num2str(keySize)]);
-    %%
+%% compare with main_norman
+for i=1:2  
+  bline = load('main_norman.mat');
+  for keySize=[1]%,50,75,100,200,400]
+    bhash = load(['main_norman_biohash_',scenario{i},'_Unknown-',orientation,'-kSize-',num2str(keySize)]);    
     figure(3);
     m=5;
     wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
     wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
     wer(scores{1,m}, scores{2,m}, [],2,[],3);
-    legend('baseline','biohash Unknown','biohash known');
-    file=['Pictures/DET_Comparative/DET_kNN_bline_vs_biohash-',orientation,'-',scenario{i},'_known.png'];
+    legend('Baseline','BioHashing Unknown','BioHashing Known');
+    title({['DET - Classifier: ',classifiers{m},' using DubleSum-',orientation]});    
+    file=['Pictures/DET_Comparative/DET_',classifiers{m},'_bline_vs_biohash-',orientation,'-',scenario{i},'_known.png'];
     print('-dpng',file);
-    close;
+  end
 end
 %%
 figure(4);
