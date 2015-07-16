@@ -1,4 +1,4 @@
-function scores= runExperiments(data,selected_user,ID_list,TRAIN,TRAIN_IMP,VALID,VALID_IMP,TEST,TEST_IMP)
+function scores= runExperiments(data,selected_user,ID_list,TRAIN,TRAIN_IMP,VALID,VALID_IMP,TEST,TEST_IMP,orientation)
 %% train the logistic regression classifier
 for i=1:numel(ID_list),
     
@@ -20,7 +20,7 @@ for i=1:numel(ID_list),
     
     %SVM
     com.svm{i}=fitcsvm(data([index_template index_template_neg],:),Y','KernelFunction','rbf','Standardize',true,'KernelScale','auto');
-    com.svm{i} = fitSVMPosterior(com.svm{i});
+    %com.svm{i} = fitSVMPosterior(com.svm{i});
 end;
 % bar(median(com.user.b))
 com.median.b = median(com.user.b);
@@ -102,7 +102,7 @@ end;
 
 fprintf(1,'\n');
 
-fileName='main_norman.mat';
+fileName=['main_norman-',orientation,'.mat'];
 save(fileName,'scores');
 %%
 % for m=1:4,

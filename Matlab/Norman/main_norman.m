@@ -3,8 +3,8 @@ function scores=main_norman(biometricData)
 addpath ..
 addpath ../lib
 %%
-%orientation='Scrolling';
-orientation='Horizontal';
+orientation='Scrolling';
+%orientation='Horizontal';
 
 if strcmp(orientation,'Scrolling')
     load('scrolling data.mat');
@@ -139,6 +139,6 @@ TEST_IMP =21:40;%impostor used for validation
 % bar(eer_knn)
 % found k=4 to be best
 
-scores=runExperiments(data,selected_user,ID_list,TRAIN,TRAIN_IMP,VALID,VALID_IMP,TEST,TEST_IMP);
+scores=runExperiments(data,selected_user,ID_list,TRAIN,TRAIN_IMP,VALID,VALID_IMP,TEST,TEST_IMP,orientation);
 return
 end
