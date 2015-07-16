@@ -4,8 +4,8 @@ addpath ../lib
 
 %% load the data
 clear
-orientation='Scrolling';
-%orientation='Horizontal';
+%orientation='Scrolling';
+orientation='Horizontal';
 
 if strcmp(orientation,'Scrolling')
     load('scrolling data.mat');
@@ -71,8 +71,9 @@ TEST_IMP =21:40;%impostor used for test
 %% load the common key
 keySize=25;
 key=getFixedKey('Interpolation',keySize);
-
+classifiers={'x','Logistic Regression per User','One Logistic Regression','kNN','SVM'};
 scenario={'homo','hete'};
+%%
 for s=1:2
     %% train classifiers in the interpolation domain
     for i=1:numel(ID_list),
@@ -210,7 +211,7 @@ for s=1:2
     print('-dpng',file);
 
     %% compare with main_norman
-    bline = load('main_norman.mat');
+    bline = load(['main_norman-',orientation,'.mat']);
     bhash = load(['main_norman_interpolation_',scenario{s},'_known-',orientation]);
     %%
     figure(3);
@@ -227,7 +228,7 @@ end
 interpolation_known=load(['main_norman_interpolation_homo_known-',orientation,'-kSize-',num2str(keySize),'.mat']);
 interpolation_unknown_homo = load(['main_norman_interpolation_homo_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);
 interpolation_unknown_hetero = load(['main_norman_interpolation_hete_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);
-%%
+
 close all;
 figure(3);
 m=5;

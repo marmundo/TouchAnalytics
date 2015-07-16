@@ -202,7 +202,7 @@ end
 
 %% compare with main_norman
 for i=1:2
-  bline = load('main_norman.mat');
+  bline = load(['main_norman-',orientation,'.mat']);
   for keySize=[25]%,50,75,100,200,400]
     bhash = load(['main_norman_interpolation_',scenario{i},'_Unknown-',orientation,'-kSize-',num2str(keySize)]);
     figure(3);

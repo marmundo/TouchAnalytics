@@ -76,6 +76,7 @@ keySize.partitions=2;
 key=getFixedKey('BioConvolving',keySize);
 
 scenario={'homo','hete'};
+%%
 for s=1:2
   %% train classifiers in the bioconvolving domain
   for i=1:numel(ID_list),
@@ -214,11 +215,11 @@ for s=1:2
   print('-dpng',file);
   
   %% compare with main_norman
-  bline = load('main_norman.mat');
+  bline = load(['main_norman-',orientation,'.mat']);
   bconvolving = load(['main_norman_bioconvolving_',scenario{s},'_known-',orientation]);
-  %%
+  
   figure(3);
-  m=4;
+  m=5;
   wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
   wer(bconvolving.scores{1,m}, bconvolving.scores{2,m}, [],2,[],2);
   wer(scores{1,m}, scores{2,m}, [],2,[],3);
@@ -228,11 +229,10 @@ for s=1:2
 end
 
 %% main_norman_bioconvolving_
-bline = load('main_norman.mat');
+bline = load(['main_norman-',orientation,'.mat']);
 bioconvolving_known=load(['main_norman_bioconvolving_homo_known-',orientation,'-kSize-',num2str(keySize.partitions),'.mat']);
 bioconvolving_unknown_homo = load(['main_norman_bioconvolving_homo_Unknown-',orientation,'-kSize-',num2str(keySize.partitions),'.mat']);
 bioconvolving_unknown_hetero = load(['main_norman_bioconvolving_hete_Unknown-',orientation,'-kSize-',num2str(keySize.partitions),'.mat']);
-%%
 close all;
 figure(3);
 m=5;

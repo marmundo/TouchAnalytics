@@ -201,7 +201,7 @@ end
 
 for i=1:2
     %% compare with main_norman
-    bline = load('main_norman.mat');
+    bline = load(['main_norman-',orientation,'.mat']);
     bconvolving = load(['main_norman_bioconvolving_',scenario{i},'_Unknown-',orientation]);
     %%
     figure(3);

@@ -236,11 +236,11 @@ for s=1:2
 end
 
 %% main_norman_biohash_
-bline = load('main_norman.mat');
+bline = load(['main_norman-',orientation,'.mat']);
 bhash_known=load(['main_norman_biohash_homo_known-',orientation,'-kSize-',num2str(keySize),'.mat']);
 bhash_unknown_homo = load(['main_norman_biohash_homo_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);
 bhash_unknown_hetero = load(['main_norman_biohash_hete_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);
-%%
+
 close all;
 figure(3);
 m=5;

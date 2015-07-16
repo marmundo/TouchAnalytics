@@ -221,9 +221,9 @@ for s=2:2
 %     print('-dpng',file);
 
     %% compare with main_norman
-    bline = load('main_norman.mat');
+    bline = load(['main_norman-',orientation,'.mat']);
     bhash = load(['main_norman_doublesum_',scenario{s},'_known-',orientation,'-kSize-',num2str(keySize)]);
-    %%
+    
     figure(3);
     m=4;
     wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
@@ -235,7 +235,7 @@ for s=2:2
 end
 
 %% main_norman_doublesum_
-bline = load('main_norman.mat');
+bline = load(['main_norman-',orientation,'.mat']);
 for keySize=[25]%,50,75,100,200,400]
   doublesum_known=load(['main_norman_doublesum_homo_known-',orientation,'-kSize-',num2str(keySize),'.mat']);
   doublesum_unknown_homo = load(['main_norman_doublesum_homo_Unknown-',orientation,'-kSize-',num2str(keySize),'.mat']);
