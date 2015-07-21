@@ -5,8 +5,8 @@ addpath ../lib
 clear
 %% load the data
 
-orientation='Scrolling';
-%orientation='Horizontal';
+%orientation='Scrolling';
+orientation='Horizontal';
 
 if strcmp(orientation,'Scrolling')
     load('scrolling data.mat');
@@ -73,11 +73,14 @@ VALID_IMP=21:40;%impostor used for validation
 TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
-keySize=25;
+keySize=400;
 key=getFixedKey('Interpolation',keySize);
 classifiers={'x','Logistic Regression per User','One Logistic Regression','kNN','SVM'};
 
+
+scenario={'homo','hete'};
 %% train classifiers in the interpolation domain 
+for s=1:2
 for i=1:numel(ID_list),
 
   %positive training samples
@@ -90,9 +93,23 @@ for i=1:numel(ID_list),
 
   %for each user, the template is encrypted using one common key; and the attacker
   %uses another key for nonmatch
-
-  X_gen = interpolation(data(index_template,:),key);
-  X_imp = interpolation(data(index_template_neg,:),key);
+  if strcmp(scenario{s},'homo')
+    X_gen = interpolation(data(index_template,:),key);
+    X_imp = interpolation(data(index_template_neg,:),key);
+  else
+    com.user.key{i} = generateDoubleSumKey(keySize);
+    X_gen = interpolation(data(index_template,:),com.user.key{i});
+    X_imp=[];
+    for iUser=1:numel(userlist)
+      index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( iUser ), 'UniformOutput', false));
+      key_imp =randi([1,25],1,keySize);
+      % Encode the impostor user, encode its data with a key
+      p_data=interpolation(data(index_template_neg,:),key_imp);
+      X_imp = [X_imp;p_data];
+    end
+  end
+%   X_gen = interpolation(data(index_template,:),key);
+%   X_imp = interpolation(data(index_template_neg,:),key);
   
   index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false)); 
   %logistic regression
@@ -133,11 +150,17 @@ for i=1:numel(ID_list),
   %for each user, the template is encrypted using one common key; and the attacker
   %   uses another key for nonmatch
   
-  %key_imp = rand(dim);
+  if strcmp(scenario{s},'homo')
+    X_gen = interpolation(data(index_gen,:),key);
+    X_imp = interpolation(data(index_imp,:),key);
+  else
+    X_gen = interpolation(data(index_gen,:),com.user.key{i});
+    X_imp = interpolation(data(index_imp,:),com.user.key{i});
+  end
   
-  X_gen = interpolation(data(index_gen,:),key);
-  X_imp = interpolation(data(index_imp,:),key);
-  
+%   X_gen = interpolation(data(index_gen,:),key);
+%   X_imp = interpolation(data(index_imp,:),key);
+   
   
 %   %METHOD 2: logistic regression
 %   m=2;
@@ -179,9 +202,7 @@ for i=1:numel(ID_list),
 end;
 fprintf(1,'\n');
 extension='.mat';
-scenario={'homo','hete'};
-for i=1:2
-    fileName=['main_norman_interpolation_',scenario{i},'_known-',orientation,'-kSize-',num2str(keySize)];
+fileName=['main_norman_interpolation_',scenario{s},'_known-',orientation,'-kSize-',num2str(keySize)];
     save([fileName,extension],'scores');
 end
 

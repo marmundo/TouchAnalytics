@@ -73,10 +73,12 @@ TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
 keySize.nFeatures=length(data(1,:));
-keySize.partitions=2;
+keySize.partitions=25;
 key=getFixedKey('BioConvolving',keySize);
 
+scenario={'homo','hete'};
 %% train classifiers in the bioconvolving domain 
+for s=2:2
 for i=1:numel(ID_list),
 
   %positive training samples
@@ -89,9 +91,24 @@ for i=1:numel(ID_list),
 
   %for each user, the template is encrypted using one common key; and the attacker
   %uses another key for nonmatch
+  if strcmp(scenario{s},'homo')
+      X_gen =bioconvolving(data(index_template,:),key);
+      X_imp = bioconvolving(data(index_template_neg,:),key);
+    else
+      com.user.key{i} = generateBioConvolvingKey(keySize.partitions,keySize.nFeatures);
+      X_gen =bioconvolving(data(index_template,:),com.user.key{i});
+      X_imp=[];
+    for iUser=1:numel(userlist)
+      index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( iUser ), 'UniformOutput', false));
+      key_imp =generateBioConvolvingKey(keySize.partitions,keySize.nFeatures);
+      % Encode the impostor user, encode its data with a key
+      p_data=bioconvolving(data(index_template_neg,:),key_imp);
+      X_imp = [X_imp;p_data];
+    end
+    end
 
-  X_gen = bioconvolving(data(index_template,:),key);
-  X_imp = bioconvolving(data(index_template_neg,:),key);
+  %X_gen = bioconvolving(data(index_template,:),key);
+  %X_imp = bioconvolving(data(index_template_neg,:),key);
   
   index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false)); 
   %logistic regression
@@ -133,11 +150,15 @@ for i=1:numel(ID_list),
   %   uses another key for nonmatch
   
   %key_imp = rand(dim);
-  
-  X_gen = bioconvolving(data(index_gen,:),key);
-  X_imp = bioconvolving(data(index_imp,:),key);
-  
-  
+  if strcmp(scenario{s},'homo')
+    X_gen = bioconvolving(data(index_gen,:),key);
+    X_imp = bioconvolving(data(index_imp,:),key);
+  else
+    X_gen = bioconvolving(data(index_gen,:),com.user.key{i});
+    X_imp = bioconvolving(data(index_imp,:),com.user.key{i});
+    
+  end
+   
 %   METHOD 2: logistic regression
 %   m=2;
 %   score_gen{m} = glmval(com.user.b(i,:)', X_gen,'identity');
@@ -169,19 +190,17 @@ for i=1:numel(ID_list),
     scores{2,m} = [scores{2,m}; score_gen{m}];
   end;
   
-  for m=4:5,
-    eer_(i,m) = wer(scores{1,m}, scores{2,m});
-    %eer_(i,m) = wer(score_imp{m}, score_gen{m}, [],2,[],m);
-  end;
+%   for m=4:5,
+%     eer_(i,m) = wer(scores{1,m}, scores{2,m});
+%     eer_(i,m) = wer(score_imp{m}, score_gen{m}, [],2,[],m);
+%   end;
   %pause;
   fprintf(1,'.');
 end;
 fprintf(1,'\n');
 extension='.mat';
-scenario={'homo','hete'};
-for i=1:2
-    fileName=['main_norman_bioconvolving_',scenario{i},'_known-',orientation,'-kSize-',num2str(keySize.partitions)];
-    save([fileName,extension],'scores');
+fileName=['main_norman_bioconvolving_',scenario{s},'_known-',orientation,'-kSize-',num2str(keySize.partitions)];
+save([fileName,extension],'scores');
 end
 
 

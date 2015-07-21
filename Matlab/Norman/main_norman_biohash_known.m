@@ -76,12 +76,15 @@ TEST_IMP =21:40;%impostor used for test
 %% load the common key
 load('BioHashingKey.mat','key');
 
-keySize=1;
+keySize=40;
 dim = round(size(data,2)*keySize);
 
 key = key(1:dim, 1:dim);
 classifiers={'x','Logistic Regression per User','One Logistic Regression','kNN','SVM'};
-%% train classifiers in the biohashing domain 
+
+scenario={'homo','hete'};
+%% train classifiers in the bioconvolving domain 
+for s=1:2
 for i=1:numel(ID_list),
 
   %positive training samples
@@ -94,9 +97,25 @@ for i=1:numel(ID_list),
 
   %for each user, the template is encrypted using one common key; and the attacker
   %uses another key for nonmatch
+  if strcmp(scenario{s},'homo')
+    X_gen =double(biohashing(data(index_template,:),key));
+    X_imp = double(biohashing(data(index_template_neg,:),key));
+  else
+   com.user.key{i} = rand(dim);
+    X_gen =double(biohashing(data(index_template,:),com.user.key{i}));
+    X_imp=[];
+    for iUser=1:numel(userlist)
+      index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( iUser ), 'UniformOutput', false));
+      
+      key_imp =rand(dim);
+      % Encode the impostor user, encode its data with a key
+      p_data=double(biohashing(data(index_template_neg,:),key_imp));
+      X_imp = [X_imp;p_data];
+    end
+  end
 
-  X_gen = double(biohashing(data(index_template,:),key));
-  X_imp = double(biohashing(data(index_template_neg,:),key));
+  %X_gen = double(biohashing(data(index_template,:),key));
+  %X_imp = double(biohashing(data(index_template_neg,:),key));
   
   index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false)); 
   %logistic regression
@@ -137,10 +156,15 @@ for i=1:numel(ID_list),
   %for each user, the template is encrypted using one common key; and the attacker
   %   uses another key for nonmatch
   
-  %key_imp = rand(dim);
-  
-  X_gen = double(biohashing(data(index_gen,:),key));
-  X_imp = double(biohashing(data(index_imp,:),key));
+  if strcmp(scenario{s},'homo')
+    X_gen = double(biohashing(data(index_gen,:),key));
+    X_imp = double(biohashing(data(index_imp,:),key));
+  else
+    X_gen = double(biohashing(data(index_gen,:),com.user.key{i}));
+    X_imp = double(biohashing(data(index_imp,:),com.user.key{i}));
+  end
+%   X_gen = double(biohashing(data(index_gen,:),key));
+%   X_imp = double(biohashing(data(index_imp,:),key));
   
   
 %   METHOD 2: logistic regression
@@ -184,12 +208,9 @@ for i=1:numel(ID_list),
 end;
 fprintf(1,'\n');
 extension='.mat';
-
-for i=1:2
-    fileName=['main_norman_biohash_',scenario{i},'_known-',orientation,'-kSize-',num2str(keySize)];
+fileName=['main_norman_biohash_',scenario{s},'_known-',orientation,'-kSize-',num2str(keySize)];
     save([fileName,extension],'scores');
 end
-
 
 %%
 figure(2);

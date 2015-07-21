@@ -3,18 +3,19 @@
 addpath ..
 addpath ../lib
 clear
+close all;
 %% load the data
 %orientation='Scrolling';
 orientation='Horizontal';
 
 if strcmp(orientation,'Scrolling')
-    load('scrolling data.mat');
-    data=scrolling;
-    clear scrolling;
+  load('scrolling data.mat');
+  data=scrolling;
+  clear scrolling;
 else
-    load('horizontal data.mat');
-    data=horizontal;
-    clear horizontal;
+  load('horizontal data.mat');
+  data=horizontal;
+  clear horizontal;
 end
 
 %%
@@ -46,19 +47,19 @@ ID_list = unique(ID)';
 % end;
 %% analyse the test folds (should be 1/3)
 if strcmp(orientation,'Horizontal')
-    if exist('c_horizontal.mat', 'file'),
-        load c_horizontal.mat
-    else
-        c = cvpartition(ID,'KFold',3);
-        save c_horizontal.mat c
-    end;
+  if exist('c_horizontal.mat', 'file'),
+    load c_horizontal.mat
+  else
+    c = cvpartition(ID,'KFold',3);
+    save c_horizontal.mat c
+  end;
 else
-    if exist('c_scrolling.mat', 'file'),
-        load c_scrolling.mat
-    else
-        c = cvpartition(ID,'KFold',3);
-        save c_scrolling.mat c
-    end;
+  if exist('c_scrolling.mat', 'file'),
+    load c_scrolling.mat
+  else
+    c = cvpartition(ID,'KFold',3);
+    save c_scrolling.mat c
+  end;
 end
 
 clear selected_user;
@@ -79,120 +80,140 @@ VALID_IMP=21:40;%impostor used for validation
 TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
-keySize=25;
+keySize=400;
 key=getFixedKey('DoubleSum',keySize);
 
 C1=randi([1,25],1,length(key));
 C2=randi([1,25],1,length(key));
 classifiers={'x','Logistic Regression per User','One Logistic Regression','kNN','SVM'};
 
-%% train classifiers in the doublesum domain 
-for i=1:numel(ID_list),
-
-  %positive training samples
-  index_template = selected_user{TRAIN}{i}; %use all the available samples for training
-
-  %negative training samples
-  userlist = find(ID_list ~= i);
-  userlist = userlist(TRAIN_IMP);
-  index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false));  
-
-  %for each user, the template is encrypted using one common key; and the attacker
-  %uses another key for nonmatch
-
-  X_gen = doublesum(data(index_template,:),key,C1,C2);
-  X_imp = doublesum(data(index_template_neg,:),key,C1,C2);
-  
-  index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false)); 
-  %logistic regression
-   Y = [ones(1, numel(index_template)) zeros(1, numel(index_template_neg))];
-%   W = [ones(1, numel(index_template)) / numel(index_template) ones(1, numel(index_template_neg)) /numel(index_template_neg) ];
-%   com.user.b(i,:) = glmfit([X_gen; X_imp],Y', 'binomial', 'weights',W');
-
-  %k-NN
-  com.knn.mdl{i} = fitcknn([X_gen; X_imp],Y');
-  
-  %SVM
-   com.svm{i}=fitcsvm([X_gen;X_imp],Y','KernelFunction','rbf','Standardize',true,'KernelScale','auto');
-   %com.svm{i} = fitSVMPosterior(com.svm{i});
-end;
-% bar(median(com.user.b))
-% com.median.b = median(com.user.b);
-
-%% Compare the 4 methods
-% (SIMILAR to main_norman.m)
-clear score*;
-for k=1:2,
-  for m=1:5,
-    scores{k,m}=[];
-  end;
-end;
-
-%% Testing
-for i=1:numel(ID_list),
-
-  %positive training samples
-  index_gen = selected_user{VALID}{i}; %use all the available samples for training
-  
-  %impostor scores -- select only 10 samples from the VALIDATION set
-  userlist = find(ID_list ~= i);
-  userlist = userlist(VALID_IMP);
-  index_imp = cell2mat(cellfun(@(x) x(1:10), selected_user{VALID}( userlist ), 'UniformOutput', false));
-  
-  %for each user, the template is encrypted using one common key; and the attacker
-  %   uses another key for nonmatch
-  
-  %key_imp = rand(dim);
-  
-  X_gen = doublesum(data(index_gen,:),key,C1,C2);
-  X_imp = doublesum(data(index_imp,:),key,C1,C2);
-  
-  %METHOD 2: logistic regression
-%   m=2;
-%   score_gen{m} = glmval(com.user.b(i,:)', X_gen,'identity');
-%   score_imp{m} = glmval(com.user.b(i,:)', X_imp,'identity');
-%  
-%   %METHOD 3: logistic regression
-%   m=3;
-%   score_gen{m} = glmval(com.median.b', X_gen,'identity');
-%   score_imp{m} = glmval(com.median.b', X_imp,'identity');
- 
-  %METHOD 4: K-NN
-  m=4;
-  com.knn.mdl{i}.NumNeighbors = 8;%4
-  [~, gen_] = predict( com.knn.mdl{i}, X_gen);
-  [~, imp_] = predict( com.knn.mdl{i}, X_imp);
-  score_gen{m}=gen_(:,2);
-  score_imp{m}=imp_(:,2);
-
-  %METHOD 5: SVM
-  m=5;
-  [~,gen_] =predict(com.svm{i},X_gen);
-  [~,imp_] =predict(com.svm{i},X_imp);
-  score_gen{m}=gen_(:,2);
-  score_imp{m}=imp_(:,2);
-  
-  %record down the scores
-  for m=4:5,
-    scores{1,m} = [scores{1,m}; score_imp{m}];
-    scores{2,m} = [scores{2,m}; score_gen{m}];
-  end;
-  
-  for m=4:5,
-    eer_(i,m) = wer(scores{1,m}, scores{2,m});
-    %eer_(i,m) = wer(score_imp{m}, score_gen{m}, [],2,[],m);
-  end;
-  %pause;
-  fprintf(1,'.');
-end;
-fprintf(1,'\n');
-extension='.mat';
 scenario={'homo','hete'};
-for i=1:2
-    fileName=['main_norman_doublesum_',scenario{i},'_known-',orientation,'-kSize-',num2str(keySize)];
-    save([fileName,extension],'scores');
+%% train classifiers in the bioconvolving domain
+for s=1:2
+  for i=1:numel(ID_list),
+    
+    %positive training samples
+    index_template = selected_user{TRAIN}{i}; %use all the available samples for training
+    
+    %negative training samples
+    userlist = find(ID_list ~= i);
+    userlist = userlist(TRAIN_IMP);
+    index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false));
+    
+    %for each user, the template is encrypted using one common key; and the attacker
+    %uses another key for nonmatch
+    if strcmp(scenario{s},'homo')
+      X_gen = doublesum(data(index_template,:),key,C1,C2);
+      X_imp = doublesum(data(index_template_neg,:),key,C1,C2);
+    else
+      com.user.key{i} = generateDoubleSumKey(keySize);
+      X_gen = doublesum(data(index_template,:),com.user.key{i},C1,C2);
+      X_imp=[];
+      for iUser=1:numel(userlist)
+        index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( iUser ), 'UniformOutput', false));
+        key_imp=generateDoubleSumKey(keySize);
+        % Encode the impostor user, encode its data with a key
+        p_data=doublesum(data(index_template_neg,:),key_imp,C1,C2);
+        X_imp = [X_imp;p_data];
+      end
+    end
+    %   X_gen = doublesum(data(index_template,:),key,C1,C2);
+    %   X_imp = doublesum(data(index_template_neg,:),key,C1,C2);
+    
+    index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false));
+    %logistic regression
+    Y = [ones(1, numel(index_template)) zeros(1, numel(index_template_neg))];
+    %   W = [ones(1, numel(index_template)) / numel(index_template) ones(1, numel(index_template_neg)) /numel(index_template_neg) ];
+    %   com.user.b(i,:) = glmfit([X_gen; X_imp],Y', 'binomial', 'weights',W');
+    
+    %k-NN
+    com.knn.mdl{i} = fitcknn([X_gen; X_imp],Y');
+    
+    %SVM
+    com.svm{i}=fitcsvm([X_gen;X_imp],Y','KernelFunction','rbf','Standardize',true,'KernelScale','auto');
+    %com.svm{i} = fitSVMPosterior(com.svm{i});
+  end;
+  % bar(median(com.user.b))
+  % com.median.b = median(com.user.b);
+  
+  %% Compare the 4 methods
+  % (SIMILAR to main_norman.m)
+  clear score*;
+  for k=1:2,
+    for m=1:5,
+      scores{k,m}=[];
+    end;
+  end;
+  
+  %% Testing
+  for i=1:numel(ID_list),
+    
+    %positive training samples
+    index_gen = selected_user{VALID}{i}; %use all the available samples for training
+    
+    %impostor scores -- select only 10 samples from the VALIDATION set
+    userlist = find(ID_list ~= i);
+    userlist = userlist(VALID_IMP);
+    index_imp = cell2mat(cellfun(@(x) x(1:10), selected_user{VALID}( userlist ), 'UniformOutput', false));
+    
+    %for each user, the template is encrypted using one common key; and the attacker
+    %   uses another key for nonmatch
+    
+    if strcmp(scenario{s},'homo')
+      X_gen = doublesum(data(index_gen,:),key,C1,C2);
+      X_imp = doublesum(data(index_imp,:),key,C1,C2);
+    else
+      X_gen = doublesum(data(index_gen,:),com.user.key{i},C1,C2);
+      X_imp = doublesum(data(index_imp,:),com.user.key{i},C1,C2);
+    end
+    
+    %   X_gen = doublesum(data(index_gen,:),key,C1,C2);
+    %   X_imp = doublesum(data(index_imp,:),key,C1,C2);
+    
+    %METHOD 2: logistic regression
+    %   m=2;
+    %   score_gen{m} = glmval(com.user.b(i,:)', X_gen,'identity');
+    %   score_imp{m} = glmval(com.user.b(i,:)', X_imp,'identity');
+    %
+    %   %METHOD 3: logistic regression
+    %   m=3;
+    %   score_gen{m} = glmval(com.median.b', X_gen,'identity');
+    %   score_imp{m} = glmval(com.median.b', X_imp,'identity');
+    
+    %METHOD 4: K-NN
+    m=4;
+    com.knn.mdl{i}.NumNeighbors = 8;%4
+    [~, gen_] = predict( com.knn.mdl{i}, X_gen);
+    [~, imp_] = predict( com.knn.mdl{i}, X_imp);
+    score_gen{m}=gen_(:,2);
+    score_imp{m}=imp_(:,2);
+    
+    %METHOD 5: SVM
+    m=5;
+    [~,gen_] =predict(com.svm{i},X_gen);
+    [~,imp_] =predict(com.svm{i},X_imp);
+    score_gen{m}=gen_(:,2);
+    score_imp{m}=imp_(:,2);
+    
+    %record down the scores
+    for m=4:5,
+      scores{1,m} = [scores{1,m}; score_imp{m}];
+      scores{2,m} = [scores{2,m}; score_gen{m}];
+    end;
+    
+    for m=4:5,
+      eer_(i,m) = wer(scores{1,m}, scores{2,m});
+      %eer_(i,m) = wer(score_imp{m}, score_gen{m}, [],2,[],m);
+    end;
+    %pause;
+    fprintf(1,'.');
+  end;
+  fprintf(1,'\n');
+  extension='.mat';
+  scenario={'homo','hete'};
+  fileName=['main_norman_doublesum_',scenario{s},'_known-',orientation,'-kSize-',num2str(keySize)];
+  save([fileName,extension],'scores');
 end
-
 
 %%
 figure(2);
@@ -203,28 +224,28 @@ end;
 % legend('LR user-specific','LR common', 'kNN (8)','SVM','location', 'Southwest');
 
 for i=1:2
-    fileName=['main_norman_doublesum_',scenario{i},'_known'];
-    file=['Pictures/',fileName,'__DET_Euc_LR_kNN.png'];
-    print('-dpng',file);
+  fileName=['main_norman_doublesum_',scenario{i},'_known'];
+  file=['Pictures/',fileName,'__DET_Euc_LR_kNN.png'];
+  print('-dpng',file);
 end
 
- %% compare with main_norman
- for i=1:2
-   bline = load(['main_norman-',orientation,'.mat']);
-   for keySize=[25]%,50,75,100,200,400]
-     bhash = load(['main_norman_doublesum_',scenario{i},'_Unknown-',orientation,'-kSize-',num2str(keySize)]);
-     
-     figure(3);
-     m=5;
-     wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
-     wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
-     wer(scores{1,m}, scores{2,m}, [],2,[],3);
-     legend('Baseline','DoubleSum Unknown','DoubleSum Known');
-     title({['DET - Classifier: ',classifiers{m},' using DubleSum-',orientation]});
-     file=['Pictures/DET_Comparative/DET_',classifiers{m},'_bline_vs_doublesum-',orientation,'-',scenario{i},'-kSize-',num2str(keySize),'_known.png'];
-     print('-dpng',file);
-   end
- end
+%% compare with main_norman
+for i=1:2
+  bline = load(['main_norman-',orientation,'.mat']);
+  for keySize=[25]%,50,75,100,200,400]
+    bhash = load(['main_norman_doublesum_',scenario{i},'_Unknown-',orientation,'-kSize-',num2str(keySize)]);
+    
+    figure(3);
+    m=5;
+    wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+    wer(bhash.scores{1,m}, bhash.scores{2,m}, [],2,[],2);
+    wer(scores{1,m}, scores{2,m}, [],2,[],3);
+    legend('Baseline','DoubleSum Unknown','DoubleSum Known');
+    title({['DET - Classifier: ',classifiers{m},' using DubleSum-',orientation]});
+    file=['Pictures/DET_Comparative/DET_',classifiers{m},'_bline_vs_doublesum-',orientation,'-',scenario{i},'-kSize-',num2str(keySize),'_known.png'];
+    print('-dpng',file);
+  end
+end
 %%
 % figure(4);
 % wer(bhash.scores{1,m}, bhash.scores{2,m}, [],4,[],1);
