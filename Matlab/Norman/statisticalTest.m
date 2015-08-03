@@ -68,26 +68,50 @@ gen_test=kstest2(baselineScrolling.scores{2,5},interpolation_hete_known_Scrollin
 statisticaltest.interpolation.Scrolling.genuine=gen_test;
 statisticaltest.interpolation.Scrolling.impostor=imp_test;
 %%
-statisticaltest.interpolation.Horizontal.genuine
-statisticaltest.interpolation.Horizontal.impostor
+genuine=statisticaltest.interpolation.Horizontal.genuine;
+impostor=statisticaltest.interpolation.Horizontal.impostor;
+if genuine==0 || impostor==0
+  print('Similar')
+end
 %%
-statisticaltest.interpolation.Scrolling.genuine
-statisticaltest.interpolation.Scrolling.impostor
+genuine=statisticaltest.interpolation.Scrolling.genuine;
+impostor=statisticaltest.interpolation.Scrolling.impostor;
+if genuine==0 || impostor==0
+  print('Similar')
+end
 %%
-statisticaltest.bioHashing.Horizontal.genuine
-statisticaltest.bioHashing.Horizontal.impostor
+genuine=statisticaltest.bioHashing.Horizontal.genuine;
+impostor=statisticaltest.bioHashing.Horizontal.impostor;
+if genuine==0 || impostor==0
+  print('Similar')
+end
 %%
-statisticaltest.bioHashing.Scrolling.genuine
-statisticaltest.bioHashing.Scrolling.impostor
+genuine=statisticaltest.bioHashing.Scrolling.genuine;
+impostor=statisticaltest.bioHashing.Scrolling.impostor;
+if genuine==0 || impostor==0
+  print('Similar')
+end
 %%
-statisticaltest.bioconvolving.Horizontal.genuine
-statisticaltest.bioconvolving.Horizontal.impostor
+genuine=statisticaltest.bioconvolving.Horizontal.genuine;
+impostor=statisticaltest.bioconvolving.Horizontal.impostor;
+if genuine==0 || impostor==0
+  print('Similar')
+end
 %%
-statisticaltest.bioconvolving.Scrolling.genuine
-statisticaltest.bioconvolving.Scrolling.impostor
+genuine=statisticaltest.bioconvolving.Scrolling.genuine;
+impostor=statisticaltest.bioconvolving.Scrolling.impostor;
+if genuine==0 || impostor==0
+  print('Similar')
+end
 %%
-statisticaltest.doublesum.Horizontal.genuine
-statisticaltest.doublesum.Horizontal.impostor
+genuine=statisticaltest.doublesum.Horizontal.genuine;
+impostor=statisticaltest.doublesum.Horizontal.impostor;
+if genuine==0 || impostor==0
+  disp('Similar')
+end
 %%
-statisticaltest.doublesum.Scrolling.genuine
-statisticaltest.doublesum.Scrolling.impostor
+genuine=statisticaltest.doublesum.Scrolling.genuine;
+impostor=statisticaltest.doublesum.Scrolling.impostor;
+if genuine==0 || impostor==0
+  disp('Similar')
+end
