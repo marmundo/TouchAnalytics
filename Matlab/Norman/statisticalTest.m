@@ -53,7 +53,7 @@ end
 
 %%
 %BioHashing Scrolling
-bioHashing_hete_known_Scrolling=load('main_norman_biohash_hete_known-Scrolling-kSize-1');
+biohash_hete_known_Scrolling=load('main_norman_biohash_hete_known-Scrolling-kSize-1');
 [~,~,~,FAR_biohash_Scrolling,FRR_biohash_Scrolling]=wer(biohash_hete_known_Scrolling.scores{1,5},biohash_hete_known_Scrolling.scores{2,5},[],5,[],0);
 FAR_test=kstest2(FAR_baseline_Scrolling,FAR_biohash_Scrolling);
 FRR_test=kstest2(FRR_baseline_Scrolling,FRR_biohash_Scrolling);
@@ -124,6 +124,11 @@ end
 %%
 save('StatisticalTest_Known_Hete.mat','statisticaltest');
 clear();
+%%
+baselineHorizontal=load('main_norman-Horizontal.mat');
+[~,~,~,FAR_baseline_Horizontal,FRR_baseline_Horizontal]=wer(baselineHorizontal.scores{1,5},baselineHorizontal.scores{2,5},[],5,[],0);
+baselineScrolling=load('main_norman-Scrolling.mat');
+[~,~,~,FAR_baseline_Scrolling,FRR_baseline_Scrolling]=wer(baselineScrolling.scores{1,5},baselineScrolling.scores{2,5},[],5,[],0);
 %%
 %Homo-Known
 %%
