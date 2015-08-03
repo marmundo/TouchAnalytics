@@ -1,3 +1,7 @@
+%%
+%Test the statistical difference between baseline and the cancelable method scores
+%%
+
 baselineHorizontal=load('main_norman-Horizontal.mat')
 baselineScrolling=load('main_norman-Scrolling.mat')
 
