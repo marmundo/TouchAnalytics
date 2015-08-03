@@ -19,9 +19,9 @@ FRR_test=kstest2(FRR_baseline_Horizontal,FRR_bioconvolving_Horizontal);
 statisticaltest.hete.bioconvolving.Horizontal.FRR=FRR_test;
 statisticaltest.hete.bioconvolving.Horizontal.FAR=FAR_test;
 if FRR_test==0 
-  disp('Genuine - Similar')
+  disp('FRR - Similar')
 elseif FAR_test==0 
-  disp('Impostor - Similar')
+  disp('FAR - Similar')
 end
 %%
 %BioConvolving Scrolling
@@ -32,9 +32,9 @@ FRR_test=kstest2(FRR_baseline_Scrolling,FRR_bioconvolving_Scrolling);
 statisticaltest.hete.bioconvolving.Scrolling.FRR=FRR_test;
 statisticaltest.hete.bioconvolving.Scrolling.FAR=FAR_test;
 if FRR_test==0 
-  disp('Genuine - Similar')
+  disp('FRR - Similar')
 elseif FAR_test==0 
-  disp('Impostor - Similar')
+  disp('FAR - Similar')
 end
 
 %%
@@ -46,9 +46,9 @@ FRR_test=kstest2(FRR_baseline_Horizontal,FRR_biohash_Horizontal);
 statisticaltest.hete.biohash.Horizontal.FRR=FRR_test;
 statisticaltest.hete.biohash.Horizontal.FAR=FAR_test;
 if FRR_test==0 
-  disp('Genuine - Similar')
+  disp('FRR - Similar')
 elseif FAR_test==0 
-  disp('Impostor - Similar')
+  disp('FAR - Similar')
 end
 
 %%
@@ -57,12 +57,12 @@ bioHashing_hete_known_Scrolling=load('main_norman_biohash_hete_known-Scrolling-k
 [~,~,~,FAR_biohash_Scrolling,FRR_biohash_Scrolling]=wer(biohash_hete_known_Scrolling.scores{1,5},biohash_hete_known_Scrolling.scores{2,5},[],5,[],0);
 FAR_test=kstest2(FAR_baseline_Scrolling,FAR_biohash_Scrolling);
 FRR_test=kstest2(FRR_baseline_Scrolling,FRR_biohash_Scrolling);
-statisticaltest.hete.bioHashing.Scrolling.genuine=FRR_test;
-statisticaltest.hete.bioHashing.Scrolling.impostor=FAR_test;
+statisticaltest.hete.bioHashing.Scrolling.FRR=FRR_test;
+statisticaltest.hete.bioHashing.Scrolling.FAR=FAR_test;
 if FRR_test==0 
-  disp('Genuine - Similar')
+  disp('FRR - Similar')
 elseif FAR_test==0 
-  disp('Impostor - Similar')
+  disp('FAR - Similar')
 end
 
 %%
@@ -74,9 +74,9 @@ FRR_test=kstest2(FRR_baseline_Horizontal,FRR_doublesum_Horizontal);
 statisticaltest.hete.doublesum.Horizontal.FRR=FRR_test;
 statisticaltest.hete.doublesum.Horizontal.FAR=FAR_test;
 if FRR_test==0 
-  disp('Genuine - Similar')
+  disp('FRR - Similar')
 elseif FAR_test==0 
-  disp('Impostor - Similar')
+  disp('FAR - Similar')
 end
 
 %%
@@ -88,9 +88,9 @@ FRR_test=kstest2(FRR_baseline_Scrolling,FRR_doublesum_Scrolling);
 statisticaltest.hete.doublesum.Scrolling.FRR=FRR_test;
 statisticaltest.hete.doublesum.Scrolling.FAR=FAR_test;
 if FRR_test==0 
-  disp('Genuine - Similar')
+  disp('FRR - Similar')
 elseif FAR_test==0 
-  disp('Impostor - Similar')
+  disp('FAR - Similar')
 end
 
 %%
@@ -102,9 +102,9 @@ FRR_test=kstest2(FRR_baseline_Horizontal,FRR_interpolation_Horizontal);
 statisticaltest.hete.interpolation.Horizontal.FRR=FRR_test;
 statisticaltest.hete.interpolation.Horizontal.FAR=FAR_test;
 if FRR_test==0 
-  disp('Genuine - Similar')
+  disp('FRR - Similar')
 elseif FAR_test==0 
-  disp('Impostor - Similar')
+  disp('FAR - Similar')
 end
 
 %%
@@ -116,9 +116,9 @@ FRR_test=kstest2(FRR_baseline_Scrolling,FRR_interpolation_Scrolling);
 statisticaltest.hete.interpolation.Scrolling.FRR=FRR_test;
 statisticaltest.hete.interpolation.Scrolling.FAR=FAR_test;
 if FRR_test==0 
-  disp('Genuine - Similar')
+  disp('FRR - Similar')
 elseif FAR_test==0 
-  disp('Impostor - Similar')
+  disp('FAR - Similar')
 end
 
 %%
@@ -135,9 +135,9 @@ FRR_test=kstest2(FRR_baseline_Horizontal,FRR_bioconvolving_Horizontal);
 statisticaltest.homo.bioconvolving.Horizontal.FRR=FRR_test;
 statisticaltest.homo.bioconvolving.Horizontal.FAR=FAR_test;
 if FRR_test==0 
-  disp('Genuine - Similar')
+  disp('FRR - Similar')
 elseif FAR_test==0 
-  disp('Impostor - Similar')
+  disp('FAR - Similar')
 end
 %%
 %BioConvolving Scrolling
@@ -148,9 +148,9 @@ FRR_test=kstest2(FRR_baseline_Scrolling,FRR_bioconvolving_Scrolling);
 statisticaltest.homo.bioconvolving.Scrolling.FRR=FRR_test;
 statisticaltest.homo.bioconvolving.Scrolling.FAR=FAR_test;
 if FRR_test==0 
-  disp('Genuine - Similar')
+  disp('FRR - Similar')
 elseif FAR_test==0 
-  disp('Impostor - Similar')
+  disp('FAR - Similar')
 end
 
 %%
@@ -162,9 +162,9 @@ FRR_test=kstest2(FRR_baseline_Horizontal,FRR_biohash_Horizontal);
 statisticaltest.homo.biohash.Horizontal.FRR=FRR_test;
 statisticaltest.homo.biohash.Horizontal.FAR=FAR_test;
 if FRR_test==0 
-  disp('Genuine - Similar')
+  disp('FRR - Similar')
 elseif FAR_test==0 
-  disp('Impostor - Similar')
+  disp('FAR - Similar')
 end
 
 %%
@@ -173,12 +173,12 @@ biohash_homo_known_Scrolling=load('main_norman_biohash_homo_known-Scrolling-kSiz
 [~,~,~,FAR_biohash_Scrolling,FRR_biohash_Scrolling]=wer(biohash_homo_known_Scrolling.scores{1,5},biohash_homo_known_Scrolling.scores{2,5},[],5,[],0);
 FAR_test=kstest2(FAR_baseline_Scrolling,FAR_biohash_Scrolling);
 FRR_test=kstest2(FRR_baseline_Scrolling,FRR_biohash_Scrolling);
-statisticaltest.homo.bioHashing.Scrolling.genuine=FRR_test;
-statisticaltest.homo.bioHashing.Scrolling.impostor=FAR_test;
+statisticaltest.homo.bioHashing.Scrolling.FRR=FRR_test;
+statisticaltest.homo.bioHashing.Scrolling.FAR=FAR_test;
 if FRR_test==0 
-  disp('Genuine - Similar')
+  disp('FRR - Similar')
 elseif FAR_test==0 
-  disp('Impostor - Similar')
+  disp('FAR - Similar')
 end
 
 %%
@@ -190,9 +190,9 @@ FRR_test=kstest2(FRR_baseline_Horizontal,FRR_doublesum_Horizontal);
 statisticaltest.homo.doublesum.Horizontal.FRR=FRR_test;
 statisticaltest.homo.doublesum.Horizontal.FAR=FAR_test;
 if FRR_test==0 
-  disp('Genuine - Similar')
+  disp('FRR - Similar')
 elseif FAR_test==0 
-  disp('Impostor - Similar')
+  disp('FAR - Similar')
 end
 
 %%
@@ -204,9 +204,9 @@ FRR_test=kstest2(FRR_baseline_Scrolling,FRR_doublesum_Scrolling);
 statisticaltest.homo.doublesum.Scrolling.FRR=FRR_test;
 statisticaltest.homo.doublesum.Scrolling.FAR=FAR_test;
 if FRR_test==0 
-  disp('Genuine - Similar')
+  disp('FRR - Similar')
 elseif FAR_test==0 
-  disp('Impostor - Similar')
+  disp('FAR - Similar')
 end
 
 %%
@@ -218,9 +218,9 @@ FRR_test=kstest2(FRR_baseline_Horizontal,FRR_interpolation_Horizontal);
 statisticaltest.homo.interpolation.Horizontal.FRR=FRR_test;
 statisticaltest.homo.interpolation.Horizontal.FAR=FAR_test;
 if FRR_test==0 
-  disp('Genuine - Similar')
+  disp('FRR - Similar')
 elseif FAR_test==0 
-  disp('Impostor - Similar')
+  disp('FAR - Similar')
 end
 
 %%
@@ -232,9 +232,9 @@ FRR_test=kstest2(FRR_baseline_Scrolling,FRR_interpolation_Scrolling);
 statisticaltest.homo.interpolation.Scrolling.FRR=FRR_test;
 statisticaltest.homo.interpolation.Scrolling.FAR=FAR_test;
 if FRR_test==0 
-  disp('Genuine - Similar')
+  disp('FRR - Similar')
 elseif FAR_test==0 
-  disp('Impostor - Similar')
+  disp('FAR - Similar')
 end
 
 %%
