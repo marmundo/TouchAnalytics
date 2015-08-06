@@ -72,7 +72,7 @@ TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
 keySize.nFeatures=length(data(1,:));
-keySize.partitions=2;
+keySize.partitions=3;
 key=getFixedKey('BioConvolving',keySize);
 
 scenario={'homo','hete'};
@@ -215,17 +215,17 @@ for s=1:2
   print('-dpng',file);
   
   %% compare with main_norman
-  bline = load(['main_norman-',orientation,'.mat']);
-  bconvolving = load(['main_norman_bioconvolving_',scenario{s},'_known-',orientation]);
-  
-  figure(3);
-  m=5;
-  wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
-  wer(bconvolving.scores{1,m}, bconvolving.scores{2,m}, [],2,[],2);
-  wer(scores{1,m}, scores{2,m}, [],2,[],3);
-  legend('baseline','bioconvolving Known','bioconvolving Unknown');
-  file=['Pictures/DET_kNN_bline_vs_bioconvolving-',orientation,'-',scenario{s},'_Unknown.png'];
-  print('-dpng',file);
+%   bline = load(['main_norman-',orientation,'.mat']);
+%   bconvolving = load(['main_norman_bioconvolving_',scenario{s},'_known-',orientation]);
+%   
+%   figure(3);
+%   m=5;
+%   wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+%   wer(bconvolving.scores{1,m}, bconvolving.scores{2,m}, [],2,[],2);
+%   wer(scores{1,m}, scores{2,m}, [],2,[],3);
+%   legend('baseline','bioconvolving Known','bioconvolving Unknown');
+%   file=['Pictures/DET_kNN_bline_vs_bioconvolving-',orientation,'-',scenario{s},'_Unknown.png'];
+%   print('-dpng',file);
 end
 
 %% main_norman_bioconvolving_
@@ -250,9 +250,9 @@ file=['Pictures/DET_Comparative/DET_',classifiers{m},'_bline_vs_bioconvolving(ho
 print('-dpng',file);
 
 %%
-figure(4);
-wer(bconvolving.scores{1,m}, bconvolving.scores{2,m}, [],4,[],1);
-wer(scores{1,m}, scores{2,m}, [],4,[],2);
+% figure(4);
+% wer(bconvolving.scores{1,m}, bconvolving.scores{2,m}, [],4,[],1);
+% wer(scores{1,m}, scores{2,m}, [],4,[],2);
 %%
 bconvolving_unknown_homo2 = load(['main_norman_bioconvolving_homo_Unknown-',orientation,'-kSize-2.mat']);
 bconvolving_unknown_homo3 = load(['main_norman_bioconvolving_homo_Unknown-',orientation,'-kSize-3.mat']);
@@ -274,6 +274,9 @@ file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_bioconvolving-',orienta
 print('-dpng',file);
 
 %%
+orientation='Scrolling';
+m=5;
+bline = load(['main_norman-',orientation,'.mat']);
 bconvolving_unknown_hete2 = load(['main_norman_bioconvolving_hete_Unknown-',orientation,'-kSize-2.mat']);
 bconvolving_unknown_hete3 = load(['main_norman_bioconvolving_hete_Unknown-',orientation,'-kSize-3.mat']);
 bconvolving_unknown_hete4 = load(['main_norman_bioconvolving_hete_Unknown-',orientation,'-kSize-4.mat']);

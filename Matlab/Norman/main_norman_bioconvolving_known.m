@@ -73,7 +73,7 @@ TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
 keySize.nFeatures=length(data(1,:));
-keySize.partitions=25;
+keySize.partitions=3;
 key=getFixedKey('BioConvolving',keySize);
 
 scenario={'homo','hete'};
