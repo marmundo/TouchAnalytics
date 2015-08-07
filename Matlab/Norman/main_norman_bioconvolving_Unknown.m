@@ -72,7 +72,7 @@ TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
 keySize.nFeatures=length(data(1,:));
-keySize.partitions=3;
+keySize.partitions=25;
 key=getFixedKey('BioConvolving',keySize);
 
 scenario={'homo','hete'};
@@ -112,17 +112,17 @@ for s=1:2
     %logistic regression
     Y = [ones(1, numel(index_template)) zeros(1, numel(index_template_neg))];
     W = [ones(1, numel(index_template)) / numel(index_template) ones(1, numel(index_template_neg)) /numel(index_template_neg) ];
-    com.user.b(i,:) = glmfit([X_gen; X_imp],Y', 'binomial', 'weights',W');
+%     com.user.b(i,:) = glmfit([X_gen; X_imp],Y', 'binomial', 'weights',W');
     
     %k-NN
-    com.knn.mdl{i} = fitcknn([X_gen; X_imp],Y');
+%     com.knn.mdl{i} = fitcknn([X_gen; X_imp],Y');
     
     %SVM
     com.svm{i}=fitcsvm([X_gen;X_imp],Y','KernelFunction','rbf','Standardize',true,'KernelScale','auto');
     %com.svm{i} = fitSVMPosterior(com.svm{i});
   end;
-  bar(median(com.user.b))
-  com.median.b = median(com.user.b);
+%   bar(median(com.user.b))
+%   com.median.b = median(com.user.b);
   
   %% Compare the 4 methods
   % (SIMILAR to main_norman.m)
@@ -172,12 +172,12 @@ for s=1:2
 %     score_imp{m} = glmval(com.median.b', X_imp,'identity');
     
     %METHOD 4: K-NN
-    m=4;
-    com.knn.mdl{i}.NumNeighbors = 8;%4
-    [~, gen_] = predict( com.knn.mdl{i}, X_gen);
-    [~, imp_] = predict( com.knn.mdl{i}, X_imp);
-    score_gen{m}=gen_(:,2);
-    score_imp{m}=imp_(:,2);
+%     m=4;
+%     com.knn.mdl{i}.NumNeighbors = 8;%4
+%     [~, gen_] = predict( com.knn.mdl{i}, X_gen);
+%     [~, imp_] = predict( com.knn.mdl{i}, X_imp);
+%     score_gen{m}=gen_(:,2);
+%     score_imp{m}=imp_(:,2);
     
     %METHOD 5: SVM
     m=5;
@@ -187,13 +187,19 @@ for s=1:2
     score_imp{m}=imp_(:,2);
     
     %record down the scores
-    for m=4:5,
+    for m=5:5,
       scores{1,m} = [scores{1,m}; score_imp{m}];
       scores{2,m} = [scores{2,m}; score_gen{m}];
     end;
     
-    for m=4:5,
-      eer_(i,m) = wer(scores{1,m}, scores{2,m});
+      %cleaning in case of NaN and Inf
+  scores{1,m}(isnan(scores{1,m})) = 0 ;
+  scores{1,m}(isinf(scores{1,m})) = -100000;
+  scores{2,m}(isnan(scores{2,m})) = 0 ;
+  scores{2,m}(isinf(scores{2,m})) = -100000;
+  
+    for m=5:5,
+eer_(i,m) = wer(scores{1,m}, scores{2,m});
       %eer_(i,m) = wer(score_imp{m}, score_gen{m}, [],2,[],m);
     end;
     %pause;
@@ -206,7 +212,7 @@ for s=1:2
   
   %%
   figure(2);
-  for m=4:5,
+  for m=5:5,
     eer_system(m) = wer(scores{1,m}, scores{2,m}, [],2,[],m);
   end;
   eer_system
@@ -254,12 +260,18 @@ print('-dpng',file);
 % wer(bconvolving.scores{1,m}, bconvolving.scores{2,m}, [],4,[],1);
 % wer(scores{1,m}, scores{2,m}, [],4,[],2);
 %%
+
+%%
+%Key Size Plots - Unknown Attack
+%%
+orientation='Horizontal';
+m=5;
 bconvolving_unknown_homo2 = load(['main_norman_bioconvolving_homo_Unknown-',orientation,'-kSize-2.mat']);
 bconvolving_unknown_homo3 = load(['main_norman_bioconvolving_homo_Unknown-',orientation,'-kSize-3.mat']);
 bconvolving_unknown_homo4 = load(['main_norman_bioconvolving_homo_Unknown-',orientation,'-kSize-4.mat']);
 bconvolving_unknown_homo8 = load(['main_norman_bioconvolving_homo_Unknown-',orientation,'-kSize-8.mat']);
 bconvolving_unknown_homo16 = load(['main_norman_bioconvolving_homo_Unknown-',orientation,'-kSize-16.mat']);
-bconvolving_unknown_homo25 = load(['main_norman_bioconvolving_homo_Unknown-',orientation,'-kSize-24.mat']);
+bconvolving_unknown_homo25 = load(['main_norman_bioconvolving_homo_Unknown-',orientation,'-kSize-25.mat']);
 figure(6)
 wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
 wer(bconvolving_unknown_homo2.scores{1,m}, bconvolving_unknown_homo2.scores{2,m}, [],2,[],2);
@@ -268,21 +280,20 @@ wer(bconvolving_unknown_homo4.scores{1,m}, bconvolving_unknown_homo4.scores{2,m}
 wer(bconvolving_unknown_homo8.scores{1,m}, bconvolving_unknown_homo8.scores{2,m}, [],2,[],5);
 wer(bconvolving_unknown_homo16.scores{1,m}, bconvolving_unknown_homo16.scores{2,m}, [],2,[],6);
 wer(bconvolving_unknown_homo25.scores{1,m}, bconvolving_unknown_homo25.scores{2,m}, [],2,[],7);
-legend('baseline','bioconvolving Unknown-kSize=2','bioconvolving Unknown-kSize=3','bioconvolving Unknown-kSize=4','bioconvolving Unknown-kSize=8','bioconvolving Unknown-kSize=16','bioconvolving Unknown-kSize=25');
-title(['DET Comparison KeySize - bioconvolving - Unknown- Homogeneous-',orientation])
+legend('baseline','kSize=2','kSize=3','kSize=4','kSize=8','kSize=16','kSize=25');
+title(['DET Comparison KeySize - BioConvolving - Unknown- Homogeneous-',orientation])
 file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_bioconvolving-',orientation,'-',scenario{1},'_Unknown.png'];
 print('-dpng',file);
 
 %%
-orientation='Scrolling';
-m=5;
+
 bline = load(['main_norman-',orientation,'.mat']);
 bconvolving_unknown_hete2 = load(['main_norman_bioconvolving_hete_Unknown-',orientation,'-kSize-2.mat']);
 bconvolving_unknown_hete3 = load(['main_norman_bioconvolving_hete_Unknown-',orientation,'-kSize-3.mat']);
 bconvolving_unknown_hete4 = load(['main_norman_bioconvolving_hete_Unknown-',orientation,'-kSize-4.mat']);
 bconvolving_unknown_hete8 = load(['main_norman_bioconvolving_hete_Unknown-',orientation,'-kSize-8.mat']);
 bconvolving_unknown_hete16 = load(['main_norman_bioconvolving_hete_Unknown-',orientation,'-kSize-16.mat']);
-bconvolving_unknown_hete25 = load(['main_norman_bioconvolving_hete_Unknown-',orientation,'-kSize-24.mat']);
+bconvolving_unknown_hete25 = load(['main_norman_bioconvolving_hete_Unknown-',orientation,'-kSize-25.mat']);
 figure(7)
 wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
 wer(bconvolving_unknown_hete2.scores{1,m}, bconvolving_unknown_hete2.scores{2,m}, [],2,[],2);
@@ -291,7 +302,51 @@ wer(bconvolving_unknown_hete4.scores{1,m}, bconvolving_unknown_hete4.scores{2,m}
 wer(bconvolving_unknown_hete8.scores{1,m}, bconvolving_unknown_hete8.scores{2,m}, [],2,[],5);
 wer(bconvolving_unknown_hete16.scores{1,m}, bconvolving_unknown_hete16.scores{2,m}, [],2,[],6);
 wer(bconvolving_unknown_hete25.scores{1,m}, bconvolving_unknown_hete25.scores{2,m}, [],2,[],7);
-legend('baseline','bioconvolving Unknown-kSize=2','bioconvolving Unknown-kSize=3','bioconvolving Unknown-kSize=4','bioconvolving Unknown-kSize=8','bioconvolving Unknown-kSize=16','bioconvolving Unknown-kSize=25');
-title(['DET Comparison KeySize - bioconvolving - Unknown- Heterogeneous-',orientation])
+legend('baseline','kSize=2','kSize=3','kSize=4','kSize=8','kSize=16','kSize=25');
+title(['DET Comparison KeySize - BioConvolving - Unknown- Heterogeneous-',orientation])
 file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_bioconvolving-',orientation,'-',scenario{2},'_Unknown.png'];
+print('-dpng',file);
+
+
+%% Known Key Attack
+%%
+bconvolving_known_homo2 = load(['main_norman_bioconvolving_homo_known-',orientation,'-kSize-2.mat']);
+bconvolving_known_homo3 = load(['main_norman_bioconvolving_homo_known-',orientation,'-kSize-3.mat']);
+bconvolving_known_homo4 = load(['main_norman_bioconvolving_homo_known-',orientation,'-kSize-4.mat']);
+bconvolving_known_homo8 = load(['main_norman_bioconvolving_homo_known-',orientation,'-kSize-8.mat']);
+bconvolving_known_homo16 = load(['main_norman_bioconvolving_homo_known-',orientation,'-kSize-16.mat']);
+bconvolving_known_homo25 = load(['main_norman_bioconvolving_homo_known-',orientation,'-kSize-25.mat']);
+figure(6)
+wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+wer(bconvolving_known_homo2.scores{1,m}, bconvolving_known_homo2.scores{2,m}, [],2,[],2);
+wer(bconvolving_known_homo3.scores{1,m}, bconvolving_known_homo3.scores{2,m}, [],2,[],3);
+wer(bconvolving_known_homo4.scores{1,m}, bconvolving_known_homo4.scores{2,m}, [],2,[],4);
+wer(bconvolving_known_homo8.scores{1,m}, bconvolving_known_homo8.scores{2,m}, [],2,[],5);
+wer(bconvolving_known_homo16.scores{1,m}, bconvolving_known_homo16.scores{2,m}, [],2,[],6);
+wer(bconvolving_known_homo25.scores{1,m}, bconvolving_known_homo25.scores{2,m}, [],2,[],7);
+legend('baseline','kSize=2','kSize=3','kSize=4','kSize=8','kSize=16','kSize=25');
+title(['DET Comparison KeySize - BioConvolving - Known- Homogeneous-',orientation])
+file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_bioconvolving-',orientation,'-',scenario{1},'_known.png'];
+print('-dpng',file);
+
+%%
+m=5
+bline = load(['main_norman-',orientation,'.mat']);
+bconvolving_known_hete2 = load(['main_norman_bioconvolving_hete_known-',orientation,'-kSize-2.mat']);
+bconvolving_known_hete3 = load(['main_norman_bioconvolving_hete_known-',orientation,'-kSize-3.mat']);
+bconvolving_known_hete4 = load(['main_norman_bioconvolving_hete_known-',orientation,'-kSize-4.mat']);
+bconvolving_known_hete8 = load(['main_norman_bioconvolving_hete_known-',orientation,'-kSize-8.mat']);
+bconvolving_known_hete16 = load(['main_norman_bioconvolving_hete_known-',orientation,'-kSize-16.mat']);
+bconvolving_known_hete25 = load(['main_norman_bioconvolving_hete_known-',orientation,'-kSize-25.mat']);
+figure(7)
+wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+wer(bconvolving_known_hete2.scores{1,m}, bconvolving_known_hete2.scores{2,m}, [],2,[],2);
+wer(bconvolving_known_hete3.scores{1,m}, bconvolving_known_hete3.scores{2,m}, [],2,[],3);
+wer(bconvolving_known_hete4.scores{1,m}, bconvolving_known_hete4.scores{2,m}, [],2,[],4);
+wer(bconvolving_known_hete8.scores{1,m}, bconvolving_known_hete8.scores{2,m}, [],2,[],5);
+wer(bconvolving_known_hete16.scores{1,m}, bconvolving_known_hete16.scores{2,m}, [],2,[],6);
+wer(bconvolving_known_hete25.scores{1,m}, bconvolving_known_hete25.scores{2,m}, [],2,[],7);
+legend('baseline','kSize=2','kSize=3','kSize=4','kSize=8','kSize=16','kSize=25');
+title(['DET Comparison KeySize - BioConvolving - Known- Heterogeneous-',orientation])
+file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_bioconvolving-',orientation,'-',scenario{2},'_known.png'];
 print('-dpng',file);

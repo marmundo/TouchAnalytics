@@ -77,7 +77,7 @@ VALID_IMP=21:40;%impostor used for validation
 TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
-keySize=25;
+keySize=400;
 key=getFixedKey('DoubleSum',keySize);
 
 %starting variable
@@ -88,7 +88,7 @@ classifiers={'x','Logistic Regression per User','One Logistic Regression','kNN',
 
 %% train classifiers in the doublesum domain
 scenario={'homo','hete'};
-for s=2:2
+for s=1:2
     for i=1:numel(ID_list),
         
         %positive training samples
@@ -259,7 +259,13 @@ end
 figure(4);
 wer(bhash.scores{1,m}, bhash.scores{2,m}, [],4,[],1);
 wer(scores{1,m}, scores{2,m}, [],4,[],2);
+
 %%
+%Key Size Plots - Unknown Attack
+%%
+orientation='Horizontal';
+m=5;
+bline = load(['main_norman-',orientation,'.mat']);
 dsum_unknown_homo25 = load(['main_norman_doublesum_homo_Unknown-',orientation,'-kSize-25.mat']);
 dsum_unknown_homo50 = load(['main_norman_doublesum_homo_Unknown-',orientation,'-kSize-50.mat']);
 dsum_unknown_homo75 = load(['main_norman_doublesum_homo_Unknown-',orientation,'-kSize-75.mat']);
@@ -274,12 +280,14 @@ wer(dsum_unknown_homo75.scores{1,m}, dsum_unknown_homo75.scores{2,m}, [],2,[],4)
 wer(dsum_unknown_homo100.scores{1,m}, dsum_unknown_homo100.scores{2,m}, [],2,[],5);
 wer(dsum_unknown_homo200.scores{1,m}, dsum_unknown_homo200.scores{2,m}, [],2,[],6);
 wer(dsum_unknown_homo400.scores{1,m}, dsum_unknown_homo400.scores{2,m}, [],2,[],7);
-legend('baseline','doublesum Unknown-kSize=25','doublesum Unknown-kSize=50','doublesum Unknown-kSize=75','doublesum Unknown-kSize=100','doublesum Unknown-kSize=200','doublesum Unknown-kSize=400','Location','southwest');
-title(['DET Comparison KeySize - doublesum - Unknown- Homogeneous-',orientation])
+legend('Baseline','Key Size=25','Key Size=50','Key Size==75','Key Size=100','Key Size=200','Key Size=400','Location','southwest');
+title(['DET Comparison KeySize - Double Sum - Unknown- Homogeneous-',orientation])
 file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_doublesum-',orientation,'-',scenario{1},'_Unknown.png'];
 print('-dpng',file);
 
 %%
+
+
 dsum_unknown_hete25 = load(['main_norman_doublesum_hete_Unknown-',orientation,'-kSize-25.mat']);
 dsum_unknown_hete50 = load(['main_norman_doublesum_hete_Unknown-',orientation,'-kSize-50.mat']);
 dsum_unknown_hete75 = load(['main_norman_doublesum_hete_Unknown-',orientation,'-kSize-75.mat']);
@@ -294,8 +302,53 @@ wer(dsum_unknown_hete75.scores{1,m}, dsum_unknown_hete75.scores{2,m}, [],2,[],4)
 wer(dsum_unknown_hete100.scores{1,m}, dsum_unknown_hete100.scores{2,m}, [],2,[],5);
 wer(dsum_unknown_hete200.scores{1,m}, dsum_unknown_hete200.scores{2,m}, [],2,[],6);
 wer(dsum_unknown_hete400.scores{1,m}, dsum_unknown_hete400.scores{2,m}, [],2,[],7);
-legend('baseline','doublesum Unknown-kSize=25','doublesum Unknown-kSize=50','doublesum Unknown-kSize=75','doublesum Unknown-kSize=100','doublesum Unknown-kSize=200','doublesum Unknown-kSize=400','Location','southwest');
-title(['DET Comparison KeySize - doublesum - Unknown- Heterogeneous-',orientation])
+legend('Baseline','Key Size=25','Key Size=50','Key Size==75','Key Size=100','Key Size=200','Key Size=400','Location','southwest');
+title(['DET Comparison KeySize - Double Sum - Unknown- Heterogeneous-',orientation])
 file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_doublesum-',orientation,'-',scenario{2},'_Unknown.png'];
+print('-dpng',file);
+
+
+%% Known Key Attack
+%%
+bline = load(['main_norman-',orientation,'.mat']);
+dsum_known_homo25 = load(['main_norman_doublesum_homo_known-',orientation,'-kSize-25.mat']);
+dsum_known_homo50 = load(['main_norman_doublesum_homo_known-',orientation,'-kSize-50.mat']);
+dsum_known_homo75 = load(['main_norman_doublesum_homo_known-',orientation,'-kSize-75.mat']);
+dsum_known_homo100 = load(['main_norman_doublesum_homo_known-',orientation,'-kSize-100.mat']);
+dsum_known_homo200 = load(['main_norman_doublesum_homo_known-',orientation,'-kSize-200.mat']);
+dsum_known_homo400 = load(['main_norman_doublesum_homo_known-',orientation,'-kSize-400.mat']);
+figure(6)
+wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+wer(dsum_known_homo25.scores{1,m}, dsum_known_homo25.scores{2,m}, [],2,[],2);
+wer(dsum_known_homo50.scores{1,m}, dsum_known_homo50.scores{2,m}, [],2,[],3);
+wer(dsum_known_homo75.scores{1,m}, dsum_known_homo75.scores{2,m}, [],2,[],4);
+wer(dsum_known_homo100.scores{1,m}, dsum_known_homo100.scores{2,m}, [],2,[],5);
+wer(dsum_known_homo200.scores{1,m}, dsum_known_homo200.scores{2,m}, [],2,[],6);
+wer(dsum_known_homo400.scores{1,m}, dsum_known_homo400.scores{2,m}, [],2,[],7);
+legend('Baseline','Key Size=25','Key Size=50','Key Size==75','Key Size=100','Key Size=200','Key Size=400','Location','southwest');
+title(['DET Comparison KeySize - Double Sum - Known- Homogeneous-',orientation])
+file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_doublesum-',orientation,'-',scenario{1},'_known.png'];
+print('-dpng',file);
+
+%%
+
+
+dsum_known_hete25 = load(['main_norman_doublesum_hete_known-',orientation,'-kSize-25.mat']);
+dsum_known_hete50 = load(['main_norman_doublesum_hete_known-',orientation,'-kSize-50.mat']);
+dsum_known_hete75 = load(['main_norman_doublesum_hete_known-',orientation,'-kSize-75.mat']);
+dsum_known_hete100 = load(['main_norman_doublesum_hete_known-',orientation,'-kSize-100.mat']);
+dsum_known_hete200 = load(['main_norman_doublesum_hete_known-',orientation,'-kSize-200.mat']);
+dsum_known_hete1000 = load(['main_norman_doublesum_hete_known-',orientation,'-kSize-400.mat']);
+figure(7)
+wer(bline.scores{1,m}, bline.scores{2,m}, [],2,[],1);
+wer(dsum_known_hete25.scores{1,m}, dsum_known_hete25.scores{2,m}, [],2,[],2);
+wer(dsum_known_hete50.scores{1,m}, dsum_known_hete50.scores{2,m}, [],2,[],3);
+wer(dsum_known_hete75.scores{1,m}, dsum_known_hete75.scores{2,m}, [],2,[],4);
+wer(dsum_known_hete100.scores{1,m}, dsum_known_hete100.scores{2,m}, [],2,[],5);
+wer(dsum_known_hete200.scores{1,m}, dsum_known_hete200.scores{2,m}, [],2,[],6);
+wer(dsum_known_hete1000.scores{1,m}, dsum_known_hete1000.scores{2,m}, [],2,[],7);
+legend('Baseline','Key Size=25','Key Size=50','Key Size==75','Key Size=100','Key Size=200','Key Size=400','Location','southwest');
+title(['DET Comparison KeySize - Double Sum - Known- Heterogeneous-',orientation])
+file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_doublesum-',orientation,'-',scenario{2},'_known.png'];
 print('-dpng',file);
 
