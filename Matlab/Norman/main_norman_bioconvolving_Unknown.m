@@ -264,7 +264,7 @@ print('-dpng',file);
 %%
 %Key Size Plots - Unknown Attack
 %%
-orientation='Horizontal';
+orientation='Scrolling';
 m=5;
 bconvolving_unknown_homo2 = load(['main_norman_bioconvolving_homo_Unknown-',orientation,'-kSize-2.mat']);
 bconvolving_unknown_homo3 = load(['main_norman_bioconvolving_homo_Unknown-',orientation,'-kSize-3.mat']);
@@ -280,7 +280,7 @@ wer(bconvolving_unknown_homo4.scores{1,m}, bconvolving_unknown_homo4.scores{2,m}
 wer(bconvolving_unknown_homo8.scores{1,m}, bconvolving_unknown_homo8.scores{2,m}, [],2,[],5);
 wer(bconvolving_unknown_homo16.scores{1,m}, bconvolving_unknown_homo16.scores{2,m}, [],2,[],6);
 wer(bconvolving_unknown_homo25.scores{1,m}, bconvolving_unknown_homo25.scores{2,m}, [],2,[],7);
-legend('baseline','kSize=2','kSize=3','kSize=4','kSize=8','kSize=16','kSize=25');
+legend('Baseline','Key Size=2','Key Size=3','Key Size=4','Key Size=8','Key Size=16','Key Size=25');
 title(['DET Comparison KeySize - BioConvolving - Unknown- Homogeneous-',orientation])
 file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_bioconvolving-',orientation,'-',scenario{1},'_Unknown.png'];
 print('-dpng',file);
@@ -302,7 +302,7 @@ wer(bconvolving_unknown_hete4.scores{1,m}, bconvolving_unknown_hete4.scores{2,m}
 wer(bconvolving_unknown_hete8.scores{1,m}, bconvolving_unknown_hete8.scores{2,m}, [],2,[],5);
 wer(bconvolving_unknown_hete16.scores{1,m}, bconvolving_unknown_hete16.scores{2,m}, [],2,[],6);
 wer(bconvolving_unknown_hete25.scores{1,m}, bconvolving_unknown_hete25.scores{2,m}, [],2,[],7);
-legend('baseline','kSize=2','kSize=3','kSize=4','kSize=8','kSize=16','kSize=25');
+legend('Baseline','Key Size=2','Key Size=3','Key Size=4','Key Size=8','Key Size=16','Key Size=25');
 title(['DET Comparison KeySize - BioConvolving - Unknown- Heterogeneous-',orientation])
 file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_bioconvolving-',orientation,'-',scenario{2},'_Unknown.png'];
 print('-dpng',file);
@@ -324,7 +324,7 @@ wer(bconvolving_known_homo4.scores{1,m}, bconvolving_known_homo4.scores{2,m}, []
 wer(bconvolving_known_homo8.scores{1,m}, bconvolving_known_homo8.scores{2,m}, [],2,[],5);
 wer(bconvolving_known_homo16.scores{1,m}, bconvolving_known_homo16.scores{2,m}, [],2,[],6);
 wer(bconvolving_known_homo25.scores{1,m}, bconvolving_known_homo25.scores{2,m}, [],2,[],7);
-legend('baseline','kSize=2','kSize=3','kSize=4','kSize=8','kSize=16','kSize=25');
+legend('Baseline','Key Size=2','Key Size=3','Key Size=4','Key Size=8','Key Size=16','Key Size=25');
 title(['DET Comparison KeySize - BioConvolving - Known- Homogeneous-',orientation])
 file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_bioconvolving-',orientation,'-',scenario{1},'_known.png'];
 print('-dpng',file);
@@ -346,7 +346,7 @@ wer(bconvolving_known_hete4.scores{1,m}, bconvolving_known_hete4.scores{2,m}, []
 wer(bconvolving_known_hete8.scores{1,m}, bconvolving_known_hete8.scores{2,m}, [],2,[],5);
 wer(bconvolving_known_hete16.scores{1,m}, bconvolving_known_hete16.scores{2,m}, [],2,[],6);
 wer(bconvolving_known_hete25.scores{1,m}, bconvolving_known_hete25.scores{2,m}, [],2,[],7);
-legend('baseline','kSize=2','kSize=3','kSize=4','kSize=8','kSize=16','kSize=25');
+legend('Baseline','Key Size=2','Key Size=3','Key Size=4','Key Size=8','Key Size=16','Key Size=25');
 title(['DET Comparison KeySize - BioConvolving - Known- Heterogeneous-',orientation])
 file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_bioconvolving-',orientation,'-',scenario{2},'_known.png'];
 print('-dpng',file);
