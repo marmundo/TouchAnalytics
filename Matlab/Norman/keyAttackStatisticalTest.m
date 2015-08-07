@@ -20,8 +20,8 @@ eer_scrolling=zeros(4,4)
 bioconvolving_hete_known_Horizontal=load('main_norman_bioconvolving_hete_known-Horizontal-kSize-2');
 [eer,~,~,FAR_bioconvolving_Horizontal,FRR_bioconvolving_Horizontal]=wer(bioconvolving_hete_known_Horizontal.scores{1,5},bioconvolving_hete_known_Horizontal.scores{2,5});
 eer_horizontal(3,2)=eer;
-FAR_test=kstest2(FAR_baseline_Horizontal,FAR_bioconvolving_Horizontal);
-FRR_test=kstest2(FRR_baseline_Horizontal,FRR_bioconvolving_Horizontal);
+[FAR_test,p,ks2stat]=kstest2(FAR_baseline_Horizontal,FAR_bioconvolving_Horizontal);
+[FRR_test,p,ks2stat2]=kstest2(FRR_baseline_Horizontal,FRR_bioconvolving_Horizontal);
 statisticaltest.hete.bioconvolving.Horizontal.FRR=FRR_test;
 statisticaltest.hete.bioconvolving.Horizontal.FAR=FAR_test;
 if FRR_test==1
