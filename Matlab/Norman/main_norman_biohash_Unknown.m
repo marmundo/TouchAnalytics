@@ -265,7 +265,7 @@ wer(scores{1,m}, scores{2,m}, [],4,[],2);
 %%
 %Key Size Plots - Unknown Attack
 %%
-orientation='Horizontal';
+orientation='Scrolling';
 m=5;
 bline = load(['main_norman-',orientation,'.mat']);
 biohash_unknown_homo25 = load(['main_norman_biohash_homo_Unknown-',orientation,'-kSize-1.mat']);
@@ -282,7 +282,7 @@ wer(biohash_unknown_homo75.scores{1,m}, biohash_unknown_homo75.scores{2,m}, [],2
 wer(biohash_unknown_homo100.scores{1,m}, biohash_unknown_homo100.scores{2,m}, [],2,[],5);
 wer(biohash_unknown_homo200.scores{1,m}, biohash_unknown_homo200.scores{2,m}, [],2,[],6);
 wer(biohash_unknown_homo1000.scores{1,m}, biohash_unknown_homo1000.scores{2,m}, [],2,[],7);
-legend('baseline','Key Size=25','Key Size=50','Key Size=75','Key Size=100','Key Size=200','Key Size=1000');
+legend('Baseline','Key Size=25','Key Size=50','Key Size=75','Key Size=100','Key Size=200','Key Size=1000');
 title(['DET Comparison KeySize - BioHashing - Unknown- Homogeneous-',orientation])
 file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_biohash-',orientation,'-',scenario{1},'_Unknown.png'];
 print('-dpng',file);
@@ -304,8 +304,8 @@ wer(biohash_unknown_hete75.scores{1,m}, biohash_unknown_hete75.scores{2,m}, [],2
 wer(biohash_unknown_hete100.scores{1,m}, biohash_unknown_hete100.scores{2,m}, [],2,[],5);
 wer(biohash_unknown_hete200.scores{1,m}, biohash_unknown_hete200.scores{2,m}, [],2,[],6);
 wer(biohash_unknown_hete1000.scores{1,m}, biohash_unknown_hete1000.scores{2,m}, [],2,[],7);
-legend('baseline','Key Size=25','Key Size=50','Key Size=75','Key Size=100','Key Size=200','Key Size=1000');
-title(['DET Comparison KeySize - biohash - Unknown- Heterogeneous-',orientation])
+legend('Baseline','Key Size=25','Key Size=50','Key Size=75','Key Size=100','Key Size=200','Key Size=1000');
+title(['DET Comparison KeySize - BioHashing - Unknown- Heterogeneous-',orientation])
 file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_biohash-',orientation,'-',scenario{2},'_Unknown.png'];
 print('-dpng',file);
 
@@ -327,7 +327,7 @@ wer(biohash_known_homo75.scores{1,m}, biohash_known_homo75.scores{2,m}, [],2,[],
 wer(biohash_known_homo100.scores{1,m}, biohash_known_homo100.scores{2,m}, [],2,[],5);
 wer(biohash_known_homo200.scores{1,m}, biohash_known_homo200.scores{2,m}, [],2,[],6);
 wer(biohash_known_homo1000.scores{1,m}, biohash_known_homo1000.scores{2,m}, [],2,[],7);
-legend('baseline','Key Size=25','Key Size=50','Key Size=75','Key Size=100','Key Size=200','Key Size=1000');
+legend('Baseline','Key Size=25','Key Size=50','Key Size=75','Key Size=100','Key Size=200','Key Size=1000');
 title(['DET Comparison KeySize - BioHashing - Known- Homogeneous-',orientation])
 file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_biohash-',orientation,'-',scenario{1},'_known.png'];
 print('-dpng',file);
@@ -349,7 +349,7 @@ wer(biohash_known_hete75.scores{1,m}, biohash_known_hete75.scores{2,m}, [],2,[],
 wer(biohash_known_hete100.scores{1,m}, biohash_known_hete100.scores{2,m}, [],2,[],5);
 wer(biohash_known_hete200.scores{1,m}, biohash_known_hete200.scores{2,m}, [],2,[],6);
 wer(biohash_known_hete1000.scores{1,m}, biohash_known_hete1000.scores{2,m}, [],2,[],7);
-legend('baseline','Key Size=25','Key Size=50','Key Size=75','Key Size=100','Key Size=200','Key Size=1000');
-title(['DET Comparison KeySize - biohash - Known- Heterogeneous-',orientation])
+legend('Baseline','Key Size=25','Key Size=50','Key Size=75','Key Size=100','Key Size=200','Key Size=1000');
+title(['DET Comparison KeySize - BioHashing - Known- Heterogeneous-',orientation])
 file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_biohash-',orientation,'-',scenario{2},'_known.png'];
 print('-dpng',file);

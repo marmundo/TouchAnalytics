@@ -280,7 +280,7 @@ wer(dsum_unknown_homo75.scores{1,m}, dsum_unknown_homo75.scores{2,m}, [],2,[],4)
 wer(dsum_unknown_homo100.scores{1,m}, dsum_unknown_homo100.scores{2,m}, [],2,[],5);
 wer(dsum_unknown_homo200.scores{1,m}, dsum_unknown_homo200.scores{2,m}, [],2,[],6);
 wer(dsum_unknown_homo400.scores{1,m}, dsum_unknown_homo400.scores{2,m}, [],2,[],7);
-legend('Baseline','Key Size=25','Key Size=50','Key Size==75','Key Size=100','Key Size=200','Key Size=400','Location','southwest');
+legend('Baseline','Key Size=25','Key Size=50','Key Size=75','Key Size=100','Key Size=200','Key Size=400','Location','southwest');
 title(['DET Comparison KeySize - Double Sum - Unknown- Homogeneous-',orientation])
 file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_doublesum-',orientation,'-',scenario{1},'_Unknown.png'];
 print('-dpng',file);
@@ -302,7 +302,7 @@ wer(dsum_unknown_hete75.scores{1,m}, dsum_unknown_hete75.scores{2,m}, [],2,[],4)
 wer(dsum_unknown_hete100.scores{1,m}, dsum_unknown_hete100.scores{2,m}, [],2,[],5);
 wer(dsum_unknown_hete200.scores{1,m}, dsum_unknown_hete200.scores{2,m}, [],2,[],6);
 wer(dsum_unknown_hete400.scores{1,m}, dsum_unknown_hete400.scores{2,m}, [],2,[],7);
-legend('Baseline','Key Size=25','Key Size=50','Key Size==75','Key Size=100','Key Size=200','Key Size=400','Location','southwest');
+legend('Baseline','Key Size=25','Key Size=50','Key Size=75','Key Size=100','Key Size=200','Key Size=400','Location','southwest');
 title(['DET Comparison KeySize - Double Sum - Unknown- Heterogeneous-',orientation])
 file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_doublesum-',orientation,'-',scenario{2},'_Unknown.png'];
 print('-dpng',file);
@@ -325,7 +325,7 @@ wer(dsum_known_homo75.scores{1,m}, dsum_known_homo75.scores{2,m}, [],2,[],4);
 wer(dsum_known_homo100.scores{1,m}, dsum_known_homo100.scores{2,m}, [],2,[],5);
 wer(dsum_known_homo200.scores{1,m}, dsum_known_homo200.scores{2,m}, [],2,[],6);
 wer(dsum_known_homo400.scores{1,m}, dsum_known_homo400.scores{2,m}, [],2,[],7);
-legend('Baseline','Key Size=25','Key Size=50','Key Size==75','Key Size=100','Key Size=200','Key Size=400','Location','southwest');
+legend('Baseline','Key Size=25','Key Size=50','Key Size=75','Key Size=100','Key Size=200','Key Size=400','Location','southwest');
 title(['DET Comparison KeySize - Double Sum - Known- Homogeneous-',orientation])
 file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_doublesum-',orientation,'-',scenario{1},'_known.png'];
 print('-dpng',file);
@@ -347,7 +347,7 @@ wer(dsum_known_hete75.scores{1,m}, dsum_known_hete75.scores{2,m}, [],2,[],4);
 wer(dsum_known_hete100.scores{1,m}, dsum_known_hete100.scores{2,m}, [],2,[],5);
 wer(dsum_known_hete200.scores{1,m}, dsum_known_hete200.scores{2,m}, [],2,[],6);
 wer(dsum_known_hete1000.scores{1,m}, dsum_known_hete1000.scores{2,m}, [],2,[],7);
-legend('Baseline','Key Size=25','Key Size=50','Key Size==75','Key Size=100','Key Size=200','Key Size=400','Location','southwest');
+legend('Baseline','Key Size=25','Key Size=50','Key Size=75','Key Size=100','Key Size=200','Key Size=400','Location','southwest');
 title(['DET Comparison KeySize - Double Sum - Known- Heterogeneous-',orientation])
 file=['Pictures/DET_Comparative/KeySize-DET_kNN_bline_vs_doublesum-',orientation,'-',scenario{2},'_known.png'];
 print('-dpng',file);
