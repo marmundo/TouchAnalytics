@@ -17,6 +17,10 @@ else
     clear horizontal;
 end
 
+data=cleaningdataset(data);
+zero_ = find(sum(data)==0);
+data(:,zero_)=[];
+
 % check the numbers
 for i=1:size(data,2),
     unique_count(i) = numel(unique(data(:,i)));
@@ -52,6 +56,7 @@ else
     end;
 end
 
+%splitting user data in each fold
 clear selected_user;
 for p=1:3,
     selected_user{p}=cell(1,41);
@@ -69,7 +74,7 @@ VALID_IMP=21:40;%impostor used for validation
 TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
-keySize=400;
+keySize=25;
 key=getFixedKey('Interpolation',keySize);
 classifiers={'x','Logistic Regression per User','One Logistic Regression','kNN','SVM'};
 scenario={'homo','hete'};
@@ -86,7 +91,16 @@ for s=1:2
         userlist = userlist(TRAIN_IMP);
         %index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false));
         
-        %for each user, the template is encrypted using one common key; and the attacker
+
+        if strcmp(scenario{s},'homo')
+            X_gen =interpolation(data(index_template,:),key);
+            index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false));
+            X_imp=interpolation(data(index_template_neg,:),key);
+        else
+            com.user.key{i} = randi([1,25],1,keySize);
+            X_gen =interpolation(data(index_template,:),com.user.key{i});
+            
+            %for each user, the template is encrypted using one common key; and the attacker
         %uses another key for nonmatch
         X_imp=[];
         for iUser=1:numel(userlist)
@@ -95,12 +109,6 @@ for s=1:2
             % Encode the impostor user, encode its data with a key
             X_imp = [X_imp;interpolation(data(index_template_neg,:),key_imp)];
         end
-        %key_imp = rand(dim);
-        if strcmp(scenario{s},'homo')
-            X_gen =interpolation(data(index_template,:),key);
-        else
-            com.user.key{i} = randi([1,25],1,keySize);
-            X_gen =interpolation(data(index_template,:),com.user.key{i});
         end
         %X_imp = double(interpolation(data(index_template_neg,:),key_imp));
         
@@ -111,7 +119,10 @@ for s=1:2
 %         com.user.b(i,:) = glmfit([X_gen; X_imp],Y', 'binomial', 'weights',W');
         
         %k-NN
-%         com.knn.mdl{i} = fitcknn([X_gen; X_imp],Y');
+         com.knn.mdl{i} = fitcknn([X_gen; X_imp],Y');
+         save('X_gen_unknown.mat','X_gen');
+         save('X_imp_unknown.mat','X_imp');
+         
         
         %SVM
         com.svm{i}=fitcsvm([X_gen;X_imp],Y','KernelFunction','rbf','Standardize',true,'KernelScale','auto');
@@ -168,12 +179,12 @@ for s=1:2
 %         score_imp{m} = glmval(com.median.b', X_imp,'identity');
         
         %METHOD 4: K-NN
-%         m=4;
-%         com.knn.mdl{i}.NumNeighbors = 8;%4
-%         [~, gen_] = predict( com.knn.mdl{i}, X_gen);
-%         [~, imp_] = predict( com.knn.mdl{i}, X_imp);
-%         score_gen{m}=gen_(:,2);
-%         score_imp{m}=imp_(:,2);
+        m=4;
+        com.knn.mdl{i}.NumNeighbors = 8;%4
+        [~, gen_] = predict( com.knn.mdl{i}, X_gen);
+        [~, imp_] = predict( com.knn.mdl{i}, X_imp);
+        score_gen{m}=gen_(:,2);
+        score_imp{m}=imp_(:,2);
 %         
           %METHOD 5: SVM
         m=5;
@@ -183,12 +194,12 @@ for s=1:2
         score_imp{m}=imp_(:,2);
         
         %record down the scores
-        for m=5:5,
+        for m=4:5,
             scores{1,m} = [scores{1,m}; score_imp{m}];
             scores{2,m} = [scores{2,m}; score_gen{m}];
         end;
         
-        for m=5:5,
+        for m=4:5,
             eer_(i,m) = wer(scores{1,m}, scores{2,m});
             %eer_(i,m) = wer(score_imp{m}, score_gen{m}, [],2,[],m);
         end;
@@ -206,9 +217,9 @@ for s=1:2
       eer_system(m) = wer(scores{1,m}, scores{2,m}, [],2,[],m);
     end;
     eer_system
-    legend('LR user-specific','LR common', 'kNN (8)','location', 'Southwest');
-    file=['Pictures/',fileName,'__DET_Euc_LR_kNN.png'];
-    print('-dpng',file);
+%     legend('LR user-specific','LR common', 'kNN (8)','location', 'Southwest');
+%     file=['Pictures/',fileName,'__DET_Euc_LR_kNN.png'];
+%     print('-dpng',file);
 
     %% compare with main_norman
     bline = load(['main_norman-',orientation,'.mat']);
@@ -292,8 +303,8 @@ print('-dpng',file);
 %%
 %Key Size Plots - Unknown Attack
 %%
-%orientation='Scrolling';
-orientation='Horizontal';
+orientation='Scrolling';
+%orientation='Horizontal';
 m=5;
 bline = load(['main_norman-',orientation,'.mat']);
 inter_unknown_homo25 = load(['main_norman_interpolation_homo_Unknown-',orientation,'-kSize-25.mat']);
