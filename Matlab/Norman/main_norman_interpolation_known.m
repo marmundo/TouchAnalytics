@@ -1,5 +1,3 @@
-
-
 addpath ..
 addpath ../lib
 clear
@@ -27,17 +25,17 @@ for i=1:size(data,2),
     unique_count(i) = numel(unique(data(:,i)));
 end;
 
-bar(unique_count);
-ylabel('Unique values');
-xlabel('Feature index');
+% bar(unique_count);
+% ylabel('Unique values');
+% xlabel('Feature index');
 %print('-dpng','Pictures/main_norman__unique_value_feature_count.png');
 
 % normalise
-selected_ = find(unique_count>50)
+selected_ = find(unique_count>50);
 ID=data(:,1);
 data=(data(:,selected_));
 
-ID_list = unique(ID)'
+ID_list = unique(ID)';
 
 %% analyse the test folds (should be 1/3)
 if strcmp(orientation,'Horizontal')
@@ -73,7 +71,7 @@ VALID_IMP=21:40;%impostor used for validation
 TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
-keySize=25;
+keySize=400;
 key=getFixedKey('Interpolation',keySize);
 classifiers={'x','Logistic Regression per User','One Logistic Regression','kNN','SVM'};
 
@@ -91,7 +89,7 @@ for s=1:2
         userlist = userlist(TRAIN_IMP);
         %index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false));
         
-       
+        
         if strcmp(scenario{s},'homo')
             X_gen = interpolation(data(index_template,:),key);
             index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( userlist ), 'UniformOutput', false));
@@ -101,15 +99,15 @@ for s=1:2
             X_gen = interpolation(data(index_template,:),com.user.key{i});
             
             %for each user, the template is encrypted using one common key; and the attacker
-        %uses another key for nonmatch
-        X_imp=[];
-        for iUser=1:numel(userlist)
-            index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( iUser ), 'UniformOutput', false));
-            key_imp =randi([1,25],1,keySize);
-            % Encode the impostor user, encode its data with a key
-            X_imp = [X_imp;interpolation(data(index_template_neg,:),key_imp)];
-        end
-           
+            %uses another key for nonmatch
+            X_imp=[];
+            for iUser=1:numel(userlist)
+                index_template_neg = cell2mat(cellfun(@(x) x(1:10), selected_user{TRAIN}( iUser ), 'UniformOutput', false));
+                key_imp =randi([1,25],1,keySize);
+                % Encode the impostor user, encode its data with a key
+                X_imp = [X_imp;interpolation(data(index_template_neg,:),key_imp)];
+            end
+            
         end
         %   X_gen = interpolation(data(index_template,:),key);
         %   X_imp = interpolation(data(index_template_neg,:),key);
@@ -118,7 +116,7 @@ for s=1:2
         %logistic regression
         Y = [ones(1, numel(index_template)) zeros(1, numel(index_template_neg))];
         W = [ones(1, numel(index_template)) / numel(index_template) ones(1, numel(index_template_neg)) /numel(index_template_neg) ];
-        com.user.b(i,:) = glmfit([X_gen; X_imp],Y', 'binomial', 'weights',W');
+        %com.user.b(i,:) = glmfit([X_gen; X_imp],Y', 'binomial', 'weights',W');
         
         %k-NN
         com.knn.mdl{i} = fitcknn([X_gen; X_imp],Y');
@@ -128,8 +126,8 @@ for s=1:2
         com.svm{i}=fitcsvm([X_gen;X_imp],Y','KernelFunction','rbf','Standardize',true,'KernelScale','auto');
         %com.svm{i} = fitSVMPosterior(com.svm{i});
     end;
-    bar(median(com.user.b))
-    com.median.b = median(com.user.b);
+    % bar(median(com.user.b))
+    %com.median.b = median(com.user.b);
     
     %% Compare the 4 methods
     % (SIMILAR to main_norman.m)
@@ -192,12 +190,12 @@ for s=1:2
         score_imp{m}=imp_(:,2);
         
         %record down the scores
-        for m=4:5,
+        for m=4:5
             scores{1,m} = [scores{1,m}; score_imp{m}];
             scores{2,m} = [scores{2,m}; score_gen{m}];
         end;
         
-        for m=4:5,
+        for m=4:5
             eer_(i,m) = wer(scores{1,m}, scores{2,m});
             %eer_(i,m) = wer(score_imp{m}, score_gen{m}, [],2,[],m);
         end;

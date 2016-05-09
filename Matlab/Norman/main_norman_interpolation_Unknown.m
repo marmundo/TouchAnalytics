@@ -74,7 +74,7 @@ VALID_IMP=21:40;%impostor used for validation
 TEST_IMP =21:40;%impostor used for test
 
 %% load the common key
-keySize=25;
+keySize=400;
 key=getFixedKey('Interpolation',keySize);
 classifiers={'x','Logistic Regression per User','One Logistic Regression','kNN','SVM'};
 scenario={'homo','hete'};
