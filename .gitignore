@@ -10,7 +10,7 @@ bin/
 .project
 *~
 *.class
-Matlab/Data/
+#Matlab/Data/
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
