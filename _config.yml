@@ -1,0 +1,8 @@
+title: Touchanalytics
+description: Experimets for TouchAnalytics Data
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-minimal
+
+gems:
+  - jekyll-mentions
